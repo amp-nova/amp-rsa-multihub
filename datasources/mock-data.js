@@ -112,5 +112,5 @@ const categories = [
   }
 ];
 
-exports.products = products;
-exports.categories = categories;
+module.exports.products = products;
+module.exports.categories = categories;

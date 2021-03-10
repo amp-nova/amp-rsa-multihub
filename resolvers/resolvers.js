@@ -1,4 +1,4 @@
-const { products, categories } = require ('./mock-data');
+const { products, categories } = require ('../datasources/mock-data');
 
 const resolvers = {
   Query: {
@@ -38,4 +38,4 @@ const resolvers = {
   }
 };
 
-exports.resolvers = resolvers;
+module.exports.resolvers = resolvers;
