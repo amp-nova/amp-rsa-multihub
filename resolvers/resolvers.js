@@ -1,41 +1,39 @@
-const { products, categories } = require ('../datasources/mock-data');
-
-const resolvers = {
-  Query: {
-    products: () => products,
-    productById: (parent, args, context, info) => {
-      return products.find(x => x.id === args.id);
+var _a = require('../datasources/mock-data'), products = _a.products, categories = _a.categories;
+module.exports.resolvers = {
+    Query: {
+        products: function () { return products; },
+        productById: function (parent, args, context, info) {
+            return products.find(function (x) { return x.id === args.id; });
+        },
+        productBySku: function (parent, args, context, info) {
+            return products.find(function (x) { return x.sku === args.sku; });
+        },
+        productBySlug: function (parent, args, context, info) {
+            return products.find(function (x) { return x.slug === args.slug; });
+        },
+        categories: function () { return categories; },
+        categoryById: function (parent, args, context, info) {
+            return categories.find(function (x) { return x.id === args.id; });
+        },
+        categoryBySlug: function (parent, args, context, info) {
+            return categories.find(function (x) { return x.slug === args.slug; });
+        }
     },
-    productBySku: (parent, args, context, info) => {
-      return products.find(x => x.sku === args.sku);
+    Category: {
+        children: function (parent, args, context, info) {
+            var childrenList = parent.children;
+            return childrenList && categories.filter(function (x) { return childrenList.includes(x.id); });
+        },
+        products: function (parent, args, context, info) {
+            var productsList = parent.products;
+            return productsList && products.filter(function (x) { return productsList.includes(x.id); });
+        }
     },
-    productBySlug: (parent, args, context, info) => {
-      return products.find(x => x.slug === args.slug);
-    },
-    categories: () => categories,
-    categoryById: (parent, args, context, info) => {
-      return categories.find(x => x.id === args.id);
-    },
-    categoryBySlug: (parent, args, context, info) => {
-      return categories.find(x => x.slug === args.slug);
+    Product: {
+        categories: function (parent, args, context, info) {
+            var categoriesList = parent.categories;
+            return categoriesList && categories.filter(function (x) { return categoriesList.includes(x.id); });
+        }
     }
-  },
-  Category: {
-    children(parent, args, context, info) {
-      const childrenList = parent.children;
-      return childrenList && categories.filter(x => childrenList.includes(x.id));
-    },
-    products(parent, args, context, info) {
-      const productsList = parent.products;
-      return productsList && products.filter(x => productsList.includes(x.id));
-    }
-  },
-  Product: {
-    categories(parent, args, context, info) {
-      const categoriesList = parent.categories;
-      return categoriesList && categories.filter(x => categoriesList.includes(x.id));
-    }
-  }
 };
-
-module.exports.resolvers = resolvers;
+//# sourceMappingURL=resolvers.js.map

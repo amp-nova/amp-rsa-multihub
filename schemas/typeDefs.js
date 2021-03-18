@@ -1,55 +1,7 @@
-const { gql } = require('apollo-server');
-
-const typeDefs = gql`
-  type Product {
-    id: String!
-    sku: String!
-    slug: String!
-    name: String!
-    categories: [Category]
-    shortDescription: String
-    longDescription: String
-    prices: Prices
-    defaultImage: Image
-    images: [Image!]
-    variants: [Variant!]
-  }
-
-  type Prices {
-    sale: Float
-    list: Float
-  }
-
-  type Variant {
-    id: String!
-    prices: Prices
-    defaultImage: Image
-    images: [Image]
-  }
-
-  type Image {
-    title: String
-    alt: String
-    url: String!
-  }
-
-  type Category {
-    id: String!
-    name: String!
-    slug: String!
-    children: [Category]
-    products: [Product]
-  }
-
-  type Query {
-    products: [Product]
-    productById(id: String!): Product
-    productBySku(sku: String!): Product
-    productBySlug(slug: String!): Product
-    categories: [Category]
-    categoryById(id: String!): Category
-    categoryBySlug(slug: String!): Category
-  }
-`;
-
-module.exports.typeDefs = typeDefs;
+var __makeTemplateObject = (this && this.__makeTemplateObject) || function (cooked, raw) {
+    if (Object.defineProperty) { Object.defineProperty(cooked, "raw", { value: raw }); } else { cooked.raw = raw; }
+    return cooked;
+};
+var gql = require('apollo-server').gql;
+module.exports.typeDefs = gql(__makeTemplateObject(["\n  type Product {\n    id: String!\n    sku: String!\n    slug: String!\n    name: String!\n    categories: [Category]\n    shortDescription: String\n    longDescription: String\n    prices: Prices\n    defaultImage: Image\n    images: [Image!]\n    variants: [Variant!]\n  }\n\n  type Prices {\n    sale: Float\n    list: Float\n  }\n\n  type Variant {\n    id: String!\n    prices: Prices\n    defaultImage: Image\n    images: [Image]\n  }\n\n  type Image {\n    title: String\n    alt: String\n    url: String!\n  }\n\n  type Category {\n    id: String!\n    name: String!\n    slug: String!\n    children: [Category]\n    products: [Product]\n  }\n\n  type Query {\n    products: [Product]\n    productById(id: String!): Product\n    productBySku(sku: String!): Product\n    productBySlug(slug: String!): Product\n    categories: [Category]\n    categoryById(id: String!): Category\n    categoryBySlug(slug: String!): Category\n  }\n"], ["\n  type Product {\n    id: String!\n    sku: String!\n    slug: String!\n    name: String!\n    categories: [Category]\n    shortDescription: String\n    longDescription: String\n    prices: Prices\n    defaultImage: Image\n    images: [Image!]\n    variants: [Variant!]\n  }\n\n  type Prices {\n    sale: Float\n    list: Float\n  }\n\n  type Variant {\n    id: String!\n    prices: Prices\n    defaultImage: Image\n    images: [Image]\n  }\n\n  type Image {\n    title: String\n    alt: String\n    url: String!\n  }\n\n  type Category {\n    id: String!\n    name: String!\n    slug: String!\n    children: [Category]\n    products: [Product]\n  }\n\n  type Query {\n    products: [Product]\n    productById(id: String!): Product\n    productBySku(sku: String!): Product\n    productBySlug(slug: String!): Product\n    categories: [Category]\n    categoryById(id: String!): Category\n    categoryBySlug(slug: String!): Category\n  }\n"]));
+//# sourceMappingURL=typeDefs.js.map
