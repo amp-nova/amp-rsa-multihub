@@ -1,17 +1,35 @@
 const { gql } = require('apollo-server');
 
+type Product = {
+  id: string,
+  slug: string,
+  sku: string,
+  name: string,
+  shortDescription: string,
+  longDescription: string,
+  categories: Category[]
+}
+
+type Category = {
+  id: string,
+  name: string,
+  slug: string
+}
+
+type Prices = {
+  sale: number,
+  list: number
+}
+
 module.exports.typeDefs = gql`
   type Product {
     id: String!
-    sku: String!
     slug: String!
+    sku: String
     name: String!
     categories: [Category]
     shortDescription: String
     longDescription: String
-    prices: Prices
-    defaultImage: Image
-    images: [Image!]
     variants: [Variant!]
   }
 
@@ -22,9 +40,10 @@ module.exports.typeDefs = gql`
 
   type Variant {
     id: String!
+    sku: String!
     prices: Prices
     defaultImage: Image
-    images: [Image]
+    images: [Image!]
   }
 
   type Image {

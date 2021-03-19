@@ -1,39 +1,15 @@
-const { products, categories } = require ('../datasources/mock-data');
+const { products, categories } = require ('../datasources/commercetools');
+// const { products, categories } = require ('../datasources/mock-data');
 
 module.exports.resolvers = {
   Query: {
-    products: () => products,
-    productById: (parent, args, context, info) => {
-      return products.find(x => x.id === args.id);
-    },
-    productBySku: (parent, args, context, info) => {
-      return products.find(x => x.sku === args.sku);
-    },
-    productBySlug: (parent, args, context, info) => {
-      return products.find(x => x.slug === args.slug);
-    },
-    categories: () => categories,
-    categoryById: (parent, args, context, info) => {
-      return categories.find(x => x.id === args.id);
-    },
-    categoryBySlug: (parent, args, context, info) => {
-      return categories.find(x => x.slug === args.slug);
-    }
-  },
-  Category: {
-    children(parent, args, context, info) {
-      const childrenList = parent.children;
-      return childrenList && categories.filter(x => childrenList.includes(x.id));
-    },
-    products(parent, args, context, info) {
-      const productsList = parent.products;
-      return productsList && products.filter(x => productsList.includes(x.id));
-    }
-  },
-  Product: {
-    categories(parent, args, context, info) {
-      const categoriesList = parent.categories;
-      return categoriesList && categories.filter(x => categoriesList.includes(x.id));
-    }
+    products: products.get,
+    productById: async (parent, args, context, info) => await products.getById(args.id),
+    productBySku: async (parent, args, context, info) => await products.getBySku(args.sku),
+    productBySlug: async (parent, args, context, info) => await products.getBySlug(args.slug),
+
+    categories: categories.get,
+    categoryById: async (parent, args, context, info) => await categories.getById(args.id),
+    categoryBySlug: async (parent, args, context, info) => await categories.getBySlug(args.slug),
   }
 };
