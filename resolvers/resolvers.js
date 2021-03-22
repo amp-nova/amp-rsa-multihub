@@ -35,8 +35,9 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 var _this = this;
-var _a = require('../datasources/commercetools'), products = _a.products, categories = _a.categories;
+// const { products, categories } = require ('../datasources/commercetools');
 // const { products, categories } = require ('../datasources/mock-data');
+var _a = require('../datasources/bigcommerce'), products = _a.products, categories = _a.categories;
 module.exports.resolvers = {
     Query: {
         products: products.get,
@@ -55,6 +56,12 @@ module.exports.resolvers = {
         productBySlug: function (parent, args, context, info) { return __awaiter(_this, void 0, void 0, function () { return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0: return [4 /*yield*/, products.getBySlug(args.slug)];
+                case 1: return [2 /*return*/, _a.sent()];
+            }
+        }); }); },
+        productSearch: function (parent, args, context, info) { return __awaiter(_this, void 0, void 0, function () { return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0: return [4 /*yield*/, products.search(args.searchText)];
                 case 1: return [2 /*return*/, _a.sent()];
             }
         }); }); },

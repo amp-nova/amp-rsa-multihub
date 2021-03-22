@@ -24,8 +24,7 @@ type Prices = {
 module.exports.typeDefs = gql`
   type Product {
     id: String!
-    slug: String!
-    sku: String
+    slug: String
     name: String!
     categories: [Category]
     shortDescription: String
@@ -55,9 +54,39 @@ module.exports.typeDefs = gql`
   type Category {
     id: String!
     name: String!
-    slug: String!
+    slug: String
     children: [Category]
     products: [Product]
+  }
+
+  type SearchResult {
+    products: [Product]
+    currentFilters: [CurrentFilter]
+    refinements: [Refinement]
+    sortingOptions: [SortOption]
+  }
+  type SortOption {
+      id: String!
+      label: String!
+  }
+  type Refinement {
+      attributeId: String!
+      label: String!
+      values: [RefinementValue]
+  }
+  type RefinementValue {
+      label: String!
+      value: String!
+      hitCount: Int
+      values: [RefinementValue]
+  }
+  type CurrentFilter {
+      id: String!
+      value: String!
+  }
+  input Filter {
+      id: String!
+      value: String!
   }
 
   type Query {
@@ -65,6 +94,7 @@ module.exports.typeDefs = gql`
     productById(id: String!): Product
     productBySku(sku: String!): Product
     productBySlug(slug: String!): Product
+    productSearch(searchText: String!): SearchResult
     categories: [Category]
     categoryById(id: String!): Category
     categoryBySlug(slug: String!): Category
