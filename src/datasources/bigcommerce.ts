@@ -84,7 +84,7 @@ const BigCommerce = {
     },
 
     categories: {
-        get: async() => await makeCatalogAPIRequest(`/categories`, populateCategory),
+        get: async() => await makeCatalogAPIRequest(`/categories?parent_id=0`, populateCategory),
         getById: async id => await makeCatalogAPIRequest(`/categories/${id}`, populateCategory),
         getBySlug: async slug => { /* not implemented as BC does not have a category slug */ }
     }
