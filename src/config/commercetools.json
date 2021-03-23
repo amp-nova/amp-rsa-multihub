@@ -1,7 +1,0 @@
-{
-    "oauth_url"         : "https://auth.us-central1.gcp.commercetools.com",
-    "api_url"           : "https://api.us-central1.gcp.commercetools.com",
-    "project"           : "daves-test-project",
-    "client_id"         : "iXmPv3zPFvc_WPnzNhcHEW4Y",
-    "client_secret"     : "hMdUlPQvhkOI7El606srI0nlVxAUWZjo"
-}
