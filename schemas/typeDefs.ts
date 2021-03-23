@@ -81,11 +81,11 @@ module.exports.typeDefs = gql`
       values: [RefinementValue]
   }
   type CurrentFilter {
-      id: String!
+      id: String
       value: String!
   }
   input Filter {
-      id: String!
+      id: String
       value: String!
   }
 

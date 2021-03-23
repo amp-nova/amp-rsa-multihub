@@ -1,7 +1,6 @@
-let apiUrl = `https://api.bigcommerce.com`
-let storeHash = `ivhpe1uqls`
-let catalogApiUrl = `${apiUrl}/stores/${storeHash}/v3/catalog`
-let apiToken = `mgr4tatg4kainixjw8cgts10is2ka0y`
+import config from "../config/bigcommerce.json"
+
+let catalogApiUrl = `${config.apiUrl}/stores/${config.storeHash}/v3/catalog`
 
 import axios from 'axios';
 import _ = require("lodash")
@@ -23,15 +22,20 @@ let mapProduct = prod => ({
     }]
 })
 
-let bcHeaders = {
-    headers: {
-        'X-Auth-Token': apiToken
-    }
+let populateProductImages = async product => {
+    let images = await makeCatalogAPIRequest(`/products/${product.id}/images`, mapImage);
+    _.first(product.variants).images = images
+    _.first(product.variants).defaultImage = _.first(images)
+    return product
 }
 
 let makeCatalogAPIRequest = async (uri, mapper) => {
-    const response = await axios(`${catalogApiUrl}${uri}`, bcHeaders);
-    // console.log(JSON.stringify(response.data.data))
+    const response = await axios(`${catalogApiUrl}${uri}`, {
+        headers: {
+            'X-Auth-Token': config.apiToken
+        }
+    });
+
     if (!Array.isArray(response.data.data)) {
         return await mapper(response.data.data)
     }
@@ -41,16 +45,11 @@ let makeCatalogAPIRequest = async (uri, mapper) => {
 }
 
 let populateCategory = async cat => {
-    // get child products
-    const productResponse = await axios(`${catalogApiUrl}/products?categories:in=${cat.id}`, bcHeaders);
-    cat.products = _.map(productResponse.data.data, mapProduct)
-
-    const categoryResponse = await axios(`${catalogApiUrl}/categories?parent_id=${cat.id}`, bcHeaders);
-    cat.children = _.map(categoryResponse.data.data, cat => ({
+    cat.products = await makeCatalogAPIRequest(`/products?categories:in=${cat.id}`, mapProduct)
+    cat.children = await makeCatalogAPIRequest(`/categories?parent_id=${cat.id}`, cat => ({
         id: cat.id,
         name: cat.name
     }))
-
     return cat
 }
 
@@ -62,16 +61,8 @@ const BigCommerce = {
         getBySlug: async slug => {},
         search: async searchText => {
             let products = await makeCatalogAPIRequest(`/products?include=images&name:like=%${searchText}%`, mapProduct)
-
-            products = await Promise.all(products.map(async product => {
-                let images = await makeCatalogAPIRequest(`/products/${product.id}/images`, mapImage);
-                _.first(product.variants).images = images
-                _.first(product.variants).defaultImage = _.first(images)
-                return product
-            }))
-
             return {
-                products
+                products: await Promise.all(products.map(populateProductImages))
             }
         },
     },

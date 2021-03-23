@@ -87,4 +87,5 @@ module.exports = {
             ]
         }
     ]
-}
+};
+//# sourceMappingURL=mock-data.js.map

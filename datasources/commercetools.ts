@@ -1,6 +1,9 @@
 const _ = require("lodash")
 const CT = require("ctvault")
 
+import config from '../config/commercetools.json';
+const getCTClient = async () => await CT.getClientFromConfig(config)
+
 const mapVariant = variant => ({
     id: variant.id,
     sku: variant.sku,
@@ -61,26 +64,21 @@ const populateCategory = ct => async category => {
     }
 }
 
-const getCTClient = async () => await CT.getClient('daves-test-project')
+let getProductProjections = async opts => {
+    let ct = await getCTClient()
+    return _.map(await ct.productProjections.all(opts), mapProduct(ct))
+}
+
+let getCategories = async opts => {
+    let ct = await getCTClient()
+    return await Promise.all((await ct.categories.all(opts)).map(await populateCategory(ct)))
+}
 
 module.exports = {
     products: {
-        get: async () => {
-            let ct = await getCTClient()
-            console.log(Object.keys(ct))
-            let products = await ct.productProjections.all({ expand: ['categories[*]'] })
-            return _.map(products, mapProduct(ct))
-        },
-        getById: async id => {
-            let ct = await getCTClient()
-            let product = _.first(await ct.productProjections.all({ expand: ['categories[*]'], where: [`id="${id}"`] }))
-            return product && mapProduct(ct)(product)
-        },
-        getBySku: async sku => {
-            let ct = await getCTClient()
-            let product = _.first(await ct.productProjections.all({ expand: ['categories[*]'], where: [`masterVariant(sku="${sku}")`] }))
-            return product && mapProduct(ct)(product)
-        },
+        get: async () => await getProductProjections({ expand: ['categories[*]'] }),
+        getById: async id => _.first(await getProductProjections({ expand: ['categories[*]'], where: [`id="${id}"`] })),
+        getBySku: async sku => _.first(await getProductProjections({ expand: ['categories[*]'], where: [`masterVariant(sku="${sku}")`] })),
         getBySlug: async slug => {
             let ct = await getCTClient()
             let defaultLanguage = _.first(ct.projectMetadata.languages)
@@ -90,21 +88,12 @@ module.exports = {
     },
 
     categories: {
-        get: async () => {
-            let ct = await getCTClient()
-            let categories = await ct.categories.all()
-            // return _.map(categories, mapCategory(ct))
-            return await Promise.all(categories.map(await populateCategory(ct)))
-        },
-        getById: async id => {
-            let ct = await getCTClient()
-            let category = _.first(await ct.categories.get({ where: [`id="${id}"`] }))
-            return category && await populateCategory(ct)(category)
-        },
+        get: async () => await getCategories({}),
+        getById: async id => _.first(await getCategories({ where: [`id="${id}"`] })),
         getBySlug: async slug => {
             let ct = await getCTClient()
             let defaultLanguage = _.first(ct.projectMetadata.languages)
-            let category = _.first(await ct.categories.get({ where: [`slug(${defaultLanguage}="${slug}")`] }))
+            let category = _.first(await ct.categories.all({ where: [`slug(${defaultLanguage}="${slug}")`] }))
             return category && await populateCategory(ct)(category)
         }
     }
