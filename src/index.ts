@@ -1,8 +1,10 @@
 const { readFileSync } = require('fs')
 const yaml = require('js-yaml');
 
+console.log(__dirname)
+
 // Reading global settings
-const settingsYAML = readFileSync(`./src/config/settings.yaml`).toString();
+const settingsYAML = readFileSync(`${__dirname}/../config/settings.yaml`).toString();
 
 // Converting from YAML to JSON
 global.config = yaml.load(settingsYAML)
