@@ -10,6 +10,7 @@
     "axios": "^0.21.1",
     "ctvault": "^2.0.7",
     "lodash": "^4.17.21",
-    "rimraf": "^3.0.2"
+    "rimraf": "^3.0.2",
+    "typescript": "^4.2.3"
   }
 }
