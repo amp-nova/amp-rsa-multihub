@@ -1,5 +1,5 @@
 import _ = require("lodash")
-const { products, categories } = require("../mock-data/mock-data")
+const { products, categories } = require("../../mock-data/mock-data")
 
 let mapProduct = prod => {
   prod.categories = _.filter(categories, cat => _.includes(prod.categoryIds, cat.id))
