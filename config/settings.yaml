@@ -1,0 +1,29 @@
+app:
+  appName: amp-rsa-apollo
+  publishStage: production
+  scope: amplience-presales
+bigcommerce:
+  apiUrl: https://api.bigcommerce.com
+  storeHash: ivhpe1uqls
+  apiToken: mgr4tatg4kainixjw8cgts10is2ka0y
+commercetools:
+  oauth_url: https://auth.us-central1.gcp.commercetools.com
+  api_url: https://api.us-central1.gcp.commercetools.com
+  project: daves-test-project
+  client_id: iXmPv3zPFvc_WPnzNhcHEW4Y
+  client_secret: hMdUlPQvhkOI7El606srI0nlVxAUWZjo
+  defaultScopes:
+    - manage_project:daves-test-project
+  defaultFacets:
+    - type: standard
+      field: variants.attributes.color.label.en
+      title: Color
+    - type: standard
+      field: variants.attributes.designer.key
+      title: Designer
+    - type: standard
+      field: variants.attributes.size
+      title: Size
+    - type: standard
+      field: variants.attributes.style.key
+      title: Style
