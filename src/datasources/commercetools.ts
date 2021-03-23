@@ -87,7 +87,7 @@ module.exports = {
     },
 
     categories: {
-        get: async () => await getCategories({}),
+        get: async () => await getCategories({ where: [`ancestors is empty`] }),
         getById: async id => _.first(await getCategories({ where: [`id="${id}"`] })),
         getBySlug: async slug => {
             let ct = await getCTClient()
