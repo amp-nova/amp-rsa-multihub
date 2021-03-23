@@ -1,6 +1,7 @@
 {
   "compilerOptions": {
     "outDir": "dist",
+    "rootDir": "./src",
     "allowJs": true,
     "esModuleInterop": true,
     "target": "es5",
@@ -8,10 +9,7 @@
     "resolveJsonModule": true
   },
   "include": [
-    "datasources/**/*",
-    "resolvers/**/*",
-    "schemas/**/*",
-    "index.ts"
+    "src/**/*"
   ],
   "exclude": [
     "node_modules",
