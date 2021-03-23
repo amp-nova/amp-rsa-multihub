@@ -1,8 +1,7 @@
 const _ = require("lodash")
 const CT = require("ctvault")
 
-import config from '../config/commercetools.json';
-const getCTClient = async () => await CT.getClientFromConfig(config)
+const getCTClient = async () => await CT.getClientFromConfig(global.config.commercetools)
 
 const mapVariant = variant => ({
     id: variant.id,

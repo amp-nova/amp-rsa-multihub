@@ -14,7 +14,6 @@ module.exports = {
     getBySlug: slug => mapProduct(products.find(x => x.slug === slug)),
     search: searchText => {
       let filtered = _.filter(products, prod => prod.name.toLowerCase().includes(searchText.toLowerCase()))
-      console.log(`filtered products: ${JSON.stringify(filtered)}`)
       return { products: _.map(filtered, mapProduct) }
     },
   },
