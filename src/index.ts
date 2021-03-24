@@ -1,16 +1,7 @@
 import _ from "lodash";
 const express = require('express')
-const { readFileSync } = require('fs')
-const yaml = require('js-yaml');
 
 const logger = require("./util/logger")
-
-// Reading global settings
-const settingsYAML = readFileSync(`${__dirname}/../config/settings.yaml`).toString();
-
-// Converting from YAML to JSON
-global.config = yaml.load(settingsYAML)
-logger.info('settings.yaml loaded');
 
 const { ApolloServer } = require('apollo-server-express');
 const { typeDefs } = require('./schemas/typeDefs');

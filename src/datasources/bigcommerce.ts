@@ -1,9 +1,10 @@
 // third party imports
 import axios from 'axios';
 import _ = require("lodash")
+let config = require('../util/config')
 
 // load the bigcommerce configuration
-let bcConfig = global.config.bigcommerce
+let bcConfig = config.bigcommerce
 let catalogApiUrl = `${bcConfig.apiUrl}/stores/${bcConfig.storeHash}/v3/catalog`
 
 let mapImage = image => ({ url: image.url_standard })
