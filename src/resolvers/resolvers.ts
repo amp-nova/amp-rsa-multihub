@@ -1,21 +1,38 @@
-let connector = require ('../datasources/mock-data')
-if (process.env.COMMERCE_BACKEND === 'bigcommerce') {
-  connector = require ('../datasources/bigcommerce')
+
+interface CommerceBackend {
+  getProducts(): Promise<Product[]>
+  getProductById(id: string): Promise<Product>
+  getProductBySku(sku: string): Promise<Product>
+  searchProducts(searchText: string): Promise<SearchResult>
+
+  getCategories(): Promise<Category[]>
+  getCategoryById(id: string): Promise<Category>
 }
-else if (process.env.COMMERCE_BACKEND === 'commercetools') {
-  connector = require ('../datasources/commercetools')
+
+// getProductBySlug(slug: string): Promise<Product>
+// getCategoryBySlug(slug: string): Promise<Category>
+
+let mockConnector: CommerceBackend = require('../datasources/mock-data')
+let bigCommerceConnector: CommerceBackend = require('../datasources/bigcommerce')
+let commerceToolsConnector: CommerceBackend = require('../datasources/commercetools')
+
+let connectors = {
+  mock: mockConnector,
+  bigcommerce: bigCommerceConnector,
+  commercetools: commerceToolsConnector
 }
 
 module.exports.resolvers = {
   Query: {
-    products: connector.products.get,
-    productById: async (_, args) => await connector.products.getById(args.id),
-    productBySku: async (_, args) => await connector.products.getBySku(args.sku),
-    productBySlug: async (_, args) => await connector.products.getBySlug(args.slug),
-    productSearch: async (_, args) => await connector.products.search(args.searchText),
+    // products: connector.getProducts,
+    products: async (_, args, context, info) => await connectors[context.commerceBackend].getProducts(),
+    productById: async (_, args, context) => await connectors[context.commerceBackend].getProductById(args.id),
+    productBySku: async (_, args, context) => await connectors[context.commerceBackend].getProductBySku(args.sku),
+    productBySlug: async (_, args, context) => await connectors[context.commerceBackend].getProductBySlug(args.slug),
+    productSearch: async (_, args, context) => await connectors[context.commerceBackend].searchProducts(args.searchText),
 
-    categories: connector.categories.get,
-    categoryById: async (_, args) => await connector.categories.getById(args.id),
-    categoryBySlug: async (_, args) => await connector.categories.getBySlug(args.slug),
+    categories: async (_, args, context) => await connectors[context.commerceBackend].getCategories(),
+    categoryById: async (_, args, context) => await connectors[context.commerceBackend].getCategoryById(args.id),
+    categoryBySlug: async (_, args, context) => await connectors[context.commerceBackend].getCategoryBySlug(args.slug),
   }
 };

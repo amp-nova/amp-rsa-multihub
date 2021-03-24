@@ -18,13 +18,6 @@ const mapVariant = variant => ({
 const mapCategory = ct => category => {
     let cat = category.obj || category
     let defaultLanguage = _.first(ct.projectMetadata.languages)
-
-    console.log(JSON.stringify({
-        id: category.id,
-        name: cat.name[defaultLanguage],
-        slug: cat.slug[defaultLanguage]
-    }))
-
     return {
         id: category.id,
         name: cat.name[defaultLanguage],
@@ -32,19 +25,19 @@ const mapCategory = ct => category => {
     }
 }
 
-const mapProduct = ct => prod => {
+const mapProduct: (ct: any) => (prod: any) => Product = (ct: any) => (prod: any) => {
     let defaultLanguage = _.first(ct.projectMetadata.languages)
     let allVariants = _.concat(prod.variants, [prod.masterVariant])
     return {
-        id: prod.id,
-        name: prod.name[defaultLanguage],
-        slug: prod.slug[defaultLanguage],
+        id: `${prod.id}`,
+        name: `${prod.name[defaultLanguage]}`,
+        slug: `${prod.slug[defaultLanguage]}`,
         categories: _.map(prod.categories, mapCategory(ct)),
         variants: _.map(allVariants, mapVariant)
     }
 }
 
-const populateCategory = ct => async category => {
+const populateCategory: (ct: any) => (category: any) => Promise<Category> = ct => async category => {
     let cat = category.obj || category
     let defaultLanguage = _.first(ct.projectMetadata.languages)
 
@@ -63,37 +56,59 @@ const populateCategory = ct => async category => {
     }
 }
 
-let getProductProjections = async opts => {
+let getProductProjections: (any) => Promise<Product[]> = async opts => {
     let ct = await getCTClient()
     return _.map(await ct.productProjections.all(opts), mapProduct(ct))
 }
 
-let getCategories = async opts => {
+let searchProductProjections: (any) => Promise<Product[]> = async opts => {
+    let ct = await getCTClient()
+    return _.map(await ct.productProjectionsSearch.all(opts), mapProduct(ct))
+}
+
+let getCategories: (any) => Promise<Category[]> = async opts => {
     let ct = await getCTClient()
     return await Promise.all((await ct.categories.all(opts)).map(await populateCategory(ct)))
 }
 
-module.exports = {
-    products: {
-        get: async () => await getProductProjections({ expand: ['categories[*]'] }),
-        getById: async id => _.first(await getProductProjections({ expand: ['categories[*]'], where: [`id="${id}"`] })),
-        getBySku: async sku => _.first(await getProductProjections({ expand: ['categories[*]'], where: [`masterVariant(sku="${sku}")`] })),
-        getBySlug: async slug => {
-            let ct = await getCTClient()
-            let defaultLanguage = _.first(ct.projectMetadata.languages)
-            let product = _.first(await ct.productProjections.all({ expand: ['categories[*]'], where: [`slug(${defaultLanguage}="${slug}")`] }))
-            return product && mapProduct(ct)(product)
-        }
-    },
+class CommerceToolsBackend implements CommerceBackend { 
+    async getProducts() { 
+        return await getProductProjections({ expand: ['categories[*]'] }) 
+    }
 
-    categories: {
-        get: async () => await getCategories({ where: [`ancestors is empty`] }),
-        getById: async id => _.first(await getCategories({ where: [`id="${id}"`] })),
-        getBySlug: async slug => {
-            let ct = await getCTClient()
-            let defaultLanguage = _.first(ct.projectMetadata.languages)
-            let category = _.first(await ct.categories.all({ where: [`slug(${defaultLanguage}="${slug}")`] }))
-            return category && await populateCategory(ct)(category)
-        }
+    async getProductById(id) {
+        return _.first(await getProductProjections({ expand: ['categories[*]'], where: [`id="${id}"`] }))
+    }
+
+    async getProductBySku(sku) {
+        return _.first(await getProductProjections({ expand: ['categories[*]'], where: [`masterVariant(sku="${sku}")`] }))
+    }
+
+    async getProductBySlug(slug) {
+        let ct = await getCTClient()
+        let defaultLanguage = _.first(ct.projectMetadata.languages)
+        let product = _.first(await ct.productProjections.all({ expand: ['categories[*]'], where: [`slug(${defaultLanguage}="${slug}")`] }))
+        return product && mapProduct(ct)(product)
+    }
+
+    async searchProducts(searchText) {
+        return { products: await searchProductProjections({ expand: ['categories[*]'], where: [`text.en="${searchText}"`] }) }
+    }
+
+    async getCategories() {
+        return await getCategories({ where: [`ancestors is empty`] })
+    }
+
+    async getCategoryById(id) {
+        return _.first(await getCategories({ where: [`id="${id}"`] }))
+    }
+
+    async getCategoryBySlug(slug) {
+        let ct = await getCTClient()
+        let defaultLanguage = _.first(ct.projectMetadata.languages)
+        let category = _.first(await ct.categories.all({ where: [`slug(${defaultLanguage}="${slug}")`] }))
+        return category && await populateCategory(ct)(category)
     }
 }
+
+module.exports = new CommerceToolsBackend()

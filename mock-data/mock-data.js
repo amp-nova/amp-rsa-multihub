@@ -5,13 +5,15 @@ module.exports = {
             name: "Category 1",
             slug: "category-1",
             children: ["2"],
-            products: ["1", "2"]
+            products: ["1", "2"],
+            parent: null
         },
         {
             id: "2",
             name: "Category 2",
             slug: "category-2",
-            products: ["1"]
+            products: ["1"],
+            parent: "1"
         }
     ],
     products: [
@@ -88,4 +90,3 @@ module.exports = {
         }
     ]
 };
-//# sourceMappingURL=mock-data.js.map
