@@ -2,18 +2,36 @@ const { gql } = require('apollo-server');
 
 type Product = {
   id: string,
-  slug: string,
-  sku: string,
+  slug?: string,
   name: string,
-  shortDescription: string,
-  longDescription: string,
-  categories: Category[]
+  shortDescription?: string,
+  longDescription?: string,
+  categories?: Category[],
+  variants: Variant[]
+}
+
+type Variant = {
+  id: string,
+  sku: string,
+  prices: Prices,
+  defaultImage?: Image,
+  images: Image[]
+}
+
+type Image = {
+  url: string
 }
 
 type Category = {
   id: string,
   name: string,
-  slug: string
+  slug: string,
+  children: Category[],
+  products: Product[]
+}
+
+type SearchResult = {
+  products: Product[]
 }
 
 type Prices = {

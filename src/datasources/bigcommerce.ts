@@ -36,7 +36,7 @@ let mapProduct = prod => ({
  * So, we have to request the product images and hydrate the product record.
  * 
  */
-let populateProductImages = async product => {
+let populateProductImages: (Product) => Promise<Product> = async product => {
     let images = await makeCatalogAPIRequest(`/products/${product.id}/images`, mapImage);
     _.first(product.variants).images = images
     _.first(product.variants).defaultImage = _.first(images)
@@ -61,7 +61,7 @@ let makeCatalogAPIRequest = async (uri, mapper) => {
 
 // hydrate the 'products' and 'children' records on category
 let populateCategory = async cat => {
-    cat.products = await makeCatalogAPIRequest(`/products?categories:in=${cat.id}`, mapProduct)
+    cat.products = <Product[]> await makeCatalogAPIRequest(`/products?categories:in=${cat.id}`, mapProduct)
     cat.children = await makeCatalogAPIRequest(`/categories?parent_id=${cat.id}`, cat => ({
         id: cat.id,
         name: cat.name
@@ -69,25 +69,41 @@ let populateCategory = async cat => {
     return cat
 }
 
-const BigCommerce = {
-    products: {
-        get: async() => await makeCatalogAPIRequest(`/products?include=images&include=variants`, mapProduct),
-        getById: async id => await makeCatalogAPIRequest(`/products/${id}?include=images&include=variants`, mapProduct),
-        getBySku: async sku => _.first(await makeCatalogAPIRequest(`/products?include=images&include=variants&sku=${sku}`, mapProduct)),
-        getBySlug: async slug => { /* not implemented as BC does not have a product slug */ },
-        search: async searchText => {
-            let products = await makeCatalogAPIRequest(`/products?include=images&include=variants&name:like=%${searchText}%`, mapProduct)
-            return {
-                products: await Promise.all(products.map(populateProductImages))
-            }
-        },
-    },
+class BigCommerceBackend implements CommerceBackend { 
+    async getProducts() { 
+        return await makeCatalogAPIRequest(`/products?include=images&include=variants`, mapProduct)
+    }
 
-    categories: {
-        get: async() => await makeCatalogAPIRequest(`/categories?parent_id=0`, populateCategory),
-        getById: async id => await makeCatalogAPIRequest(`/categories/${id}`, populateCategory),
-        getBySlug: async slug => { /* not implemented as BC does not have a category slug */ }
+    async getProductById(id) {
+        return await makeCatalogAPIRequest(`/products/${id}?include=images&include=variants`, mapProduct)
+    }
+
+    async getProductBySku(sku) {
+        return _.first(await makeCatalogAPIRequest(`/products?include=images&include=variants&sku=${sku}`, mapProduct))
+    }
+
+    async getProductBySlug(slug) {
+        throw new Error('not implemented')
+    }
+
+    async searchProducts(searchText) {
+        let products = <Product[]> await makeCatalogAPIRequest(`/products?include=images&include=variants&name:like=%${searchText}%`, mapProduct)
+        return {
+            products: await Promise.all(products.map(populateProductImages))
+        }
+    }
+
+    async getCategories() {
+        return await makeCatalogAPIRequest(`/categories?parent_id=0`, populateCategory)
+    }
+
+    async getCategoryById(id) {
+        return await makeCatalogAPIRequest(`/categories/${id}`, populateCategory)
+    }
+
+    async getCategoryBySlug(slug) {
+        throw new Error('not implemented')
     }
 }
 
-module.exports = BigCommerce
+module.exports = new BigCommerceBackend()
