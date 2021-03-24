@@ -29,7 +29,7 @@ let startServer = async() => {
 
   const app = express()
   app.use((req, res, next) => {
-    if (!_.includes(availableCommerceBackends, req.headers['x-commerce-backend'])) {
+    if (req.method === 'POST' && !_.includes(availableCommerceBackends, req.headers['x-commerce-backend'])) {
       return res.status(500).send({ message: `Header X-Commerce-Backend must be one of: [ ${availableCommerceBackends.join(', ')} ]` })
     }
     next()
