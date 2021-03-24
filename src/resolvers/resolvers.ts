@@ -22,6 +22,7 @@ let connectors = {
   commercetools: commerceToolsConnector
 }
 
+module.exports.availableCommerceBackends = Object.keys(connectors)
 module.exports.resolvers = {
   Query: {
     // products: connector.getProducts,
