@@ -5,14 +5,13 @@
     "clean": "rimraf dist",
     "build": "npm run clean && tsc",
     "start": "node dist/index.js",
-    "updateSecretBranch": "rm -rf /tmp/config && mv config /tmp && git co secret-branch && git merge master -m \"merge\" && git co master && mv /tmp/config .",
+    "updateSecretBranch": "rm /tmp/settings.yaml && mv config/settings.yaml /tmp && git co secret-branch && git merge master -m \"merge\" && git co master && mv /tmp/settings.yaml ./config",
     "deploy": "npm run updateSecretBranch && npm run build && git push heroku secret-branch:master"
   },
   "dependencies": {
     "apollo-server": "^2.21.1",
     "apollo-server-express": "^2.21.2",
     "axios": "^0.21.1",
-    "ctvault": "^2.0.7",
     "express": "^4.17.1",
     "graphql": "^15.5.0",
     "js-yaml": "^4.0.0",

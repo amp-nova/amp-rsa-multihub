@@ -1,4 +1,5 @@
 node_modules
 dist
+config/settings.yaml
 .vercel
 logs
