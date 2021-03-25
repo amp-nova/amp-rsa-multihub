@@ -1,39 +1,25 @@
-
-interface CommerceBackend {
-  getProducts(): Promise<Product[]>
-  getProductById(id: string): Promise<Product>
-  getProductBySku(sku: string): Promise<Product>
-  searchProducts(searchText: string): Promise<SearchResult>
-
-  getCategories(): Promise<Category[]>
-  getCategoryById(id: string): Promise<Category>
-}
+import fs from "fs";
+import _ from "lodash"
 
 // getProductBySlug(slug: string): Promise<Product>
 // getCategoryBySlug(slug: string): Promise<Category>
 
-let mockConnector: CommerceBackend = require('../datasources/mock-data')
-let bigCommerceConnector: CommerceBackend = require('../datasources/bigcommerce')
-let commerceToolsConnector: CommerceBackend = require('../datasources/commercetools')
+let datasourceDirectory = `${__dirname}/../datasources`
+let datasources = _.map(fs.readdirSync(datasourceDirectory), ds => ds.replace(".js", ""))
+let getCommerceBackend = async context => await require(`${datasourceDirectory}/${context.commerceBackend}`)(context)
 
-let connectors = {
-  mock: mockConnector,
-  bigcommerce: bigCommerceConnector,
-  commercetools: commerceToolsConnector
-}
-
-module.exports.availableCommerceBackends = Object.keys(connectors)
+module.exports.availableCommerceBackends = datasources
 module.exports.resolvers = {
   Query: {
     // products: connector.getProducts,
-    products: async (_, args, context, info) => await connectors[context.commerceBackend].getProducts(),
-    productById: async (_, args, context) => await connectors[context.commerceBackend].getProductById(args.id),
-    productBySku: async (_, args, context) => await connectors[context.commerceBackend].getProductBySku(args.sku),
-    productBySlug: async (_, args, context) => await connectors[context.commerceBackend].getProductBySlug(args.slug),
-    productSearch: async (_, args, context) => await connectors[context.commerceBackend].searchProducts(args.searchText),
+    products: async (_, args, context)        => await (await getCommerceBackend(context)).getProducts(),
+    productById: async (_, args, context)     => await (await getCommerceBackend(context)).getProductById(args.id),
+    productBySku: async (_, args, context)    => await (await getCommerceBackend(context)).getProductBySku(args.sku),
+    productBySlug: async (_, args, context)   => await (await getCommerceBackend(context)).getProductBySlug(args.slug),
+    productSearch: async (_, args, context)   => await (await getCommerceBackend(context)).searchProducts(args.searchText),
 
-    categories: async (_, args, context) => await connectors[context.commerceBackend].getCategories(),
-    categoryById: async (_, args, context) => await connectors[context.commerceBackend].getCategoryById(args.id),
-    categoryBySlug: async (_, args, context) => await connectors[context.commerceBackend].getCategoryBySlug(args.slug),
+    categories: async (_, args, context)      => await (await getCommerceBackend(context)).getCategories(),
+    categoryById: async (_, args, context)    => await (await getCommerceBackend(context)).getCategoryById(args.id),
+    categoryBySlug: async (_, args, context)  => await (await getCommerceBackend(context)).getCategoryBySlug(args.slug),
   }
 };

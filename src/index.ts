@@ -14,7 +14,9 @@ let startServer = async() => {
     playground: true, 
     introspection: true,
     context: ({ req }) => ({
-      commerceBackend: req.headers['x-commerce-backend']
+      commerceBackend: req.headers['x-commerce-backend'],
+      graphqlLocale: req.headers['x-graphql-locale'] || 'en',
+      commercetoolsProject: req.headers['x-commercetools-project']
     })
   });
 
