@@ -1,29 +1,26 @@
 // third party imports
 import _ = require("lodash")
-let config = require('../util/config')
 
 const BigCommerceBackend = context => {
     // load the bigcommerce configuration
     let bc = context.backendClient
 
-    // let getProducts         = async args => await bc.products.get({ opts: { include: 'images,variants', page: args.limit && (args.offset / args.limit) + 1, limit: args.limit }, mapper: mapProduct })
-    let getProducts         = async args => await bc.products.get({ opts: { ...args, include: 'images,variants' }, mapper: mapProduct })
+    let pageParams          = args => ({ page: args.limit && (args.offset / args.limit) + 1, limit: args.limit })
+    let getProducts         = async args => await bc.products.get({ opts: { include: 'images,variants', ...pageParams(args) }, mapper: mapProduct })
+
+    // let getProducts         = async args => await bc.products.get({ opts: { ...args, include: 'images,variants' }, mapper: mapProduct })
     let getProductById      = async args => await bc.products.get({ opts: { ...args, include: 'images,variants' }, mapper: mapProduct })
     let getProductBySku     = async args => await bc.products.get({ opts: { ...args, include: 'images,variants' }, mapper: mapProduct })
     let getProductBySlug    = async args => { throw new Error(`getProductBySlug not implemented in BigCommerce`) }
 
-    let getCategories       = async args => await bc.categories.get({ opts: { ...args, parent_id: 0 }, mapper: populateCategory })
+    let getCategories       = async args => await bc.categories.get({ opts: { ...args, parent_id: 0, ...pageParams(args) }, mapper: populateCategory })
+    let getCategoryById     = async args => await bc.categories.get({ opts: { ...args }, mapper: populateCategory })
 
-    let populateCategory = async cat => {
-        cat.products = _.get(await getProducts({ "categories:in": cat.id }), 'results')
-        cat.children = _.get(await bc.categories.get({ opts: { parent_id: cat.id }, mapper: cat => ({
-            name: cat.name,
-            id: cat.id
-        }) }), 'results')
-
-        // console.log(JSON.stringify(cat))
-        return cat
-    }
+    let populateCategory = async cat => ({
+        ...cat,
+        products: _.get(await getProducts({ "categories:in": cat.id }), 'results'),
+        children: _.get(await bc.categories.get({ opts: { parent_id: cat.id }, mapper: mapCategory }), 'results')
+    })
 
     // product methods
     // let searchProducts      = async args => {
@@ -34,14 +31,13 @@ const BigCommerceBackend = context => {
     // }
     // end product methods
 
-    // category methods
-    // let getCategories       = async args => await makeCatalogAPIRequest(`/categories?parent_id=0`, populateCategory)
-    // let getCategoryById     = async args => await makeCatalogAPIRequest(`/categories/${args.id}`, populateCategory)
-    // let getCategoryBySlug   = async args => { throw new Error(`getProductBySlug not implemented in BigCommerce`) }
-    // end category methods
-
     // mappers
     let mapImage = image => ({ url: image.url_standard })
+
+    let mapCategory = cat => ({
+        name: cat.name,
+        id: cat.id
+    })
 
     let mapProduct = prod => {
         return {
@@ -90,7 +86,7 @@ const BigCommerceBackend = context => {
         // searchProducts,
 
         getCategories,
-        // getCategoryById,
+        getCategoryById,
         // getCategoryBySlug
     }
 }
