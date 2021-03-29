@@ -1,25 +1,18 @@
-import fs from "fs";
 import _ from "lodash"
 
-// getProductBySlug(slug: string): Promise<Product>
-// getCategoryBySlug(slug: string): Promise<Category>
-
 let datasourceDirectory = `${__dirname}/../datasources`
-let datasources = _.map(fs.readdirSync(datasourceDirectory), ds => ds.replace(".js", ""))
-let getCommerceBackend = async context => await require(`${datasourceDirectory}/${context.commerceBackend}`)(context)
+let getCommerceBackend = context => { console.log(JSON.stringify(context)); return require(`${datasourceDirectory}/${context.backendClient.type}`)(context) }
 
-module.exports.availableCommerceBackends = datasources
 module.exports.resolvers = {
   Query: {
-    // products: connector.getProducts,
-    products: async (_, args, context)        => await (await getCommerceBackend(context)).getProducts(),
-    productById: async (_, args, context)     => await (await getCommerceBackend(context)).getProductById(args.id),
-    productBySku: async (_, args, context)    => await (await getCommerceBackend(context)).getProductBySku(args.sku),
-    productBySlug: async (_, args, context)   => await (await getCommerceBackend(context)).getProductBySlug(args.slug),
-    productSearch: async (_, args, context)   => await (await getCommerceBackend(context)).searchProducts(args.searchText),
+    products:       async (_, args, context) => await getCommerceBackend(context).getProducts(args),
+    productById:    async (_, args, context) => await getCommerceBackend(context).getProductById(args),
+    productBySku:   async (_, args, context) => await getCommerceBackend(context).getProductBySku(args),
+    productBySlug:  async (_, args, context) => await getCommerceBackend(context).getProductBySlug(args),
+    productSearch:  async (_, args, context) => await getCommerceBackend(context).searchProducts(args),
 
-    categories: async (_, args, context)      => await (await getCommerceBackend(context)).getCategories(),
-    categoryById: async (_, args, context)    => await (await getCommerceBackend(context)).getCategoryById(args.id),
-    categoryBySlug: async (_, args, context)  => await (await getCommerceBackend(context)).getCategoryBySlug(args.slug),
-  }
+    categories:     async (_, args, context) => await getCommerceBackend(context).getCategories(args),
+    categoryById:   async (_, args, context) => await getCommerceBackend(context).getCategoryById(args),
+    categoryBySlug: async (_, args, context) => await getCommerceBackend(context).getCategoryBySlug(args),
+  },
 };

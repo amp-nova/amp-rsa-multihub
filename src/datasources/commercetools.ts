@@ -1,47 +1,48 @@
 const _ = require("lodash")
-const CT = require("ctvault")
-let config = require('../util/config')
 
-const getCTClient = () => CT.getClientFromConfig({
-    oauth_url       : config.commercetools.authUrl,
-    api_url         : config.commercetools.apiUrl,
-    project         : config.commercetools.projectKey,
-    client_id       : config.commercetools.clientId,
-    client_secret   : config.commercetools.clientSecret,
-    scope           : config.commercetools.defaultScopes.join(' ')
-})
-
-const CommerceToolsBackend = async context => {
+const CommerceToolsBackend = context => {
     let getLocalizedText = text => text[context.graphqlLocale] || text['en'] || _.first(text)
-
-    let ct = getCTClient()
-    if (context.commercetoolsProject) {
-        ct = await CT.getClient(context.commercetoolsProject)
-    }
+    let ct = context.backendClient
 
     // product methods
-    let getProducts = async () => await getProductProjections({ expand: ['categories[*]'] }) 
-    let getProductById = async (id) => _.first(await getProductProjections({ expand: ['categories[*]'], where: [`id="${id}"`] }))
-    let getProductBySku = async (sku) => _.first(await getProductProjections({ expand: ['categories[*]'], where: [`masterVariant(sku="${sku}")`] }))
-    let getProductBySlug = async (slug) => {
-        let product = _.first(await getProductProjections({ expand: ['categories[*]'], where: [`slug(${context.graphqlLocale}="${slug}")`] }))
-        return product && mapProduct(product)
-    }
-    let searchProducts = async (searchText) => ({ products: await searchProductProjections({ expand: ['categories[*]'], where: [`text.en="${searchText}"`] }) })
+    let getProducts         = async args => await getProductProjections({ expand: ['categories[*]'] }, args) 
+    let getProductById      = async args => await getProductProjection({ expand: ['categories[*]'], where: [`id="${args.id}"`] })
+    let getProductBySku     = async args => await getProductProjection({ expand: ['categories[*]'], where: [`masterVariant(sku="${args.sku}")`] })
+    let getProductBySlug    = async args => await getProductProjection({ expand: ['categories[*]'], where: [`slug(${context.graphqlLocale}="${args.slug}")`] })
+    let searchProducts      = async args => ({ products: await searchProductProjections({ expand: ['categories[*]'], where: [`text.en="${args.searchText}"`] }, args) })
     // end product methods
 
     // category methods
-    let getCategories = async () => await getCategoriesByOptions({ where: [`ancestors is empty`] })
-    let getCategoryById = async (id) => _.first(await getCategoriesByOptions({ where: [`id="${id}"`] }))
-    let getCategoryBySlug = async (slug) => {
-        let category = _.first(await ct.categories.get({ where: [`slug(${context.graphqlLocale}="${slug}")`] }))
-        return category && await populateCategory(category)
-    }
+    let getCategories       = async args => await getCategoriesByOptions({ where: [`ancestors is empty`] }, { ...args, mapper: populateCategory })
+    let getCategoryById     = async args => await getCategoryByOptions({ where: [`id="${args.id}"`] }, { mapper: populateCategory })
+    let getCategoryBySlug   = async args => await getCategoryByOptions({ where: [`slug(${context.graphqlLocale}="${args.slug}")`] }, { mapper: populateCategory })
     // end category methods
 
-    let getProductProjections = async (opts) => _.map(await ct.productProjections.get(opts), mapProduct)
-    let searchProductProjections = async (opts) => _.map(await ct.productProjectionsSearch.get(opts), mapProduct)
-    let getCategoriesByOptions = async (opts) => await Promise.all((await ct.categories.get(opts)).map(await populateCategory))
+    let getProductProjection = async (opts, query = {}) => _.first((await getProductProjections(opts, query)).results)
+    let getProductProjections = async (opts, query = {}) => {
+        let { body } = await ct.productProjections.get(opts, query)
+        return {
+            ...body,
+            results: _.map(body.results, mapProduct)
+        }
+    }
+    let searchProductProjections = async (opts, query = {}) => {
+        let { body } = await ct.productProjectionsSearch.get(opts, query)
+        return {
+            ...body,
+            results: _.map(body.results, mapProduct)
+        }
+    }
+
+    let getCategoryByOptions = async (opts, query = {}) => _.first((await getCategoriesByOptions(opts, query)).results)
+    let getCategoriesByOptions = async (opts, args) => {
+        let { body } = await ct.categories.get(opts)
+        let results = await Promise.all(body.results.map(await args.mapper))
+        return {
+            ...body,
+            results
+        }
+    }
 
     // mappers
     let mapProduct = product => ({
@@ -56,12 +57,12 @@ const CommerceToolsBackend = async context => {
         id: variant.id,
         sku: variant.sku,
         prices: {
-            list: variant.prices[0].value.centAmount / 100
+            list: _.get(_.first(variant.prices), 'value.centAmount') / 100
         },
         images: _.map(variant.images, image => ({
             url: image.url
         })),
-        defaultImage: { url: _.first(variant.images).url }
+        defaultImage: { url: _.get(_.first(variant.images), 'url') }
     })
     
     let mapCategory = category => {
@@ -75,20 +76,18 @@ const CommerceToolsBackend = async context => {
     // end mappers
 
     let populateCategory = async (category) => {
-        let cat = category.obj || category
-    
+        let cat = mapCategory(category)
+
         // get the child products
-        let products = await ct.productProjectionsSearch.get({ expand: ['categories[*]'], filter: [`categories.id:"${category.id}"`] })
+        let products = (await getProductProjections({ where: [`categories(id="${category.id}")`], expand: ['categories[*]'] })).results
     
         // get the child categories
-        let childCategories = await ct.categories.get({ where: [`parent(id="${category.id}")`] })
+        let children = (await getCategoriesByOptions({ where: [`parent(id="${category.id}")`] }, { mapper: mapCategory })).results
     
         return {
-            id: category.id,
-            name: getLocalizedText(cat.name),
-            slug: getLocalizedText(cat.slug),
-            products: _.map(products, mapProduct),
-            children: _.map(childCategories, mapCategory)
+            ...cat,
+            products,
+            children
         }
     }
 
