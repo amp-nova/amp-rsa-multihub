@@ -7,11 +7,9 @@ const { ApolloServer, makeExecutableSchema } = require('apollo-server-express');
 const { typeDefs } = require('./schemas/typeDefs');
 const { resolvers } = require('./resolvers/resolvers');
 
-const schema = makeExecutableSchema({
-  typeDefs,
-  resolvers,
-  resolverValidationOptions: { requireResolversForResolveType: false },
-});
+// const schema = makeExecutableSchema({
+//   resolverValidationOptions: { requireResolversForResolveType: false },
+// });
 
 let config = require('./util/config')
 const CT = require('ctvault')
@@ -24,7 +22,8 @@ let startServer = async() => {
   // end setup
   
   const server = new ApolloServer({ 
-    schema,
+    typeDefs,
+    resolvers,
     playground: true, 
     introspection: true,
     context: async ({ req }) => ({
