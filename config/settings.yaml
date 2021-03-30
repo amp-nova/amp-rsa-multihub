@@ -2,28 +2,16 @@ app:
   appName: amp-rsa-apollo
   publishStage: production
   scope: amplience-presales
-bigcommerce:
-  apiUrl: https://api.bigcommerce.com
-  storeHash: ivhpe1uqls
-  apiToken: mgr4tatg4kainixjw8cgts10is2ka0y
-commercetools:
-  oauth_url: https://auth.us-central1.gcp.commercetools.com
-  api_url: https://api.us-central1.gcp.commercetools.com
-  project: daves-test-project
-  client_id: iXmPv3zPFvc_WPnzNhcHEW4Y
-  client_secret: hMdUlPQvhkOI7El606srI0nlVxAUWZjo
-  defaultScopes:
-    - manage_project:daves-test-project
-  defaultFacets:
-    - type: standard
-      field: variants.attributes.color.label.en
-      title: Color
-    - type: standard
-      field: variants.attributes.designer.key
-      title: Designer
-    - type: standard
-      field: variants.attributes.size
-      title: Size
-    - type: standard
-      field: variants.attributes.style.key
-      title: Style
+ampvault:
+  collection: amp
+  credential:
+    type: service_account
+    project_id: amp-vault
+    private_key_id: 5f3a49e332befb3d1919e7475d5e1c89f6b8ed92
+    private_key: "-----BEGIN PRIVATE KEY-----\nMIIEvgIBADANBgkqhkiG9w0BAQEFAASCBKgwggSkAgEAAoIBAQCkyMr/B02QuIAa\nBEa93oncOcgCVBxatRUuwxaO1FZRgst91xKcfqTgYVi1vVVa8ZorkzEog5/otfch\nmRj41cv0IKG3AIjY3tIX0iLkbcAxKJAfd8ffp0YV2ilWKYQih372OO1OcLQYYkme\nawZT835cefAJEVBBKFtrobYrPokiGV1U1mzr/rVUPAAuf19gS2xbc01kDZqZsa+D\ne0Fo2QvDb1ioxd0jRm0lpPNAfxaZKwVKI6sB9+uUjX1zSzdOvVZggwPVtrWEpROE\nCU4K4f4DB0n93hmwWXGo/pO/BS2rrKmRpbulcfYXXYffAiMoh23dlROiCZgR/gqw\nqZ4tUhFnAgMBAAECggEAGfVXpR0tZuLpqy+JRVfNN9gSXeuKG+/yyk8JOq7Qej60\nd7ptwCFjL8WmB9svmwf8VWj2kX9KrYocyDop6OklG+wYDZAT/rX7Oq1rubhgUl4l\ndg+UePMM41xerqgTnKzjnz4QhA7VEBJLrp0FfiwZd8/ttD/5+Im2/RmYbO+JAsnj\nUZNETMXh7UyMsvO+CBCYWrcUSf9UjZoxsJUGtRpk3P3AeQNJnZYgITz3918+jsd4\nPp4rW9D3iHoihUkJcpvKvZlU91j5E5We8mxdMOv0AnB6ayLb7+L8zto7Q53/x09W\n+itf5LjuWvAEDVnsNmc6/yaF6ok7XMAa5q95VFCBIQKBgQDYXzMjmx3Gwhy3ggc+\nQNz5A9FTnL7AEtU8JiuWn6CenMFq9Eab1tZ9J/AZNGfe1TLjf/QtFsO6tjdXYpwX\nLT9gdMJhryKbV1EYSv09+IcSjdQpPX+7WJ60Sn/P7Syhb88YURog8u7FTvbtHuoX\nEIGPKhw8q75xyRwuRgY0HPbMZQKBgQDC9tz3YxMnBzMruUDbsnWuRq+Ww4xill2C\neJ6JtEPItyEML5fjJihhrKTaVhpxcRkvbP1ajyaeVZ3JPbnFFidvyVVACd2WvcaT\n9/95xcFByjC5551f9fVXdYe9B3lxa8tcDQJg3ofgDGJD7auya9lmVDcm4UmD93am\nMQ0liAdr2wKBgQC/hk1DGDwcQpiey0dUEKBI/9sbsuSaKlF746Gzu2q227TN0ppp\nuZq0wFRkSyIief+IpythegQZUs/b1xqp3VB7Nf8V7quoa3sKEN7nKwWNI+QH+TsG\nf6RDnKpUR/G4mLrtIGULg15dYs9qB3JYpjC4pCLIhZGXMNh0EWHOYVEIjQKBgHqW\nrqn+6fQIWuyLN3Ts6YIDgDTUEFmNIo7/OPBtIJH8VBNNebuiKpH/9Eg1C7t42dUw\nOr3OdQHp46S94ylBnNp1Rd1WVraJ7Wrs7P6ska/Eao76S8Ii7XlotUjugjYHCX9/\nzpcKVXVTVBZSQzuVBMWK/oK79XW9DCXDgfivZ7sxAoGBAK4WIrLX5KbqzBf9h9dl\n34/2Q5dnj3y5ru4C4BiPqV8suTkMiIC8NdbIbfH8oz5YgVKCo3vkah4tKYIY7ofM\n81de1CwFHR+06perwXWUumOgBjMhkA8Nms3AFEOMSWsGlUZBsYwyO7e3Al0pYqjW\nxm1ekFtNUa50y7+mhXEp62If\n-----END PRIVATE KEY-----\n"
+    client_email: firebase-adminsdk-53xsl@amp-vault.iam.gserviceaccount.com
+    client_id: 104455460359293066520
+    auth_uri: https://accounts.google.com/o/oauth2/auth
+    token_uri: https://oauth2.googleapis.com/token
+    auth_provider_x509_cert_url: https://www.googleapis.com/oauth2/v1/certs
+    client_x509_cert_url: https://www.googleapis.com/robot/v1/metadata/x509/firebase-adminsdk-53xsl%40amp-vault.iam.gserviceaccount.com
