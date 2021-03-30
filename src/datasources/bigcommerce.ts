@@ -28,7 +28,7 @@ class BigCommerceBackend extends CommerceBackend {
 
     async getProduct(args) {
         this.validateArgs(args, 'product')
-        return await this.client.products.getOne({ opts: { ...args, include: 'images,variants' } })
+        return await this.client.products.get({ opts: { ...args, include: 'images,variants' } })
     }
 
     async getCategories(args) {
