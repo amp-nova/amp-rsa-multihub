@@ -5,12 +5,12 @@ declare module NodeJS {
     }
 }
 
-interface CommerceBackend {
-    getProducts(): Promise<Product[]>
-    getProductById(id: string): Promise<Product>
-    getProductBySku(sku: string): Promise<Product>
-    searchProducts(searchText: string): Promise<SearchResult>
+// interface CommerceBackend {
+//     getProducts(query: any): Promise<any>
+//     getProductById(query: any): Promise<Product>
+//     getProductBySku(query: any): Promise<Product>
+//     searchProducts(query: any): Promise<SearchResult>
 
-    getCategories(): Promise<Category[]>
-    getCategoryById(id: string): Promise<Category>
-}
+//     getCategories(query: any): Promise<Category[]>
+//     getCategoryById(query: any): Promise<Category>
+// }

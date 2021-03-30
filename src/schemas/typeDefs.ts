@@ -38,16 +38,40 @@ type Prices = {
   sale: number,
   list: number
 }
-
+ 
 module.exports.typeDefs = gql`
+  type ProductResults {
+    limit: Int
+    offset: Int
+    count: Int
+    total: Int
+    results: [Product]
+  }
+
+  type CategoryResults {
+    limit: Int
+    offset: Int
+    count: Int
+    total: Int
+    results: [Category]
+  }
+
   type Product {
     id: String!
-    slug: String
     name: String!
+    slug: String
     categories: [Category]
     shortDescription: String
     longDescription: String
     variants: [Variant!]
+  }
+
+  type Category {
+    id: String!
+    name: String!
+    slug: String
+    children: [Category]
+    products: [Product]
   }
 
   type Prices {
@@ -67,14 +91,6 @@ module.exports.typeDefs = gql`
     title: String
     alt: String
     url: String!
-  }
-
-  type Category {
-    id: String!
-    name: String!
-    slug: String
-    children: [Category]
-    products: [Product]
   }
 
   type SearchResult {
@@ -108,13 +124,9 @@ module.exports.typeDefs = gql`
   }
 
   type Query {
-    products: [Product]
-    productById(id: String!): Product
-    productBySku(sku: String!): Product
-    productBySlug(slug: String!): Product
-    productSearch(searchText: String!): SearchResult
-    categories: [Category]
-    categoryById(id: String!): Category
-    categoryBySlug(slug: String!): Category
+    products(keyword: String, limit: Int, offset: Int): ProductResults
+    product(id: String, sku: String, slug: String): Product
+    categories(limit: Int, offset: Int): CategoryResults
+    category(id: String, slug: String): Category
   }
 `;
