@@ -33,7 +33,7 @@ const MockBackend = context => {
     getCategories,
     getCategoryById,
     getCategoryBySlug
-  } as CommerceBackend
+  }
 }
 
 module.exports = context => MockBackend(context)

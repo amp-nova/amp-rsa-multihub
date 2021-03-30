@@ -5,7 +5,7 @@ const logger = require("./util/logger")
 
 const { ApolloServer, makeExecutableSchema } = require('apollo-server-express');
 const { typeDefs } = require('./schemas/typeDefs');
-const { availableCommerceBackends, resolvers } = require('./resolvers/resolvers');
+const { resolvers } = require('./resolvers/resolvers');
 
 const schema = makeExecutableSchema({
   typeDefs,

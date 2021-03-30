@@ -124,13 +124,9 @@ module.exports.typeDefs = gql`
   }
 
   type Query {
-    products(limit: Int, offset: Int): ProductResults
-    productById(id: String!): Product
-    productBySku(sku: String!): Product
-    productBySlug(slug: String!): Product
-    productSearch(searchText: String!, limit: Int, offset: Int): SearchResult
+    products(keyword: String, limit: Int, offset: Int): ProductResults
+    product(id: String, sku: String, slug: String): Product
     categories(limit: Int, offset: Int): CategoryResults
-    categoryById(id: String!): Category
-    categoryBySlug(slug: String!): Category
+    category(id: String, slug: String): Category
   }
 `;
