@@ -23,22 +23,25 @@ class BigCommerceBackend extends CommerceBackend {
     }
 
     async getProducts(args) {
-        return await this.client.products.get({ opts: { ...args, include: 'images,variants' } })
+        return await this.client.products.get({ ...args, include: 'images,variants' })
     }
 
     async getProduct(args) {
         this.validateArgs(args, 'product')
-        return await this.client.products.get({ opts: { ...args, include: 'images,variants' } })
+        return await this.client.products.getOne({ ...args, include: 'images,variants' }) 
     }
 
     async getCategories(args) {
-        return await this.client.categories.get({ opts: { ...args, parent_id: 0 } })
+        console.log(`bigcommerce getCategories`)
+        return await this.client.categories.get({ ...args, parent_id: 0 })
     }
 
     async getCategory(args) {
         this.validateArgs(args, 'category')
-        return await this.client.categories.get({ opts: { ...args } })
+        return await this.client.categories.getOne({ ...args })
     }
 }
 
-module.exports = context => new BigCommerceBackend(context)
+module.exports = context => {
+    return new BigCommerceBackend(context)
+}

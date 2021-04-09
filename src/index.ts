@@ -21,15 +21,25 @@ let startServer = async() => {
   _.each(config.commerceBackends, vault.addCredential)
   // end setup
   
+  let datasourceDirectory = `${__dirname}/datasources`
+  let backend = require(datasourceDirectory)
+
   const server = new ApolloServer({ 
     typeDefs,
     resolvers,
     playground: true, 
     introspection: true,
-    context: async ({ req }) => ({
-      graphqlLocale: req.headers['x-graphql-locale'] || 'en',
-      backendClient: await vault.getClient(req.headers['x-commerce-backend-key'])
-    })
+    context: async ({ req }) => {
+      let backendClient = await vault.getClient(req.headers['x-commerce-backend-key'])
+      let datasource = backend({
+        graphqlLocale: req.headers['x-graphql-locale'] || 'en',
+        backendClient
+      })
+
+      return {
+        datasource
+      }
+    }
   });
 
   const app = express()

@@ -16,40 +16,41 @@ class CommerceToolsBackend extends CommerceBackend {
     validateArgs(args, type) {
         super.validateArgs(args, type)
 
+        let where = []
         if (args.id) {
-            return [`id="${args.id}"`]
+            where = [`id="${args.id}"`]
         }
         else if (args.sku) {
-            return [`masterVariant(sku="${args.sku}")`]
+            where = [`masterVariant(sku="${args.sku}")`]
         }
         else if (args.slug) {
-            return [`slug(${this.context.graphqlLocale}="${args.slug}")`]
+            where = [`slug(${this.context.graphqlLocale}="${args.slug}")`]
         }
-        return []
+        return where
     }
 
     async getProducts(args) {
+        console.log(`foo`)
         if (args.keyword) {
             let localeKey = `text.${this.context.graphqlLocale || 'en'}`
-            return await this.client.productProjectionsSearch.get({ expand: ['categories[*]'] }, { ...args, [localeKey]: args.keyword }) 
+            return await this.client.productProjectionsSearch.get({ ...args, [localeKey]: args.keyword }) 
         }
         else {
-            return await this.client.productProjections.get({ expand: ['categories[*]'] }, args)
+            return await this.client.productProjections.get({ ...args })
         }
     }
 
     async getProduct(args) {
-        let where = this.validateArgs(args, 'product')
-        return await this.client.productProjections.get({ expand: ['categories[*]'], where }, args)
+        console.log(`client context ${Object.keys(this.client.context)}`)
+        return await this.client.products.getOne(args)
     }
 
     async getCategories(args) {
-        return await this.client.categories.get({ where: [`ancestors is empty`] }, args)
+        return await this.client.categories.get({ ...args, where: [`ancestors is empty`] })
     }
 
     async getCategory(args) {
-        let where = this.validateArgs(args, 'category')
-        return await this.client.categories.get({ where }, args)
+        return await this.client.categories.getOne({ ...args, where: this.validateArgs(args, 'category') }) 
     }
 }
 
