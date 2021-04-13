@@ -17,8 +17,8 @@ let ampvault = require('ampvault')
 
 let startServer = async() => {
   // set up the credential vault
-  let vault = await ampvault(config.ampvault)
-  _.each(config.commerceBackends, vault.addCredential)
+  // let vault = await ampvault(config.ampvault)
+  // _.each(config.commerceBackends, vault.addCredential)
   // end setup
   
   let datasourceDirectory = `${__dirname}/datasources`
@@ -30,15 +30,19 @@ let startServer = async() => {
     playground: true, 
     introspection: true,
     context: async ({ req }) => {
-      let backendClient = await vault.getClient(req.headers['x-commerce-backend-key'])
-      let datasource = backend({
-        graphqlLocale: req.headers['x-graphql-locale'] || 'en',
-        backendClient
-      })
-
       return {
-        datasource
+        backendKey: req.headers['x-commerce-backend-key']
       }
+
+      // let backendClient = await vault.getClient(req.headers['x-commerce-backend-key'])
+      // let datasource = backend({
+      //   graphqlLocale: req.headers['x-graphql-locale'] || 'en',
+      //   backendClient
+      // })
+
+      // return {
+      //   datasource
+      // }
     }
   });
 

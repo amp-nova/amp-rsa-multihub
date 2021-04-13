@@ -1,5 +1,8 @@
 const _ = require('lodash')
 
+const ampvault = require('ampvault')
+const config = require('../util/config')
+
 let flattenTranslation = (text, locale = 'en') => {
   if (typeof text === 'string') {
     return text
@@ -11,11 +14,10 @@ let flattenTranslation = (text, locale = 'en') => {
 
 module.exports.resolvers = {
   Query: {
-    products:   async (_, args, context) => await context.datasource.client.products.get(args),
-    product:    async (_, args, context) => await context.datasource.client.products.getOne(args),
-
-    categories: async (_, args, context) => await context.datasource.client.categories.get(args),
-    category:   async (_, args, context) => await context.datasource.client.categories.getOne(args),
+    products:   async (parent, args, context, info) => await (await ampvault(config.ampvault).getClient(context.backendKey)).get('products', args),
+    product:    async (parent, args, context, info) => await (await ampvault(config.ampvault).getClient(context.backendKey)).getOne('products', args),
+    categories: async (parent, args, context, info) => await (await ampvault(config.ampvault).getClient(context.backendKey)).get('categories', args),
+    category:   async (parent, args, context, info) => await (await ampvault(config.ampvault).getClient(context.backendKey)).getOne('categories', args),
   },
   Product: {
     name: (parent, args) => flattenTranslation(parent.name, args.locale),

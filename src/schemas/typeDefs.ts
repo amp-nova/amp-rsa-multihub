@@ -7,7 +7,8 @@ type Product = {
   shortDescription?: string,
   longDescription?: string,
   categories?: Category[],
-  variants: Variant[]
+  variants: Variant[],
+  raw: string
 }
 
 type Variant = {
@@ -27,7 +28,8 @@ type Category = {
   name: string,
   slug: string,
   children: Category[],
-  products: Product[]
+  products: Product[],
+  raw: string
 }
 
 type SearchResult = {
@@ -40,6 +42,8 @@ type Prices = {
 }
  
 module.exports.typeDefs = gql`
+  scalar Raw
+
   type ProductResults {
     meta: ResultsMeta
     results: [Product]
@@ -65,6 +69,7 @@ module.exports.typeDefs = gql`
     shortDescription: String
     longDescription: String
     variants: [Variant!]
+    raw: Raw!
   }
 
   type Category {
@@ -73,6 +78,7 @@ module.exports.typeDefs = gql`
     slug: String
     children: [Category]
     products: [Product]
+    raw: Raw!
   }
 
   type Prices {
