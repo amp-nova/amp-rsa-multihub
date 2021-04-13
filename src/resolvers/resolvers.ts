@@ -12,12 +12,14 @@ let flattenTranslation = (text, locale = 'en') => {
   }
 }
 
+let get = key => async (parent, args, context, info) => await (await ampvault(config.ampvault).getClient(context.backendKey)).get(key, args)
+let getOne = key => async (parent, args, context, info) => await (await ampvault(config.ampvault).getClient(context.backendKey)).getOne(key, args)
 module.exports.resolvers = {
   Query: {
-    products:   async (parent, args, context, info) => await (await ampvault(config.ampvault).getClient(context.backendKey)).get('products', args),
-    product:    async (parent, args, context, info) => await (await ampvault(config.ampvault).getClient(context.backendKey)).getOne('products', args),
-    categories: async (parent, args, context, info) => await (await ampvault(config.ampvault).getClient(context.backendKey)).get('categories', args),
-    category:   async (parent, args, context, info) => await (await ampvault(config.ampvault).getClient(context.backendKey)).getOne('categories', args),
+    products:   get('products'),
+    product:    getOne('products'),
+    categories: get('categories'),
+    category:   getOne('categories'),
   },
   Product: {
     name: (parent, args) => flattenTranslation(parent.name, args.locale),
