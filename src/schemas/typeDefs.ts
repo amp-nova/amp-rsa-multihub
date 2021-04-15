@@ -7,7 +7,8 @@ type Product = {
   shortDescription?: string,
   longDescription?: string,
   categories?: Category[],
-  variants: Variant[]
+  variants: Variant[],
+  raw: string
 }
 
 type Variant = {
@@ -27,7 +28,8 @@ type Category = {
   name: string,
   slug: string,
   children: Category[],
-  products: Product[]
+  products: Product[],
+  raw: string
 }
 
 type SearchResult = {
@@ -40,20 +42,23 @@ type Prices = {
 }
  
 module.exports.typeDefs = gql`
+  scalar Raw
+
   type ProductResults {
-    limit: Int
-    offset: Int
-    count: Int
-    total: Int
+    meta: ResultsMeta
     results: [Product]
   }
 
   type CategoryResults {
+    meta: ResultsMeta
+    results: [Category]
+  }
+
+  type ResultsMeta {
     limit: Int
     offset: Int
     count: Int
     total: Int
-    results: [Category]
   }
 
   type Product {
@@ -64,6 +69,7 @@ module.exports.typeDefs = gql`
     shortDescription: String
     longDescription: String
     variants: [Variant!]
+    raw: Raw!
   }
 
   type Category {
@@ -72,6 +78,7 @@ module.exports.typeDefs = gql`
     slug: String
     children: [Category]
     products: [Product]
+    raw: Raw!
   }
 
   type Prices {
@@ -124,9 +131,9 @@ module.exports.typeDefs = gql`
   }
 
   type Query {
-    products(keyword: String, limit: Int, offset: Int): ProductResults
-    product(id: String, sku: String, slug: String): Product
-    categories(limit: Int, offset: Int): CategoryResults
-    category(id: String, slug: String): Category
+    products(keyword: String, limit: Int, offset: Int, locale: String): ProductResults
+    product(id: String, sku: String, slug: String, locale: String): Product
+    categories(limit: Int, offset: Int, locale: String): CategoryResults
+    category(id: String, slug: String, locale: String): Category
   }
 `;
