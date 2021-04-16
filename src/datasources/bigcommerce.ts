@@ -32,7 +32,6 @@ class BigCommerceBackend extends CommerceBackend {
     }
 
     async getCategories(args) {
-        console.log(`bigcommerce getCategories`)
         return await this.client.categories.get({ ...args, parent_id: 0 })
     }
 
