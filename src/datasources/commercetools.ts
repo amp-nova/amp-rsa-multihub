@@ -30,7 +30,6 @@ class CommerceToolsBackend extends CommerceBackend {
     }
 
     async getProducts(args) {
-        console.log(`foo`)
         if (args.keyword) {
             let localeKey = `text.${this.context.graphqlLocale || 'en'}`
             return await this.client.productProjectionsSearch.get({ ...args, [localeKey]: args.keyword }) 
@@ -41,7 +40,6 @@ class CommerceToolsBackend extends CommerceBackend {
     }
 
     async getProduct(args) {
-        console.log(`client context ${Object.keys(this.client.context)}`)
         return await this.client.products.getOne(args)
     }
 
