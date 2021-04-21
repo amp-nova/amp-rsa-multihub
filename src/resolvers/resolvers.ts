@@ -3,12 +3,12 @@ const _ = require('lodash')
 const ampvault = require('ampvault')
 const config = require('../util/config')
 
-let flattenTranslation = (text, locale = 'en') => {
+let flattenTranslation = (text, language = 'en') => {
   if (typeof text === 'string') {
     return text
   }
   else if (typeof text === 'object') {
-    return text[locale] || _.first(Object.values(text))
+    return text[language] || _.first(Object.values(text))
   }
 }
 
@@ -22,11 +22,11 @@ module.exports.resolvers = {
     category:   getOne('categories'),
   },
   Product: {
-    name: (parent, args) => flattenTranslation(parent.name, args.locale),
-    slug: (parent, args) => flattenTranslation(parent.slug, args.locale),
+    name: (parent, args) => flattenTranslation(parent.name, args.language),
+    slug: (parent, args) => flattenTranslation(parent.slug, args.language),
   },
   Category: {
-    name: (parent, args) => flattenTranslation(parent.name, args.locale),
-    slug: (parent, args) => flattenTranslation(parent.slug, args.locale),
+    name: (parent, args) => flattenTranslation(parent.name, args.language),
+    slug: (parent, args) => flattenTranslation(parent.slug, args.language),
   }
 };
