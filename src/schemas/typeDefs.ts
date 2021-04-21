@@ -131,9 +131,9 @@ module.exports.typeDefs = gql`
   }
 
   type Query {
-    products(keyword: String, limit: Int, offset: Int, locale: String): ProductResults
-    product(id: String, sku: String, slug: String, locale: String): Product
-    categories(limit: Int, offset: Int, locale: String): CategoryResults
-    category(id: String, slug: String, locale: String): Category
+    products(keyword: String, limit: Int, offset: Int, language: String, currency: String): ProductResults
+    product(id: String, sku: String, slug: String, language: String, currency: String): Product
+    categories(limit: Int, offset: Int, language: String, currency: String): CategoryResults
+    category(id: String, slug: String, language: String, currency: String): Category
   }
 `;
