@@ -21,12 +21,12 @@ module.exports.resolvers = {
     categories: get('categories'),
     category:   getOne('categories'),
   },
-  Product: {
-    name: (parent, args) => flattenTranslation(parent.name, args.language),
-    slug: (parent, args) => flattenTranslation(parent.slug, args.language),
-  },
-  Category: {
-    name: (parent, args) => flattenTranslation(parent.name, args.language),
-    slug: (parent, args) => flattenTranslation(parent.slug, args.language),
-  }
+  // Product: {
+  //   name: (parent, args) => flattenTranslation(parent.name, args.language),
+  //   slug: (parent, args) => flattenTranslation(parent.slug, args.language),
+  // },
+  // Category: {
+  //   name: (parent, args) => flattenTranslation(parent.name, args.language),
+  //   slug: (parent, args) => flattenTranslation(parent.slug, args.language),
+  // }
 };
