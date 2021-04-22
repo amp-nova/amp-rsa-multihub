@@ -21,6 +21,20 @@ module.exports.resolvers = {
     categories: get('categories'),
     category:   getOne('categories'),
   },
+  Variant: {
+    attribute: (parent, args, context, info) => {
+      return _.get(_.find(parent.attributes, att => att.name === args.name), 'value')
+    }
+  },
+  Attribute: {
+    value: (parent, args, context, info) => {
+      if (typeof parent.value === 'string') {
+        return parent.value
+      }
+      console.log(`attribute ${JSON.stringify(parent.value)}`)
+      return ''
+    }
+  }
   // Product: {
   //   name: (parent, args) => flattenTranslation(parent.name, args.language),
   //   slug: (parent, args) => flattenTranslation(parent.slug, args.language),
