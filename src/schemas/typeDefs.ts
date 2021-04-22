@@ -100,6 +100,7 @@ module.exports.typeDefs = gql`
     attributes: [Attribute]
     size: String
     color: String
+    attribute(name: String): String
   }
 
   type Image {
