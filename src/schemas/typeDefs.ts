@@ -86,12 +86,20 @@ module.exports.typeDefs = gql`
     list: String
   }
 
+  type Attribute {
+    name: String!
+    value: String!
+  }
+
   type Variant {
     id: String!
     sku: String!
     prices: Prices
     defaultImage: Image
     images: [Image!]
+    attributes: [Attribute]
+    size: String
+    color: String
   }
 
   type Image {
