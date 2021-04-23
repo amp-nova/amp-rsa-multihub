@@ -1,6 +1,6 @@
 const _ = require('lodash')
 
-const ampvault = require('ampvault')
+const ampvault = require('../commercehub')
 const config = require('../util/config')
 
 let flattenTranslation = (text, language = 'en') => {
