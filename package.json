@@ -1,16 +1,18 @@
 {
   "name": "amp-rsa-commercehub",
   "scripts": {
-    "dev": "nodemon dist/index.js",
+    "dev": "nodemon src/index.ts",
     "clean": "rimraf dist",
-    "build": "npm run clean && tsc",
+    "build": "npm run clean && ttsc",
     "start": "node dist/index.js",
     "updateSecretBranch": "rm -f /tmp/settings.yaml && mv config/settings.yaml /tmp && git co secret-branch && git merge master -m \"merge\" && git co master && mv /tmp/settings.yaml ./config",
     "deploy": "npm run updateSecretBranch && npm run build && git push heroku secret-branch:master"
   },
   "dependencies": {
+    "@aws-sdk/client-dynamodb": "^3.13.1",
     "apollo-server": "^2.21.1",
     "apollo-server-express": "^2.21.2",
+    "aws-sdk": "^2.893.0",
     "axios": "^0.21.1",
     "express": "^4.17.1",
     "firebase-admin": "^9.6.0",
@@ -23,6 +25,10 @@
     "winston": "^3.3.3"
   },
   "devDependencies": {
-    "json-stringify-safe": "^5.0.1"
+    "json-stringify-safe": "^5.0.1",
+    "module-alias": "^2.2.2"
+  },
+  "_moduleAliases": {
+    "@": "dist"
   }
 }

@@ -1,12 +1,15 @@
 {
   "compilerOptions": {
+    "baseUrl": "./src",
     "outDir": "dist",
-    "rootDir": "./src",
     "allowJs": true,
     "esModuleInterop": true,
-    "target": "esnext",
+    "target": "es2019",
     "module": "commonjs",
-    "resolveJsonModule": true
+    "resolveJsonModule": true,
+    "paths": {
+      "@/*": ["/*"]
+    }
   },
   "include": [
     "src/**/*",

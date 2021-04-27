@@ -2,8 +2,8 @@
 const URI = require('urijs');
 const _ = require('lodash')
 
-const { formatMoneyString } = require('../util/locale-formatter')
-const CommerceBackend = require('./index')
+const { formatMoneyString } = require('@/hub/util/locale-formatter')
+const CommerceBackend = require('@/hub/commerce/backends')
 
 let mapImage = image => ({ url: image.url_standard })
 

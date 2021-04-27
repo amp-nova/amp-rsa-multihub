@@ -1,3 +1,4 @@
+import 'module-alias/register'
 import _ from "lodash";
 const express = require('express')
 
