@@ -17,12 +17,4 @@ module.exports.resolvers = {
       return _.get(_.find(parent.attributes, att => att.name === args.name), 'value')
     }
   },
-  Attribute: {
-    value: (parent, args, context, info) => {
-      if (typeof parent.value === 'string') {
-        return parent.value
-      }
-      return JSON.stringify(parent.value)
-    }
-  }
 };
