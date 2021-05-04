@@ -5,7 +5,6 @@ class CommerceBackend {
     constructor(cred) {
         this.configs = {}
         this.cred = cred
-        this.cachedUrls = []
     }
 
     getConfig(key) {
@@ -46,13 +45,6 @@ class CommerceBackend {
         // get the URL from the backend
         let url = this.getRequest(config, args)
         // console.log(`[ ${method} ] ${url}`)
-
-        if (this.cachedUrls.indexOf(url) > -1) {
-            console.log(`previously cached: ${url}`)
-        }
-
-        this.cachedUrls.push(url)
-        console.log(`cached urls: ${this.cachedUrls.length}`)
 
         try {
             // next, execute the request with headers gotten from the backend

@@ -3,8 +3,8 @@ const URI = require('urijs');
 const _ = require('lodash')
 const axios = require('axios')
 
-const { formatMoneyString } = require('@/hub/util/locale-formatter')
-const CommerceBackend = require('@/hub/commerce/backends')
+const { formatMoneyString } = require('../../../hub/util/locale-formatter')
+const CommerceBackend = require('./index')
 
 const mapImage = image => image && ({ url: image.url })
 
@@ -114,7 +114,12 @@ class CommerceToolsBackend extends CommerceBackend {
             query.filter = [`id:"${args.id}"`]
         }
         else if (args.slug) {
-            query.filter = [`slug.${language}:"${args.slug}"`]
+            if (config.uri.indexOf('projections') > -1) {
+                query.filter = [`slug.${language}:"${args.slug}"`]
+            }
+            else {
+                query.where = [`slug(${language}="${args.slug}")`]
+            }
         }
         else if (args.sku) {
             query.filter = [`variants.sku:"${args.sku}")`]
