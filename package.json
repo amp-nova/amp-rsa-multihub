@@ -27,10 +27,6 @@
     "winston": "^3.3.3"
   },
   "devDependencies": {
-    "json-stringify-safe": "^5.0.1",
-    "module-alias": "^2.2.2"
-  },
-  "_moduleAliases": {
-    "@": "src"
+    "json-stringify-safe": "^5.0.1"
   }
 }
