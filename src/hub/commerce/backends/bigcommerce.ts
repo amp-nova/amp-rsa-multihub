@@ -1,6 +1,6 @@
 // 3rd party libs
 const URI = require('urijs');
-const _ = require('lodash')
+import _ from 'lodash';
 
 const { formatMoneyString } = require('../../../hub/util/locale-formatter')
 const CommerceBackend = require('./index')
