@@ -6,7 +6,6 @@ const secretManager = new SecretsManager(config.hub)
 module.exports = ({
   getClient: async key => {
     try {
-      console.log(`getClient(${key})`)
       let secret = await secretManager.getSecretValue({ SecretId: key })
       let cred = JSON.parse(secret.SecretString)
       if (cred) {

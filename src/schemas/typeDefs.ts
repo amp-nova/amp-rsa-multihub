@@ -76,6 +76,7 @@ module.exports.typeDefs = gql`
     longDescription: String
     variants: [Variant!]
     raw: Raw!
+    source: String!
   }
 
   type Category {
@@ -85,6 +86,7 @@ module.exports.typeDefs = gql`
     children: [Category]
     products: [Product]
     raw: Raw!
+    source: String!
   }
 
   type Prices {

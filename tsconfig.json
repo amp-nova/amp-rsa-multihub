@@ -8,7 +8,7 @@
     "module": "commonjs",
     "resolveJsonModule": true,
     "paths": {
-      "@/*": ["/*"]
+      "@/*": ["src/*"]
     }
   },
   "include": [

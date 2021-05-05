@@ -93,9 +93,14 @@ class BigCommerceBackend extends CommerceBackend {
                 count: data.meta.pagination.count,
                 limit: data.meta.pagination.per_page,
                 offset: (data.meta.pagination.current_page - 1) * data.meta.pagination.per_page,
+                source: `bigcommerce/${this.cred.storeHash}`
             },
             results: await Promise.all(data.data.map(await mapper))
         }
+    }
+
+    getSource() {
+        return `bigcommerce/${this.cred.storeHash}`
     }
 }
 

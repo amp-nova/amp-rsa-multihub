@@ -1,6 +1,7 @@
 // 3rd party libs
+import _ from 'lodash';
+
 const URI = require('urijs');
-const _ = require('lodash')
 const axios = require('axios')
 
 const { formatMoneyString } = require('../../../hub/util/locale-formatter')
@@ -60,14 +61,16 @@ class CommerceToolsBackend extends CommerceBackend {
             categories: {
                 uri: `categories`,
                 args: { where: [`parent is not defined`] },
-                mapper: args => async (category) => ({
-                    ...category,
-                    name        : localize(category.name, args),
-                    slug        : localize(category.slug, args),
-                    products    : (await this.get('productsQuery', { locale: args.locale, currency: args.currency, where: [`categories(id="${category.id}")`] })).results,
-                    children    : (await this.get('categories', { locale: args.locale, currency: args.currency, where: [`parent(id="${category.id}")`] })).results,
-                    raw         : category
-                })
+                mapper: args => async (category) => {
+                    console.log(`args ${JSON.stringify(args)}`)
+                    return {
+                        name        : localize(category.name, args),
+                        slug        : localize(category.slug, args),
+                        products    : (await this.get('productsQuery', { locale: args.locale, currency: args.currency, where: [`categories(id="${category.id}")`] })).results,
+                        children    : (await this.get('categories', { locale: args.locale, currency: args.currency, where: [`parent(id="${category.id}")`] })).results,
+                        raw         : category
+                    }
+                }
             }
         }
 
@@ -97,15 +100,13 @@ class CommerceToolsBackend extends CommerceBackend {
         let query = {
             limit: args.limit,
             offset: args.offset,
-            where: args.where
+            where: args.where,
+            priceCountry: config.uri.indexOf('projections') > -1 ? args.country : undefined,
+            priceCurrency: config.uri.indexOf('projections') > -1 ? args.currency : undefined,
+            filter: []
         }
 
         let [ language, country ] = args.locale.split('-')
-
-        if (config.uri.indexOf('projections') > -1) {
-            query.priceCurrency = args.currency
-            query.priceCountry = args.country
-        }
 
         if (args.keyword) {
             query[`text.${language}`] = args.keyword
@@ -152,10 +153,14 @@ class CommerceToolsBackend extends CommerceBackend {
                 total: data.total,
                 count: data.count,
                 limit: data.limit,
-                offset: data.offset
+                offset: data.offset,
             },
             results: await Promise.all(data.results.map(await mapper))
         }
+    }
+
+    getSource() {
+        return `commercetools/${this.cred.project}`
     }
 }
 

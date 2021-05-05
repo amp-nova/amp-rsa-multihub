@@ -50,8 +50,14 @@ class CommerceBackend {
             // next, execute the request with headers gotten from the backend
             let response = await axios({ url, method, headers: await this.getHeaders() })
 
+            // wrap the given mapper in a function that will add the source tag (eg, 'commercetools/anyafinn')
+            let mapper = async data => ({
+                ...await config.mapper(args)(data),
+                source: this.getSource()
+            })
+
             // use the backend to translate the result set
-            let x = await this.translateResults(response.data, config.mapper(args))
+            let x = await this.translateResults(response.data, mapper)
 
             // console.log(`x ${JSON.stringify(x)}`)
 
