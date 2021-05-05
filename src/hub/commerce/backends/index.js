@@ -44,7 +44,7 @@ class CommerceBackend {
 
         // get the URL from the backend
         let url = this.getRequest(config, args)
-        // console.log(`[ ${method} ] ${url}`)
+        console.log(`[ ${method} ] ${url}`)
 
         try {
             // next, execute the request with headers gotten from the backend

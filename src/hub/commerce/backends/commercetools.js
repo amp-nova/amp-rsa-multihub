@@ -64,8 +64,8 @@ class CommerceToolsBackend extends CommerceBackend {
                     ...category,
                     name        : localize(category.name, args),
                     slug        : localize(category.slug, args),
-                    products    : (await this.get('productsQuery', { where: [`categories(id="${category.id}")`] })).results,
-                    children    : (await this.get('categories', { where: [`parent(id="${category.id}")`] })).results,
+                    products    : (await this.get('productsQuery', { locale: args.locale, currency: args.currency, where: [`categories(id="${category.id}")`] })).results,
+                    children    : (await this.get('categories', { locale: args.locale, currency: args.currency, where: [`parent(id="${category.id}")`] })).results,
                     raw         : category
                 })
             }
@@ -104,6 +104,7 @@ class CommerceToolsBackend extends CommerceBackend {
 
         if (config.uri.indexOf('projections') > -1) {
             query.priceCurrency = args.currency
+            query.priceCountry = args.country
         }
 
         if (args.keyword) {

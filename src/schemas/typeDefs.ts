@@ -8,7 +8,13 @@ type Product = {
   longDescription?: string,
   categories?: Category[],
   variants: Variant[],
+  attributes: Attribute[],
   raw: string
+}
+
+type Attribute = {
+  name: string,
+  value: string
 }
 
 type Variant = {
