@@ -33,8 +33,7 @@ class BigCommerceBackend extends CommerceBackend {
                     shortDescription: prod.description,
                     longDescription: prod.description,
                     variants: _.map(prod.variants, mapVariant(prod, args)),
-                    categories: await Promise.all(prod.categories.map(async cat => await this.getOne('categories', { id: cat.id, single: true }))),
-                    raw: prod
+                    categories: await Promise.all(prod.categories.map(async cat => await this.getOne('categories', { id: cat.id, single: true })))
                 })
             },
     
@@ -43,8 +42,7 @@ class BigCommerceBackend extends CommerceBackend {
                 mapper: args => async cat => ({
                     ...cat,
                     products: !args.single && (await this.get('products', { "categories:in": cat.id })).results,
-                    children: !args.single && (await this.get('categories', { parent_id: cat.id })).results,
-                    raw: cat
+                    children: !args.single && (await this.get('categories', { parent_id: cat.id })).results
                 })
             }
         }

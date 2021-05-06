@@ -36,6 +36,7 @@ class CommerceBackend {
     async request({ key, method = 'get' }, args) {
         let config = this.getConfig(key)
 
+        args.currency = args.currency || 'USD'
         args.locale = args.locale || 'en-US'
         let [language, country] = args.locale.split('-')
 
@@ -53,7 +54,8 @@ class CommerceBackend {
             // wrap the given mapper in a function that will add the source tag (eg, 'commercetools/anyafinn')
             let mapper = async data => ({
                 ...await config.mapper(args)(data),
-                source: this.getSource()
+                source: this.getSource(),
+                raw: data
             })
 
             // use the backend to translate the result set

@@ -40,8 +40,7 @@ const mapProduct = args => product => {
             ...cat.obj,
             name: localize(cat.obj.name, args),
             slug: localize(cat.obj.slug, args)
-        })),
-        raw             : product
+        }))
     }
 }
 class CommerceToolsBackend extends CommerceBackend {
@@ -62,13 +61,12 @@ class CommerceToolsBackend extends CommerceBackend {
                 uri: `categories`,
                 args: { where: [`parent is not defined`] },
                 mapper: args => async (category) => {
-                    console.log(`args ${JSON.stringify(args)}`)
                     return {
+                        ...category,
                         name        : localize(category.name, args),
                         slug        : localize(category.slug, args),
                         products    : (await this.get('productsQuery', { locale: args.locale, currency: args.currency, where: [`categories(id="${category.id}")`] })).results,
-                        children    : (await this.get('categories', { locale: args.locale, currency: args.currency, where: [`parent(id="${category.id}")`] })).results,
-                        raw         : category
+                        children    : (await this.get('categories', { locale: args.locale, currency: args.currency, where: [`parent(id="${category.id}")`] })).results
                     }
                 }
             }
