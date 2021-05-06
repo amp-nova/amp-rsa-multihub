@@ -37,7 +37,7 @@ export class RsaMultihubStack extends Stack {
       environment: {
       },
       logging: new AwsLogDriver({ streamPrefix: '/nova/amp-rsa-multihub' }),
-    }).addPortMappings({containerPort: 80});
+    }).addPortMappings({ containerPort: 3000 });
 
     const rsaMultihubService = new ApplicationLoadBalancedFargateService(this, 'log_processing_service', {
       taskDefinition: rsaMultihubTaskDefinition,

@@ -59,14 +59,35 @@ class CommerceToolsBackend extends CommerceBackend {
             },
             categories: {
                 uri: `categories`,
-                args: { where: [`parent is not defined`] },
+                args: { limit: 500 },
                 mapper: args => async (category) => {
                     return {
                         ...category,
                         name        : localize(category.name, args),
-                        slug        : localize(category.slug, args),
-                        products    : (await this.get('productsQuery', { locale: args.locale, currency: args.currency, where: [`categories(id="${category.id}")`] })).results,
-                        children    : (await this.get('categories', { locale: args.locale, currency: args.currency, where: [`parent(id="${category.id}")`] })).results
+                        slug        : localize(category.slug, args)
+                    }
+                },
+                postProcessor: async (args, categories) => {
+                    // this function has two purposes:
+                    // 1. get the child products for each category
+                    // 2. build and return a category hierarchy
+
+                    if (args.mode === 'single') {
+                        // populate the products since we are looking at a specific category
+                        let category = _.first(categories)
+                        category.products = (await this.get('productsQuery', { locale: args.locale, currency: args.currency, where: [`categories(id="${category.id}")`] })).results
+                        return [category]
+                    }
+                    else {
+                        // return the category hierarchy
+                        // okay so i dislike this implementation since i feel like it could be expressed more elegantly, but whatever
+                        let populateChildren = category => {
+                            category.children = _.filter(categories, c => c.parent && (c.parent.id === category.id))
+                            _.each(category.children, populateChildren)
+                            return category
+                        }
+
+                        return _.map(_.filter(categories, c => c.ancestors.length === 0), populateChildren)
                     }
                 }
             }

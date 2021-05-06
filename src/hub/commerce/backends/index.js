@@ -61,6 +61,10 @@ class CommerceBackend {
             // use the backend to translate the result set
             let x = await this.translateResults(response.data, mapper)
 
+            if (config.postProcessor) {
+                x.results = await config.postProcessor(args, x.results)
+            }
+
             // console.log(`x ${JSON.stringify(x)}`)
 
             return x
@@ -76,7 +80,7 @@ class CommerceBackend {
     }
 
     async getOne(key, args) {
-        return _.first(_.get(await this.get(key, args), 'results'))
+        return _.first(_.get(await this.get(key, { ...args, mode: 'single' }), 'results'))
     }
 }
 
