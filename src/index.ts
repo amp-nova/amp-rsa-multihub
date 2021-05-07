@@ -22,6 +22,15 @@ let startServer = async() => {
 
   const app = express()
 
+  app.use((req, res, next) => {
+    console.log(`req ${req.path}`)
+    next()
+  })
+
+  app.get('/check', (req, res, next) => {
+    res.status(200).send({ status: 'ok' })
+  })
+
   server.applyMiddleware({ app })
 
   await new Promise(resolve => app.listen({ port: process.env.PORT || 3000 }, resolve));

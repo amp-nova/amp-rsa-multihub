@@ -40,6 +40,8 @@ export class RsaMultihubStack extends Stack {
     }).addPortMappings({ containerPort: 3000 });
 
     const rsaMultihubService = new ApplicationLoadBalancedFargateService(this, 'log_processing_service', {
+      assignPublicIp: true,
+      serviceName: "rsa-multihub-service",
       taskDefinition: rsaMultihubTaskDefinition,
       cluster: cluster,
       desiredCount: 1
