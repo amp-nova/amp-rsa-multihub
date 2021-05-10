@@ -2,6 +2,8 @@ import { Construct, Stack, StackProps, CfnOutput } from '@aws-cdk/core';
 import { Vpc } from '@aws-cdk/aws-ec2';
 import { Cluster, Compatibility, ContainerImage, TaskDefinition, AwsLogDriver } from '@aws-cdk/aws-ecs';
 import { ApplicationLoadBalancedFargateService } from '@aws-cdk/aws-ecs-patterns';
+import { PublicHostedZone, HostedZone } from '@aws-cdk/aws-route53';
+import { ApplicationProtocol } from '@aws-cdk/aws-elasticloadbalancingv2';
 import * as path from 'path';
 
 
@@ -25,6 +27,15 @@ export class RsaMultihubStack extends Stack {
       compatibility: Compatibility.EC2_AND_FARGATE,
     });
 
+    // const hostedZone = new PublicHostedZone(this, 'rsa_multihub_hosted_zone', {
+    //   zoneName: "ampdemo.net"
+    // })
+
+    const hostedZone = HostedZone.fromHostedZoneAttributes(this, 'rsa_multihub_hosted_zone', {
+      zoneName: 'ampdemo.net',
+      hostedZoneId: 'Z0317391113W55YD54Z33',
+    });
+
     rsaMultihubTaskDefinition.addContainer("default", {
       image: ContainerImage.fromAsset(path.join(__dirname, '..', '..'), {
         exclude: [
@@ -39,12 +50,19 @@ export class RsaMultihubStack extends Stack {
       logging: new AwsLogDriver({ streamPrefix: '/nova/amp-rsa-multihub' }),
     }).addPortMappings({ containerPort: 3000 });
 
-    const rsaMultihubService = new ApplicationLoadBalancedFargateService(this, 'log_processing_service', {
+    const rsaMultihubService = new ApplicationLoadBalancedFargateService(this, 'rsa_multihub_service', {
       assignPublicIp: true,
       serviceName: "rsa-multihub-service",
       taskDefinition: rsaMultihubTaskDefinition,
       cluster: cluster,
-      desiredCount: 1
+      desiredCount: 1,
+      protocol: ApplicationProtocol.HTTPS,
+      domainName: "graphql.ampdemo.net",
+      domainZone: hostedZone
     });
+
+    rsaMultihubService.targetGroup.configureHealthCheck({
+      path: "/check",
+    });  
   }
 }

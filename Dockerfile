@@ -17,6 +17,4 @@ RUN npm run build
 
 EXPOSE 3000
 
-HEALTHCHECK CMD [ "curl", "--fail", "http://localhost:3000/check"]
-
 CMD [ "npm", "start" ]
