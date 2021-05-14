@@ -75,7 +75,7 @@ class CommerceToolsBackend extends CommerceBackend {
                     if (args.mode === 'single') {
                         // populate the products since we are looking at a specific category
                         let category = _.first(categories)
-                        category.products = (await this.get('productsQuery', { currency: args.currency, where: [`categories(id="${category.id}")`] })).results
+                        category.products = (await this.get('productsQuery', { locale: args.locale, currency: args.currency, where: [`categories(id="${category.id}")`] })).results
                         return [category]
                     }
                     else {
