@@ -1,6 +1,7 @@
 import { Construct, Stack, StackProps, CfnOutput } from '@aws-cdk/core';
 import { Vpc } from '@aws-cdk/aws-ec2';
 import { Cluster, Compatibility, ContainerImage, TaskDefinition, AwsLogDriver } from '@aws-cdk/aws-ecs';
+import { Certificate } from "@aws-cdk/aws-certificatemanager";
 import { ApplicationLoadBalancedFargateService } from '@aws-cdk/aws-ecs-patterns';
 import { PublicHostedZone, HostedZone } from '@aws-cdk/aws-route53';
 import { ApplicationProtocol } from '@aws-cdk/aws-elasticloadbalancingv2';
@@ -36,6 +37,8 @@ export class RsaMultihubStack extends Stack {
       hostedZoneId: 'Z0317391113W55YD54Z33',
     });
 
+    const certificate = Certificate.fromCertificateArn(this, 'rsa_multihub_certificate', 'arn:aws:acm:us-east-2:873590723824:certificate/3474c976-9ebf-4a3e-a9d8-0a538b0db044')
+
     rsaMultihubTaskDefinition.addContainer("default", {
       image: ContainerImage.fromAsset(path.join(__dirname, '..', '..'), {
         exclude: [
@@ -58,7 +61,10 @@ export class RsaMultihubStack extends Stack {
       desiredCount: 1,
       protocol: ApplicationProtocol.HTTPS,
       domainName: "graphql.ampdemo.net",
-      domainZone: hostedZone
+      domainZone: hostedZone,
+      certificate,
+      publicLoadBalancer: true,
+      redirectHTTP: true
     });
 
     rsaMultihubService.targetGroup.configureHealthCheck({

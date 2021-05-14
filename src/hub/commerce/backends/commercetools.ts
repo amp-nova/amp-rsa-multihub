@@ -18,7 +18,7 @@ const localize = (text, args) => {
         return text
     }
 
-    return text[args.locale] || text[args.language] || text[Object.keys(text)[0]]
+    return text[args.locale] || text[args.language] || text['en'] || text[Object.keys(text)[0]]
 }
 
 const mapProduct = args => product => {
@@ -75,7 +75,7 @@ class CommerceToolsBackend extends CommerceBackend {
                     if (args.mode === 'single') {
                         // populate the products since we are looking at a specific category
                         let category = _.first(categories)
-                        category.products = (await this.get('productsQuery', { locale: args.locale, currency: args.currency, where: [`categories(id="${category.id}")`] })).results
+                        category.products = (await this.get('productsQuery', { currency: args.currency, where: [`categories(id="${category.id}")`] })).results
                         return [category]
                     }
                     else {
@@ -136,10 +136,10 @@ class CommerceToolsBackend extends CommerceBackend {
         }
         else if (args.slug) {
             if (config.uri.indexOf('projections') > -1) {
-                query.filter = [`slug.${language}:"${args.slug}"`]
+                query.filter = [`slug.${language}:"${args.slug} or slug.en:"${args.slug}"`]
             }
             else {
-                query.where = [`slug(${language}="${args.slug}")`]
+                query.where = [`slug(${language}="${args.slug}" or en="${args.slug}")`]
             }
         }
         else if (args.sku) {
