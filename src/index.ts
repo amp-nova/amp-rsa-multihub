@@ -75,7 +75,7 @@ let startServer = async() => {
     }
   })
 
-  var logDir = "/app/logs/multihub"
+  var logDir = "./logs/multihub"
   app.post('*', (req, res, next) => {
     if (req.body.operationName !== 'IntrospectionQuery') {
       req.logger = requestLogger(uuidv4())
