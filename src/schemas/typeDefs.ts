@@ -60,6 +60,10 @@ module.exports.typeDefs = gql`
     results: [Category]
   }
 
+  type CategoryHierarchy {
+    categories: [Category]
+  }
+
   type ResultsMeta {
     limit: Int
     offset: Int
@@ -85,6 +89,7 @@ module.exports.typeDefs = gql`
     slug: String
     children: [Category]
     products: [Product]
+    productAssortment(depth: Int): [Product]
     raw: Raw!
     source: String!
   }
@@ -148,6 +153,7 @@ module.exports.typeDefs = gql`
   type Query {
     products(keyword: String, limit: Int, offset: Int, locale: String, currency: String): ProductResults
     product(id: String, sku: String, slug: String, locale: String, currency: String): Product
+    categoryHierarchy(locale: String, currency: String): CategoryHierarchy
     categories(limit: Int, offset: Int, locale: String, currency: String): CategoryResults
     category(id: String, slug: String, locale: String, currency: String): Category
   }

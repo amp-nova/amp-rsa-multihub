@@ -22,8 +22,8 @@ let mapVariant = (prod, args) => variant => {
 }
 
 class BigCommerceBackend extends CommerceBackend {
-    constructor(cred) {
-        super(cred)
+    constructor(cred, context) {
+        super(cred, context)
         this.configs = {
             products: {
                 uri: `products`,

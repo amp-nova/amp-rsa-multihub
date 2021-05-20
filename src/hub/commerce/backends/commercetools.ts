@@ -44,8 +44,8 @@ const mapProduct = args => product => {
     }
 }
 class CommerceToolsBackend extends CommerceBackend {
-    constructor(cred) {
-        super(cred)
+    constructor(cred, context) {
+        super(cred, context)
         this.configs = {
             products: {
                 uri: `product-projections/search`,
@@ -68,33 +68,49 @@ class CommerceToolsBackend extends CommerceBackend {
                     }
                 },
                 postProcessor: async (args, categories) => {
-                    // this function has two purposes:
-                    // 1. get the child products for each category
-                    // 2. build and return a category hierarchy
-
-                    if (args.mode === 'single') {
-                        // populate the products since we are looking at a specific category
-                        let category = _.first(categories)
-                        category.products = (await this.get('productsQuery', { locale: args.locale, currency: args.currency, where: [`categories(id="${category.id}")`] })).results
-                        return [category]
-                    }
-                    else {
-                        // return the category hierarchy
-                        // okay so i dislike this implementation since i feel like it could be expressed more elegantly, but whatever
-                        let populateChildren = category => {
-                            category.children = _.filter(categories, c => c.parent && (c.parent.id === category.id))
-                            _.each(category.children, populateChildren)
-                            return category
-                        }
-
-                        return _.map(_.filter(categories, c => c.ancestors.length === 0), populateChildren)
-                    }
+                    return categories
+                    // Author's Note: this idea sucked before i even had it
+                    // end author's note
                 }
             }
         }
 
         this.accessToken = null
     }
+
+    // if (args.mode === 'single') {
+    //     console.log(`args mode single`)
+
+    //     // populate the products since we are looking at a specific category
+    //     let category = _.first(categories)
+    //     category.products = (await this.get('productsQuery', { locale: args.locale, currency: args.currency, where: [`categories(id="${category.id}")`] })).results
+
+    //     let allCategories = (await this.get('categories', { postProcessor: (args, categories) => categories })).results
+    //     console.log(`allCategories: ${allCategories.length}`)
+
+    //     // iterate over the child categories and return the first X products from that category
+    //     // let childProducts = _.map(category.children)
+
+    //     category.children = _.filter(allCategories, c => {
+    //         console.log(`child ID: ${c.id} parent ID: ${c.parent && c.parent.id}`)
+    //         return c.parent && (c.parent.id === category.id) 
+    //     })
+    //     console.log(`category ID: ${category.id}`)
+    //     console.log(`categories: ${category.children.length}`)
+
+    //     return [category]
+    // }
+    // else {
+    //     // return the category hierarchy
+    //     // okay so i dislike this implementation since i feel like it could be expressed more elegantly, but whatever
+    //     let populateChildren = category => {
+    //         category.children = _.filter(categories, c => c.parent && (c.parent.id === category.id))
+    //         _.each(category.children, populateChildren)
+    //         return category
+    //     }
+
+    //     return _.map(_.filter(categories, c => c.ancestors.length === 0), populateChildren)
+    // }
 
     async authenticate() {
         if (!this.accessToken) {
@@ -122,7 +138,7 @@ class CommerceToolsBackend extends CommerceBackend {
             where: args.where,
             priceCountry: config.uri.indexOf('projections') > -1 ? args.country : undefined,
             priceCurrency: config.uri.indexOf('projections') > -1 ? args.currency : undefined,
-            filter: []
+            filter: args.filter
         }
 
         let [ language, country ] = args.locale.split('-')
@@ -134,13 +150,8 @@ class CommerceToolsBackend extends CommerceBackend {
         if (args.id) {
             query.filter = [`id:"${args.id}"`]
         }
-        else if (args.slug) {
-            if (config.uri.indexOf('projections') > -1) {
-                query.filter = [`slug.${language}:"${args.slug} or slug.en:"${args.slug}"`]
-            }
-            else {
-                query.where = [`slug(${language}="${args.slug}" or en="${args.slug}")`]
-            }
+        else if (args.slug && config.uri.indexOf('projections') > -1) {
+            query.filter = [`slug.${language}:"${args.slug} or slug.en:"${args.slug}"`]
         }
         else if (args.sku) {
             query.filter = [`variants.sku:"${args.sku}")`]
@@ -167,6 +178,7 @@ class CommerceToolsBackend extends CommerceBackend {
             }
         }
 
+        let results = await Promise.all(data.results.map(await mapper))
         return {
             meta: {
                 total: data.total,
@@ -174,7 +186,7 @@ class CommerceToolsBackend extends CommerceBackend {
                 limit: data.limit,
                 offset: data.offset,
             },
-            results: await Promise.all(data.results.map(await mapper))
+            results
         }
     }
 
