@@ -6,6 +6,7 @@ import { ApplicationLoadBalancedFargateService } from '@aws-cdk/aws-ecs-patterns
 import { PublicHostedZone, HostedZone } from '@aws-cdk/aws-route53';
 import { ApplicationProtocol } from '@aws-cdk/aws-elasticloadbalancingv2';
 import * as path from 'path';
+import { PolicyStatement } from '@aws-cdk/aws-iam';
 
 
 export interface RsaMultihubStackProps extends StackProps {
@@ -66,6 +67,20 @@ export class RsaMultihubStack extends Stack {
       publicLoadBalancer: true,
       redirectHTTP: true
     });
+
+    rsaMultihubTaskDefinition.addToTaskRolePolicy(
+      new PolicyStatement({
+        actions: [
+          "s3:DeleteObject",
+          "s3:GetObject",
+          "s3:ListBucket",
+          "s3:PutObject"          
+        ],
+        resources: [
+          "arn:aws:s3:::amp-rsa-multihub-logs"
+        ]
+      })
+    );
 
     rsaMultihubService.targetGroup.configureHealthCheck({
       path: "/check",
