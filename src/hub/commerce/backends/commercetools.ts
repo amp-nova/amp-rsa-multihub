@@ -123,7 +123,7 @@ class CommerceToolsBackend extends CommerceBackend {
                     }
                 }
             )
-            console.log(`[ ct ] access token: ${response.data.access_token}`)
+            // console.log(`[ ct ] access token: ${response.data.access_token}`)
             this.accessToken = `${response.data.token_type} ${response.data.access_token}`
         }
         return this.accessToken
