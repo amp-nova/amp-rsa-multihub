@@ -23,9 +23,7 @@ module.exports.resolvers = {
     products:   get('products'),
     product:    getOne('products'),
 
-    categoryHierarchy: async (parent, args, context, info) => ({
-      categories: await getCategoryHierarchy(c => c.ancestors.length === 0)(parent, args, context, info)
-    }),
+    categoryHierarchy: async (parent, args, context, info) => await getCategoryHierarchy(c => c.ancestors.length === 0)(parent, args, context, info),
     category:   async (parent, args, context, info) => _.first(await getCategoryHierarchy(c => c.id === args.id || c.slug === args.slug)(parent, args, context, info)),
 
     // deprecated in favor of categoryHierarchy
