@@ -29,15 +29,15 @@ export class RsaMultihubStack extends Stack {
     });
 
     // const hostedZone = new PublicHostedZone(this, 'rsa_multihub_hosted_zone', {
-    //   zoneName: "ampdemo.net"
+    //   zoneName: "amprsa.net"
     // })
 
     const hostedZone = HostedZone.fromHostedZoneAttributes(this, 'rsa_multihub_hosted_zone', {
-      zoneName: 'ampdemo.net',
-      hostedZoneId: 'Z0317391113W55YD54Z33',
+      zoneName: 'amprsa.net',
+      hostedZoneId: 'Z01266391O6EF1LBMW753',
     });
 
-    const certificate = Certificate.fromCertificateArn(this, 'rsa_multihub_certificate', 'arn:aws:acm:us-east-2:873590723824:certificate/3474c976-9ebf-4a3e-a9d8-0a538b0db044')
+    const certificate = Certificate.fromCertificateArn(this, 'rsa_multihub_certificate', 'arn:aws:acm:us-east-2:873590723824:certificate/4ae9913e-a7aa-4d93-b861-f850bd135f47')
 
     rsaMultihubTaskDefinition.addContainer("default", {
       image: ContainerImage.fromAsset(path.join(__dirname, '..', '..'), {
@@ -60,7 +60,7 @@ export class RsaMultihubStack extends Stack {
       cluster: cluster,
       desiredCount: 1,
       protocol: ApplicationProtocol.HTTPS,
-      domainName: "graphql.ampdemo.net",
+      domainName: "graphql.amprsa.net",
       domainZone: hostedZone,
       certificate,
       publicLoadBalancer: true,
