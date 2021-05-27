@@ -1,7 +1,7 @@
 import { Construct, Stack, StackProps, CfnOutput } from '@aws-cdk/core';
 import { Vpc } from '@aws-cdk/aws-ec2';
 import { Cluster, Compatibility, ContainerImage, TaskDefinition, AwsLogDriver } from '@aws-cdk/aws-ecs';
-import { Certificate } from "@aws-cdk/aws-certificatemanager";
+import { Certificate, CertificateValidation } from "@aws-cdk/aws-certificatemanager";
 import { ApplicationLoadBalancedFargateService } from '@aws-cdk/aws-ecs-patterns';
 import { PublicHostedZone, HostedZone } from '@aws-cdk/aws-route53';
 import { ApplicationProtocol } from '@aws-cdk/aws-elasticloadbalancingv2';
@@ -10,17 +10,19 @@ import { PolicyStatement } from '@aws-cdk/aws-iam';
 
 
 export interface RsaMultihubStackProps extends StackProps {
+  domainName: string
 }
 
 export class RsaMultihubStack extends Stack {
   constructor(scope: Construct, id: string, props?: RsaMultihubStackProps) {
     super(scope, id, props);
 
-    const vpc = new Vpc(this, 'vpc', {      
+    let domainName = props?.domainName ?? 'amprsa.net'
+    const vpc = new Vpc(this, 'vpc', { 
     });
 
     const cluster = new Cluster(this, 'rsa_multihub_cluster', {
-      vpc: vpc
+      vpc
     });    
 
     const rsaMultihubTaskDefinition = new TaskDefinition(this, 'rsa_multihub_taskdef', {
@@ -29,16 +31,15 @@ export class RsaMultihubStack extends Stack {
       compatibility: Compatibility.EC2_AND_FARGATE,
     });
 
-    // const hostedZone = new PublicHostedZone(this, 'rsa_multihub_hosted_zone', {
-    //   zoneName: "amprsa.net"
-    // })
-
-    const hostedZone = HostedZone.fromHostedZoneAttributes(this, 'rsa_multihub_hosted_zone', {
-      zoneName: 'amprsa.net',
-      hostedZoneId: 'Z01266391O6EF1LBMW753',
+    const hostedZone = HostedZone.fromLookup(this, 'rsa_multihub_hosted_zone', {
+      domainName
     });
 
-    const certificate = Certificate.fromCertificateArn(this, 'rsa_multihub_certificate', 'arn:aws:acm:us-east-2:873590723824:certificate/4ae9913e-a7aa-4d93-b861-f850bd135f47')
+    // const certificate = Certificate.fromCertificateArn(this, 'rsa_multihub_certificate', 'arn:aws:acm:us-east-2:873590723824:certificate/4ae9913e-a7aa-4d93-b861-f850bd135f47')
+    const certificate = new Certificate(this, 'Certificate', {
+      domainName,
+      validation: CertificateValidation.fromDns(hostedZone)
+    })
 
     rsaMultihubTaskDefinition.addContainer("default", {
       image: ContainerImage.fromAsset(path.join(__dirname, '..', '..'), {
@@ -49,38 +50,37 @@ export class RsaMultihubStack extends Stack {
         ]
       }),
       memoryLimitMiB: 1024,
-      environment: {
-      },
-      logging: new AwsLogDriver({ streamPrefix: '/nova/amp-rsa-multihub' }),
+      environment: {},
+      logging: new AwsLogDriver({ streamPrefix: `/nova/amp-${id}` }),
     }).addPortMappings({ containerPort: 3000 });
 
     const rsaMultihubService = new ApplicationLoadBalancedFargateService(this, 'rsa_multihub_service', {
       assignPublicIp: true,
-      serviceName: "rsa-multihub-service",
+      serviceName: `${id}-service`,
       taskDefinition: rsaMultihubTaskDefinition,
-      cluster: cluster,
+      cluster,
       desiredCount: 1,
       protocol: ApplicationProtocol.HTTPS,
-      domainName: "graphql.amprsa.net",
+      domainName: `graphql.${domainName}`,
       domainZone: hostedZone,
       certificate,
       publicLoadBalancer: true,
       redirectHTTP: true
     });
 
-    rsaMultihubTaskDefinition.addToTaskRolePolicy(
-      new PolicyStatement({
-        actions: [
-          "s3:DeleteObject",
-          "s3:GetObject",
-          "s3:ListBucket",
-          "s3:PutObject"          
-        ],
-        resources: [
-          "arn:aws:s3:::amp-rsa-multihub-logs"
-        ]
-      })
-    );
+    // rsaMultihubTaskDefinition.addToTaskRolePolicy(
+    //   new PolicyStatement({
+    //     actions: [
+    //       "s3:DeleteObject",
+    //       "s3:GetObject",
+    //       "s3:ListBucket",
+    //       "s3:PutObject"          
+    //     ],
+    //     resources: [
+    //       "arn:aws:s3:::amp-rsa-multihub-logs"
+    //     ]
+    //   })
+    // );
 
     rsaMultihubService.targetGroup.configureHealthCheck({
       path: "/check",
