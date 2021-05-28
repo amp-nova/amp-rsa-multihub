@@ -35,6 +35,9 @@ module.exports.resolvers = {
     }
   },
   Category: {
-    productAssortment: async (parent, args, context, info) => (await get('products')(parent, { filter: [`categories.id: subtree("${parent.id}")`] }, context, info)).results
+    products: async (parent, args, context, info) => {
+      console.log(`args ${JSON.stringify(args)}`)
+      return (await get('products')(parent, { filter: args.full ? [`categories.id: subtree("${parent.id}")`] : [`categories.id: "${parent.id}"`] }, context, info)).results
+    }
   }
 };
