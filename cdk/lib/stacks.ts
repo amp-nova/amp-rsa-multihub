@@ -1,7 +1,7 @@
 import { Construct, Stack, StackProps, CfnOutput } from '@aws-cdk/core';
 import { Vpc } from '@aws-cdk/aws-ec2';
 import { Cluster, Compatibility, ContainerImage, TaskDefinition, AwsLogDriver } from '@aws-cdk/aws-ecs';
-import { Repository } from '@aws-cdk/aws-ecr';
+import { DockerImageAsset } from '@aws-cdk/aws-ecr-assets';
 import { Certificate, CertificateValidation } from "@aws-cdk/aws-certificatemanager";
 import { ApplicationLoadBalancedFargateService } from '@aws-cdk/aws-ecs-patterns';
 import { PublicHostedZone, HostedZone } from '@aws-cdk/aws-route53';
@@ -42,15 +42,25 @@ export class RsaMultihubStack extends Stack {
     })
 
     rsaMultihubTaskDefinition.addContainer("default", {
-      // image: ContainerImage.fromAsset(path.join(__dirname, '..', '..'), {
-      //   exclude: [
-      //     'node_modules',
-      //     '.git',
-      //     'cdk'
-      //   ]
-      // }),
+      image: ContainerImage.fromDockerImageAsset(new DockerImageAsset(this, `${id}_docker_image_asset`, {
+        directory: '..',
+        buildArgs: { mode },
+        exclude: [
+          'node_modules',
+          '.git',
+          'cdk'
+        ]
+      })),
 
-      image: ContainerImage.fromEcrRepository(Repository.fromRepositoryName(this, "default", `amp-rsa-multihub/${mode}`)),
+      //  image: ContainerImage.fromAsset(path.join(__dirname, '..', '..'), {
+      //    exclude: [
+      //      'node_modules',
+      //      '.git',
+      //      'cdk'
+      //    ]
+      //  }),
+
+      // image: ContainerImage.fromEcrRepository(Repository.fromRepositoryName(this, "default", `amp-rsa-multihub/${mode}`)),
       memoryLimitMiB: 1024,
       environment: {},
       logging: new AwsLogDriver({ streamPrefix: `/nova/amp-${id}` }),
