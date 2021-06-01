@@ -1,20 +1,16 @@
 FROM node:14
 
+ARG BRANCH
+
 # create app directory
 WORKDIR /usr/src/app
+RUN git clone -b $BRANCH https://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:x-oauth-basic@github.com/amp-nova/amp-rsa-multihub.git /usr/src/app
 
-# Install app dependencies
-# A wildcard is used to ensure both package.json AND package-lock.json are copied
-# where available (npm@5+)
-COPY package*.json ./
+COPY ./config/settings.yaml /usr/src/app/config
 
 RUN npm install
-
-# Bundle app source
-COPY . .
-
 RUN npm run build
-
+ 
 EXPOSE 3000
 
 CMD [ "npm", "start" ]

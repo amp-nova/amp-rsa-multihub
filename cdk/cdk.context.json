@@ -1,0 +1,15 @@
+{
+  "availability-zones:account=873590723824:region=us-east-2": [
+    "us-east-2a",
+    "us-east-2b",
+    "us-east-2c"
+  ],
+  "hosted-zone:account=873590723824:domainName=amprsa-dev.net:region=us-east-2": {
+    "Id": "/hostedzone/Z08353011LA823WYVK8P2",
+    "Name": "amprsa-dev.net."
+  },
+  "hosted-zone:account=873590723824:domainName=amprsa.net:region=us-east-2": {
+    "Id": "/hostedzone/Z01266391O6EF1LBMW753",
+    "Name": "amprsa.net."
+  }
+}

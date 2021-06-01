@@ -5,11 +5,12 @@ import * as stacks from '../lib/stacks';
 import * as path from 'path';
 
 const app = new cdk.App();
-
-new stacks.RsaMultihubStack(app, 'rsa-multihub-dev', {
+const mode = app.node.tryGetContext('mode') || 'prod';
+new stacks.RsaMultihubStack(app, mode === 'dev' ? `rsa-multihub-dev` : `rsa-multihub`, {
     env: {
         region: 'us-east-2',
         account: '873590723824'
     },
-    domainName: 'amprsa-dev.net'
+    domainName: mode === 'dev' ? 'amprsa-dev.net' : 'amprsa.net',
+    mode
 });
