@@ -20,7 +20,7 @@ export class RsaMultihubStack extends Stack {
     super(scope, id, props);
 
     let mode = props?.mode ?? "master"
-    let domainName = props?.domainName ?? 'amprsa.net'
+    let domainName = mode === 'master' ? 'amprsa.net' : 'amprsa-dev.net'
     let hostName = `graphql.${domainName}`
 
     const vpc = new Vpc(this, 'vpc', {});
@@ -51,16 +51,6 @@ export class RsaMultihubStack extends Stack {
           'cdk'
         ]
       })),
-
-      //  image: ContainerImage.fromAsset(path.join(__dirname, '..', '..'), {
-      //    exclude: [
-      //      'node_modules',
-      //      '.git',
-      //      'cdk'
-      //    ]
-      //  }),
-
-      // image: ContainerImage.fromEcrRepository(Repository.fromRepositoryName(this, "default", `amp-rsa-multihub/${mode}`)),
       memoryLimitMiB: 1024,
       environment: {},
       logging: new AwsLogDriver({ streamPrefix: `/nova/amp-${id}` }),
