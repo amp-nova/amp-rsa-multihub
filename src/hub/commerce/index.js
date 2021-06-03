@@ -1,8 +1,10 @@
 const config = require('../../util/config')
 
 const { SecretsManager } = require("@aws-sdk/client-secrets-manager");
-const secretManager = new SecretsManager(config.hub)
-  
+
+// note: if config.hub is undefined, credentials need to be available elsewhere.
+let secretManager = new SecretsManager(config.hub)
+
 module.exports = ({
   getClient: async context => {
     try {
@@ -18,6 +20,7 @@ module.exports = ({
       }
     } catch (error) {
       console.error(`Error retrieving secret: ${error}`)
+      console.log(error.stack)
     }
   }
 })
