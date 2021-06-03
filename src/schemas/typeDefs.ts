@@ -84,7 +84,7 @@ module.exports.typeDefs = gql`
     name: String!
     slug: String
     children: [Category]
-    products(full: Boolean): [Product]
+    products(full: Boolean, query: String): [Product]
     raw: Raw!
     source: String!
   }

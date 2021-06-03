@@ -36,8 +36,8 @@ module.exports.resolvers = {
   },
   Category: {
     products: async (parent, args, context, info) => {
-      console.log(`args ${JSON.stringify(args)}`)
-      return (await get('products')(parent, { filter: args.full ? [`categories.id: subtree("${parent.id}")`] : [`categories.id: "${parent.id}"`] }, context, info)).results
+      let products = (await get('products')(parent, { filter: args.full ? [`categories.id: subtree("${parent.id}")`] : [`categories.id: "${parent.id}"`] }, context, info)).results
+      return _.filter(products, prod => _.isEmpty(args.query) || prod.name.toLowerCase().includes(args.query))
     }
   }
 };

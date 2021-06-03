@@ -55,9 +55,9 @@ class CommerceBackend {
             // next, execute the request with headers gotten from the backend
             let response = await axios({ url, method, headers: await this.getHeaders() })
 
-            backendRequest.response = response
-            delete backendRequest.response.request
-            this.context.logger.log(`${this.getSource().replace('/', '-')}_request`, stringify(backendRequest, null, 4))
+            // backendRequest.response = response
+            // delete backendRequest.response.request
+            // this.context.logger.log(`${this.getSource().replace('/', '-')}_request`, stringify(backendRequest, null, 4))
 
             // wrap the given mapper in a function that will add the source tag (eg, 'commercetools/anyafinn')
             let mapper = async data => ({
@@ -74,7 +74,7 @@ class CommerceBackend {
                 x.results = await px(args, x.results)
             }
 
-            this.context.logger.log(`${this.getSource().replace('/', '-')}_response`, stringify({ url, results: x }, null, 4))
+            // this.context.logger.log(`${this.getSource().replace('/', '-')}_response`, stringify({ url, results: x }, null, 4))
 
             // console.log(`x ${JSON.stringify(x)}`)
 
