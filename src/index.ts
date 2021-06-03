@@ -58,37 +58,37 @@ let startServer = async() => {
 
   app.use(bodyParser.json())
 
-  let requestLogger = id => ({
-    log: (key, body) => {
-      fs.mkdirSync(`${logDir}/${id}`, { recursive: true })
+  // let requestLogger = id => ({
+  //   log: (key, body) => {
+  //     fs.mkdirSync(`${logDir}/${id}`, { recursive: true })
 
-      let index = 0
-      let filename = `${key}_${index}.txt`
-      let path = `${logDir}/${id}/${filename}`
-      while (fs.existsSync(path)) {
-        index = index + 1
-        filename = `${key}_${index}.txt`
-        path = `${logDir}/${id}/${filename}`
-      }
+  //     let index = 0
+  //     let filename = `${key}_${index}.txt`
+  //     let path = `${logDir}/${id}/${filename}`
+  //     while (fs.existsSync(path)) {
+  //       index = index + 1
+  //       filename = `${key}_${index}.txt`
+  //       path = `${logDir}/${id}/${filename}`
+  //     }
 
-      fs.writeFileSync(`${path}`, body)
-    }
-  })
+  //     fs.writeFileSync(`${path}`, body)
+  //   }
+  // })
 
-  var logDir = "./logs/multihub"
-  app.post('*', (req, res, next) => {
-    if (req.body.operationName !== 'IntrospectionQuery') {
-      req.logger = requestLogger(uuidv4())
-      req.logger.log('graphql_query', req.body.query)
+  // var logDir = "./logs/multihub"
+  // app.post('*', (req, res, next) => {
+  //   if (req.body.operationName !== 'IntrospectionQuery') {
+  //     req.logger = requestLogger(uuidv4())
+  //     req.logger.log('graphql_query', req.body.query)
 
-      let _send = res.send
-      res.send = function(...args) {
-        req.logger.log('graphql_response', JSON.stringify(JSON.parse(arguments[0]), null, 4))
-        _send.apply(res, args)
-      }
-    }
-    next()
-  })
+  //     let _send = res.send
+  //     res.send = function(...args) {
+  //       req.logger.log('graphql_response', JSON.stringify(JSON.parse(arguments[0]), null, 4))
+  //       _send.apply(res, args)
+  //     }
+  //   }
+  //   next()
+  // })
 
   // app.use(function (req, res, next) {
   //   req.on("end", function () {
