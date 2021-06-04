@@ -11,14 +11,14 @@ import { PolicyStatement } from '@aws-cdk/aws-iam';
 
 
 export interface RsaMultihubStackProps extends StackProps {
-  branch: string
+  arm_branch: string
 }
 
 export class RsaMultihubStack extends Stack {
   constructor(scope: Construct, id: string, props?: RsaMultihubStackProps) {
     super(scope, id, props);
 
-    let arm_branch = props?.branch ?? "master"
+    let arm_branch = props?.arm_branch ?? "master"
     let domainName = arm_branch === 'master' ? 'amprsa.net' : 'amprsa-dev.net'
     let hostName = `graphql.${domainName}`
 
