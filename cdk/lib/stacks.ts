@@ -53,16 +53,6 @@ export class RsaMultihubStack extends Stack {
           'cdk'
         ]
       })),
-
-      //  image: ContainerImage.fromAsset(path.join(__dirname, '..', '..'), {
-      //    exclude: [
-      //      'node_modules',
-      //      '.git',
-      //      'cdk'
-      //    ]
-      //  }),
-
-      // image: ContainerImage.fromEcrRepository(Repository.fromRepositoryName(this, "default", `amp-rsa-multihub/${mode}`)),
       memoryLimitMiB: 1024,
       environment: {},
       logging: new AwsLogDriver({ streamPrefix: `/nova/amp-${id}` }),
