@@ -11,16 +11,15 @@ import { PolicyStatement } from '@aws-cdk/aws-iam';
 
 
 export interface RsaMultihubStackProps extends StackProps {
-  domainName: string
-  mode: string
+  branch: string
 }
 
 export class RsaMultihubStack extends Stack {
   constructor(scope: Construct, id: string, props?: RsaMultihubStackProps) {
     super(scope, id, props);
 
-    let mode = props?.mode ?? "master"
-    let domainName = props?.domainName ?? 'amprsa.net'
+    let arm_branch = props?.branch ?? "master"
+    let domainName = arm_branch === 'master' ? 'amprsa.net' : 'amprsa-dev.net'
     let hostName = `graphql.${domainName}`
 
     const vpc = new Vpc(this, 'vpc', {});
@@ -44,7 +43,10 @@ export class RsaMultihubStack extends Stack {
     rsaMultihubTaskDefinition.addContainer("default", {
       image: ContainerImage.fromDockerImageAsset(new DockerImageAsset(this, `${id}_docker_image_asset`, {
         directory: '..',
-        buildArgs: { mode },
+        buildArgs: { 
+          arm_branch,
+          arm_build_date: new Date().toISOString()
+        },
         exclude: [
           'node_modules',
           '.git',
