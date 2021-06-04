@@ -15,10 +15,10 @@ export interface RsaMultihubStackProps extends StackProps {
 }
 
 export class RsaMultihubStack extends Stack {
-  constructor(scope: Construct, id: string, props?: RsaMultihubStackProps) {
+  constructor(scope: Construct, id: string, props: RsaMultihubStackProps) {
     super(scope, id, props);
 
-    let arm_branch = props?.arm_branch ?? "master"
+    let arm_branch = props.arm_branch
     let domainName = arm_branch === 'master' ? 'amprsa.net' : 'amprsa-dev.net'
     let hostName = `graphql.${domainName}`
 
