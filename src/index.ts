@@ -56,6 +56,14 @@ let startServer = async() => {
     res.status(200).send({ status: 'ok' })
   })
 
+  app.get('/meta', (req, res, next) => {    
+    res.status(200).send({ 
+      branch: process.env.arm_branch,
+      build_date: process.env.arm_build_date,
+      commit_hash: fs.existsSync('/etc/arm_commit_hash') && fs.readFileSync('/etc/arm_commit_hash', 'utf8').trim()
+    })
+  })
+
   app.use(bodyParser.json())
 
   // let requestLogger = id => ({
