@@ -44,7 +44,7 @@ export class RsaMultihubStack extends Stack {
     rsaMultihubTaskDefinition.addContainer("default", {
       image: ContainerImage.fromDockerImageAsset(new DockerImageAsset(this, `${id}_docker_image_asset`, {
         directory: '..',
-        buildArgs: { mode },
+        buildArgs: { mode, CACHEBUST: new Date().toISOString() },
         exclude: [
           'node_modules',
           '.git',

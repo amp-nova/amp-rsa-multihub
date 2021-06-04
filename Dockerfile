@@ -1,6 +1,7 @@
 FROM node:14
 
 ARG mode
+ARG CACHEBUST=1 
 
 # create app directory
 WORKDIR /usr/src/app
