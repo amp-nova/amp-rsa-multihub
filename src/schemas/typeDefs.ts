@@ -149,7 +149,8 @@ module.exports.typeDefs = gql`
     products(keyword: String, limit: Int, offset: Int, locale: String, currency: String): ProductResults
     product(id: String, sku: String, slug: String, locale: String, currency: String): Product
     categoryHierarchy(locale: String, currency: String): [Category]
-    categories(limit: Int, offset: Int, locale: String, currency: String): CategoryResults
     category(id: String, slug: String, locale: String, currency: String): Category
+    source: String
+    categories(limit: Int, offset: Int, locale: String, currency: String): CategoryResults
   }
 `;

@@ -1,6 +1,7 @@
 const _ = require('lodash')
 const axios = require('axios')
 const stringify = require('json-stringify-safe')
+const cache = require('./cache')
 
 class CommerceBackend {
     constructor(cred, context) {
@@ -31,8 +32,8 @@ class CommerceBackend {
         return url.toString()
     }
 
-    getRequestURL(config, args) {
-        return "https://www.google.com"
+    getRequestURL() {
+        throw new Error(`Connector [ ${this.cred.type} ] must implement getRequestURL()`)
     }
 
     async request({ key, method = 'get' }, args) {
@@ -47,38 +48,29 @@ class CommerceBackend {
 
         // get the URL from the backend
         let url = this.getRequest(config, args)
-        console.log(`[ ${method} ] ${url}`)
-
-        let backendRequest = { url }
 
         try {
-            // next, execute the request with headers gotten from the backend
-            let response = await axios({ url, method, headers: await this.getHeaders() })
-
-            // backendRequest.response = response
-            // delete backendRequest.response.request
-            // this.context.logger.log(`${this.getSource().replace('/', '-')}_request`, stringify(backendRequest, null, 4))
-
-            // wrap the given mapper in a function that will add the source tag (eg, 'commercetools/anyafinn')
-            let mapper = async data => ({
-                ...await config.mapper(args)(data),
-                source: this.getSource(),
-                raw: data
-            })
-
-            // use the backend to translate the result set
-            let x = await this.translateResults(response.data, mapper)
-
-            let px = args.postProcessor || config.postProcessor
-            if (px) {
-                x.results = await px(args, x.results)
+            if (cache.get(url)) {
+                console.log(`[    cac ] ${url}`)
+                return cache.get(url)
             }
+            else {
+                console.log(`[ ${method.padStart(6, ' ')} ] ${url}`)
 
-            // this.context.logger.log(`${this.getSource().replace('/', '-')}_response`, stringify({ url, results: x }, null, 4))
+                // next, execute the request with headers gotten from the backend
+                let response = await axios({ url, method, headers: await this.getHeaders() })
 
-            // console.log(`x ${JSON.stringify(x)}`)
+                let x = await this.translateResults(response.data, config.mapper(args))
 
-            return x
+                let px = args.postProcessor || config.postProcessor
+                if (px) {
+                    x.results = await px(args, x.results)
+                }
+    
+                // use the backend to translate the result set
+                cache.set(url, x)
+                return x
+            }
         } catch (error) {
             console.error(error)
         }
@@ -91,7 +83,23 @@ class CommerceBackend {
     }
 
     async getOne(key, args) {
-        return _.first(_.get(await this.get(key, { ...args, mode: 'single' }), 'results'))
+        return _.first(_.get(await this.get(key, args), 'results'))
+    }
+
+    async getProduct(parent, args, context, info) {
+        return await this.getOne('products', args)
+    }
+
+    async getProducts(parent, args, context, info) {
+        return await this.get('products', args)
+    }
+
+    async getCategory(parent, args, context, info) {
+        return _.first(await this.getCategoryHierarchy(parent, args, context, info))
+    }
+
+    getSource() {
+        return `${this.cred.type}/${this.cred.id}`
     }
 }
 
