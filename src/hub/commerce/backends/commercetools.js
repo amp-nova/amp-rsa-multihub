@@ -51,7 +51,9 @@ class CommerceToolsBackend extends CommerceBackend {
         super(cred, context)
         this.configs = {
             products: {
-                uri: `product-projections/search`,
+                uri: args => {
+                    return args.keyword ? `product-projections/search` : `product-projections`
+                },
                 args: { expand: ['categories[*]'] },
                 mapper: mapProduct,
                 queryArgs: args => {
@@ -60,22 +62,22 @@ class CommerceToolsBackend extends CommerceBackend {
                         priceCountry: args.country,
                         priceCurrency: args.currency,
                         [`text.${language}`]: args.keyword,
-                        filter:
-                            args.id && [`id:"${args.id}"`] ||
-                            args.slug && [`slug.${language}:"${args.slug} or slug.en:"${args.slug}"`] ||
-                            args.sku && [`variants.sku:"${args.sku}")`]
+                        where: 
+                            args.slug && [`slug(${language}="${args.slug}") or slug(en="${args.slug}")`] ||
+                            args.id && [`id="${args.id}"`] ||
+                            args.sku && [`variants(sku="${args.sku}")`]
                     }
                 }
             },
             categories: {
-                uri: `categories`,
+                uri: () => `categories`,
                 args: { limit: 500 },
                 mapper: mapCategory,
                 queryArgs: args => {
                     let [language, __] = args.locale.split('-')
                     return {
                         where: 
-                            args.slug && [`slug(${language}="${args.slug}")`] ||
+                            args.slug && [`slug(${language}="${args.slug}") or slug(en="${args.slug}")`] ||
                             args.id && [`id="${args.id}"`]
                     }
                 }
@@ -103,7 +105,7 @@ class CommerceToolsBackend extends CommerceBackend {
     }
 
     getRequestURL(config, args) {
-        let uri = new URI(`${this.cred.api_url}/${this.cred.project}/${config.uri}`)
+        let uri = new URI(`${this.cred.api_url}/${this.cred.project}/${config.uri(args)}`)
 
         let query = config.queryArgs && config.queryArgs(args) || {}
         query = {
