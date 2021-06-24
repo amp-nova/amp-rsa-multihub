@@ -7,6 +7,7 @@ const CommerceBackend = require('./index')
 const mapCategory = args => category => ({
     id: category.id,
     name: category.name || category.id,
+    slug: category.id,
     children: _.map(category.subcategories, mapCategory(args))
 })
 
