@@ -42,7 +42,7 @@ class HybrisBackend extends CommerceBackend {
             },
 
             categories: {
-                uri: args => args.id ? `catalogs/electronicsProductCatalog/Online/categories/${args.id}` : `catalogs/electronicsProductCatalog/Online`,
+                uri: args => `catalogs/${cred.catalogId}/${cred.catalogVersion}/${ args.id ? `categories/${args.id}` : `` }`,
                 mapper: mapCategory
             },
 
