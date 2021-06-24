@@ -2,6 +2,7 @@ const _ = require('lodash')
 const axios = require('axios')
 const stringify = require('json-stringify-safe')
 const cache = require('./cache')
+const https = require('https')
 
 class CommerceBackend {
     constructor(cred, context) {
@@ -57,8 +58,10 @@ class CommerceBackend {
             else {
                 console.log(`[ ${method.padStart(6, ' ')} ] ${url}`)
 
+                const httpsAgent = new https.Agent({ rejectUnauthorized: false });
+                
                 // next, execute the request with headers gotten from the backend
-                let response = await axios({ url, method, headers: await this.getHeaders() })
+                let response = await axios({ url, method, headers: await this.getHeaders(), httpsAgent })
 
                 let x = await this.translateResults(response.data, config.mapper(args))
 
@@ -96,6 +99,21 @@ class CommerceBackend {
 
     async getCategory(parent, args, context, info) {
         return _.first(await this.getCategoryHierarchy(parent, args, context, info))
+    }
+
+    async translateResults(data, mapper = (args => x => x)) {
+        if (!data.results) {
+            data = {
+                limit: 1,
+                count: 1,
+                total: 1,
+                offset: 0,
+                results: [data]
+            }
+        }
+
+        data.results = await Promise.all(data.results.map(await mapper)) 
+        return data
     }
 
     getSource() {

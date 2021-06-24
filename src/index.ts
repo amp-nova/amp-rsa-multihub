@@ -9,6 +9,7 @@ const { resolvers } = require('./resolvers/resolvers');
 const bodyParser = require('body-parser')
 
 const fs = require('fs-extra')
+require('./util/helpers')
 
 let startServer = async() => {
   const server = new ApolloServer({ 

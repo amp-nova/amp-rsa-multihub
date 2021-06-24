@@ -12,6 +12,9 @@ module.exports.resolvers = {
   ProductResults: {
     meta:               commercehub.getMeta
   },
+  CategoryResults: {
+    meta:               commercehub.getMeta
+  },
   Product: {
     raw:                x => x
   },
@@ -20,6 +23,7 @@ module.exports.resolvers = {
     raw:                x => x
   },
   Variant: {
-    attribute:          (parent, args) => _.get(_.find(parent.attributes, att => att.name === args.name), 'value')
+    attribute:          (parent, args) => _.get(_.find(parent.attributes, att => att.name === args.name), 'value'),
+    defaultImage:       (parent, args) => _.first(parent.images)
   }
 };

@@ -7,39 +7,35 @@ const CommerceBackend = require('./index')
 
 let mapImage = image => ({ url: image.url_standard })
 
-let mapVariant = (prod, args) => variant => {
-    let images = variant.image_url
+let mapVariant = (prod, args) => variant => ({
+    ...variant,
+    prices: {
+        list: formatMoneyString(
+            variant.price || prod.price,
+            args.locale,
+            args.currency
+        ),
+        sale: formatMoneyString(
+            variant.sale_price || prod.price,
+            args.locale,
+            args.currency
+        )
+    },
+    attributes: variant.option_values.map(opt => ({
+        name: opt.option_display_name.toLowerCase(),
+        value: opt.label
+    })),
+    images: variant.image_url
         ? [{ url: variant.image_url }]
         : _.map(prod.images, mapImage)
-    return {
-        ...variant,
-        prices: {
-            list: formatMoneyString(
-                variant.price || prod.price,
-                args.locale,
-                args.currency
-            ),
-            sale: formatMoneyString(
-                variant.sale_price || prod.price,
-                args.locale,
-                args.currency
-            )
-        },
-        defaultImage: _.first(images),
-        attributes: variant.option_values.map(opt => ({
-            name: opt.option_display_name.toLowerCase(),
-            value: opt.label
-        })),
-        images
-    }
-}
+})
 
 class BigCommerceBackend extends CommerceBackend {
     constructor(cred, context) {
         super(cred, context)
         this.configs = {
             products: {
-                uri: `products`,
+                uri: args => `products`,
                 args: { include: 'images,variants' },
                 mapper: args => async prod => ({
                     ...prod,
@@ -67,7 +63,7 @@ class BigCommerceBackend extends CommerceBackend {
     }
 
     getRequestURL(config, args) {
-        let uri = new URI(`${this.catalogApiUrl}/${config.uri}`)
+        let uri = new URI(`${this.catalogApiUrl}/${config.uri(args)}`)
 
         if (args && args.limit && args.offset) {
             args.page = Math.floor(args.offset / args.limit + 1)

@@ -40,20 +40,18 @@ const mapProduct = args => product => {
             ...variant,
             prices: { list: formatMoneyString(_.get(variant.scopedPrice || _.first(variant.prices), 'value.centAmount') / 100, args.locale, args.currency) },
             images: _.map(variant.images, mapImage),
-            defaultImage: mapImage(_.first(variant.images)),
             attributes: _.map(variant.attributes, att => ({ name: att.name, value: localize(att.value, args) }))
         })),
         categories: _.map(product.categories, mapCategory(args))
     }
 }
+
 class CommerceToolsBackend extends CommerceBackend {
     constructor(cred, context) {
         super(cred, context)
         this.configs = {
             products: {
-                uri: args => {
-                    return args.keyword ? `product-projections/search` : `product-projections`
-                },
+                uri: args => args.keyword ? `product-projections/search` : `product-projections`,
                 args: { expand: ['categories[*]'] },
                 mapper: mapProduct,
                 queryArgs: args => {
@@ -124,21 +122,6 @@ class CommerceToolsBackend extends CommerceBackend {
 
     async getHeaders() {
         return { authorization: await this.authenticate() }
-    }
-
-    async translateResults(data, mapper = (args => x => x)) {
-        if (!data.results) {
-            data = {
-                limit: 1,
-                count: 1,
-                total: 1,
-                offset: 0,
-                results: [data]
-            }
-        }
-
-        data.results = await Promise.all(data.results.map(await mapper)) 
-        return data
     }
 
     async getCategoryHierarchy(parent, args) {
