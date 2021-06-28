@@ -61,8 +61,8 @@ class CommerceToolsBackend extends CommerceBackend {
                         priceCurrency: args.currency,
                         [`text.${language}`]: args.keyword,
                         where: 
-                            args.slug && [`slug(${language}="${args.slug}") or slug(en="${args.slug}")`] ||
                             args.id && [`id="${args.id}"`] ||
+                            args.slug && [`slug(${language}="${args.slug}") or slug(en="${args.slug}")`] ||
                             args.sku && [`variants(sku="${args.sku}")`]
                     }
                 }

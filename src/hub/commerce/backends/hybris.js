@@ -4,26 +4,27 @@ const axios = require('axios')
 
 const CommerceBackend = require('./index')
 
-const mapCategory = args => category => ({
-    id: category.id,
-    name: category.name || category.id,
-    slug: category.id,
-    children: _.map(category.subcategories, mapCategory(args))
-})
-
-const mapProduct = args => prod => ({
-    ...prod,
-    name: prod.name.stripHTML(),
-    shortDescription: prod.summary,
-    longDescription: prod.description,
-    variants: [{
-        sku: prod.code,
-        prices: { list: prod.price.formattedValue },
-        images: _.map(prod.images, image => ({ url: `${this.cred.server}${image.url}` }))
-    }]
-})
-
 class HybrisBackend extends CommerceBackend {
+    mapProduct = args => prod => ({
+        ...prod,
+        name: prod.name.stripHTML(),
+        id: prod.code,
+        shortDescription: prod.summary,
+        longDescription: prod.description,
+        variants: [{
+            sku: prod.code,
+            prices: { list: prod.price.formattedValue },
+            images: _.map(prod.images, image => ({ url: `${this.cred.server}${image.url}` }))
+        }]
+    })
+
+    mapCategory = args => category => ({
+        id: category.id,
+        name: category.name || category.id,
+        slug: category.id,
+        children: _.map(category.subcategories, this.mapCategory(args))
+    })
+    
     constructor(cred, context) {
         super(cred, context)
         this.configs = {
@@ -38,17 +39,17 @@ class HybrisBackend extends CommerceBackend {
                     return `products`
                 },
                 args: { fields: 'FULL' },
-                mapper: mapProduct
+                mapper: this.mapProduct
             },
 
             categories: {
                 uri: args => `catalogs/${cred.catalogId}/${cred.catalogVersion}/${ args.id ? `categories/${args.id}` : `` }`,
-                mapper: mapCategory
+                mapper: this.mapCategory
             },
 
             productsForCategory: {
                 uri: args => `categories/${args.id}/products`,
-                mapper: mapProduct
+                mapper: this.mapProduct
             }
         }
         this.accessToken = null
