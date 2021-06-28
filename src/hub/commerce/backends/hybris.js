@@ -36,7 +36,7 @@ class HybrisBackend extends CommerceBackend {
                     else if (args.keyword) {
                         return `products/search?query=${args.keyword}`
                     }
-                    return `products`
+                    return `products/search`
                 },
                 args: { fields: 'FULL' },
                 mapper: this.mapProduct
@@ -117,7 +117,7 @@ class HybrisBackend extends CommerceBackend {
         return _.get(await this.get('productsForCategory', { id: parent.id }), 'results')
     }
 
-    async getMeta(parent) {
+    async getMeta(parent, args, context, info) {
         return {
             total: parent.pagination.totalResults,
             count: parent.pagination.totalResults,

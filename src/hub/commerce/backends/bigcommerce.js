@@ -54,7 +54,7 @@ class BigCommerceBackend extends CommerceBackend {
             },
 
             categories: {
-                uri: `categories`,
+                uri: x => `categories`,
                 mapper: args => x => x
             }
         }
