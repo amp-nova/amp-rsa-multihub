@@ -5,19 +5,24 @@ const axios = require('axios')
 const CommerceBackend = require('./index')
 
 class HybrisBackend extends CommerceBackend {
-    mapProduct = args => prod => ({
-        ...prod,
-        name: prod.name.stripHTML(),
-        id: prod.code,
-        shortDescription: prod.summary,
-        longDescription: prod.description,
-        variants: [{
-            sku: prod.code,
-            prices: { list: prod.price && prod.price.formattedValue },
-            // images: _.map(prod.images, image => ({ url: `${this.cred.imageUrlFormat.replace("{{id}}", prod.code)}` }))
-            images: [{ url: `${this.cred.imageUrlFormat.replace("{{id}}", prod.code)}` }]
-        }]
-    })
+    mapProduct = args => prod => {
+        return {
+            ...prod,
+            name: prod.name.stripHTML(),
+            id: prod.code,
+            slug: prod.code,
+            shortDescription: prod.summary && prod.summary.stripHTML(),
+            longDescription: prod.description && prod.description.stripHTML(),
+            categories: _.map(prod.categories, cat => ({ id: cat.code, name: cat.name })),
+            variants: [{
+                sku: prod.code,
+                prices: { list: prod.price && prod.price.formattedValue },
+                // images: _.map(prod.images, image => ({ url: `${this.cred.imageUrlFormat.replace("{{id}}", prod.code)}` }))
+                images: [{ url: `${this.cred.imageUrlFormat.replace("{{id}}", prod.code)}` }],
+                defaultImage: { url: `${this.cred.imageUrlFormat.replace("{{id}}", prod.code)}` }
+            }]
+        }
+    }
 
     mapCategory = args => category => ({
         id: category.id,
@@ -44,7 +49,7 @@ class HybrisBackend extends CommerceBackend {
             },
 
             categories: {
-                uri: args => `catalogs/${cred.catalogId}/${cred.catalogVersion}/${ args.id ? `categories/${args.id}` : `categories/1` }`,
+                uri: args => `catalogs/${cred.catalogId}/${cred.catalogVersion}/${ (args.id || args.slug) ? `categories/${(args.id || args.slug)}` : `categories/1` }`,
                 mapper: this.mapCategory
             },
 
@@ -102,7 +107,7 @@ class HybrisBackend extends CommerceBackend {
     }
 
     async translateResults(data, mapper = (args => x => x)) {
-        data.results = data.categories || data.products
+        data.results = data.code ? [data] : (data.categories || data.products)
         return await super.translateResults(data, mapper)
     }
 
@@ -116,7 +121,9 @@ class HybrisBackend extends CommerceBackend {
     // }
 
     async getProductsForCategory(parent, args) {
-        return _.get(await this.get('productsForCategory', { id: parent.id }), 'results')
+        let products = _.get(await this.get('productsForCategory', { id: parent.id }), 'results')
+        _.each(products, prod => { prod.categories = [parent] })
+        return products
     }
 
     async getMeta(parent, args, context, info) {
@@ -128,6 +135,10 @@ class HybrisBackend extends CommerceBackend {
                 (parent.pagination.currentPage - 1) *
                 parent.pagination.pageSize
         }
+    }
+
+    async getCategory(parent, args, context, info) {
+        return _.first(_.get(await this.get('categories', args), 'results'))
     }
 }
 
