@@ -13,8 +13,8 @@ class HybrisBackend extends CommerceBackend {
         longDescription: prod.description,
         variants: [{
             sku: prod.code,
-            prices: { list: prod.price.formattedValue },
-            images: _.map(prod.images, image => ({ url: `${this.cred.server}${image.url}` }))
+            prices: { list: prod.price && prod.price.formattedValue },
+            images: _.map(prod.images, image => ({ url: `${this.cred.imageUrlFormat.replace("{{id}}", prod.code)}` }))
         }]
     })
 
