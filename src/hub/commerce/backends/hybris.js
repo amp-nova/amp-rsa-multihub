@@ -14,7 +14,8 @@ class HybrisBackend extends CommerceBackend {
         variants: [{
             sku: prod.code,
             prices: { list: prod.price && prod.price.formattedValue },
-            images: _.map(prod.images, image => ({ url: `${this.cred.imageUrlFormat.replace("{{id}}", prod.code)}` }))
+            // images: _.map(prod.images, image => ({ url: `${this.cred.imageUrlFormat.replace("{{id}}", prod.code)}` }))
+            images: [{ url: `${this.cred.imageUrlFormat.replace("{{id}}", prod.code)}` }]
         }]
     })
 
@@ -43,7 +44,7 @@ class HybrisBackend extends CommerceBackend {
             },
 
             categories: {
-                uri: args => `catalogs/${cred.catalogId}/${cred.catalogVersion}/${ args.id ? `categories/${args.id}` : `` }`,
+                uri: args => `catalogs/${cred.catalogId}/${cred.catalogVersion}/${ args.id ? `categories/${args.id}` : `categories/1` }`,
                 mapper: this.mapCategory
             },
 
@@ -106,7 +107,8 @@ class HybrisBackend extends CommerceBackend {
     }
 
     async getCategoryHierarchy(parent, args) {
-        return _.get(await this.get('categories', args), 'results')
+        let topLevelCategory = _.first(_.get(await this.get('categories', args), 'results'))
+        return topLevelCategory.children
     }
 
     // async getHeaders() {
