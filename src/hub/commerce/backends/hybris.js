@@ -1,6 +1,7 @@
 const URI = require('urijs')
 const _ = require('lodash')
 const axios = require('axios')
+const slugify = require('slugify')
 
 const CommerceBackend = require('./index')
 
@@ -10,14 +11,13 @@ class HybrisBackend extends CommerceBackend {
             ...prod,
             name: prod.name.stripHTML(),
             id: prod.code,
-            slug: prod.code,
+            slug: slugify(prod.name.stripHTML(), { lower: true }),
             shortDescription: prod.summary && prod.summary.stripHTML(),
             longDescription: prod.description && prod.description.stripHTML(),
             categories: _.map(prod.categories, cat => ({ id: cat.code, name: cat.name })),
             variants: [{
                 sku: prod.code,
                 prices: { list: prod.price && prod.price.formattedValue },
-                // images: _.map(prod.images, image => ({ url: `${this.cred.imageUrlFormat.replace("{{id}}", prod.code)}` }))
                 images: [{ url: `${this.cred.imageUrlFormat.replace("{{id}}", prod.code)}` }],
                 defaultImage: { url: `${this.cred.imageUrlFormat.replace("{{id}}", prod.code)}` }
             }]
@@ -26,8 +26,8 @@ class HybrisBackend extends CommerceBackend {
 
     mapCategory = args => category => ({
         id: category.id,
-        name: category.name || category.id,
-        slug: category.id,
+        name: category.name,
+        slug: slugify(category.name, { lower: true }),
         children: _.map(category.subcategories, this.mapCategory(args))
     })
     
@@ -49,7 +49,7 @@ class HybrisBackend extends CommerceBackend {
             },
 
             categories: {
-                uri: args => `catalogs/${cred.catalogId}/${cred.catalogVersion}/${ (args.id || args.slug) ? `categories/${(args.id || args.slug)}` : `categories/1` }`,
+                uri: args => `catalogs/${cred.catalogId}/${cred.catalogVersion}/categories/${(args.id || "1")}`,
                 mapper: this.mapCategory
             },
 
@@ -138,7 +138,13 @@ class HybrisBackend extends CommerceBackend {
     }
 
     async getCategory(parent, args, context, info) {
-        return _.first(_.get(await this.get('categories', args), 'results'))
+        if (args.id) {
+            return _.first(_.get(await this.get('categories', args), 'results'))
+        }
+        else if (args.slug) {
+            let categories = await this.getCategoryHierarchy(parent, args)
+            return _.find(categories, cat => cat.slug === args.slug)
+        }
     }
 }
 
