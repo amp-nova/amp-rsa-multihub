@@ -143,7 +143,16 @@ class HybrisBackend extends CommerceBackend {
         }
         else if (args.slug) {
             let categories = await this.getCategoryHierarchy(parent, args)
-            return _.find(categories, cat => cat.slug === args.slug)
+
+            // map them all by their slug, all the way down
+            let categoryMap = {}
+            let slugMap = category => {
+                categoryMap[category.slug] = category
+                _.each(category.children, slugMap)
+            }
+            _.each(categories, slugMap)
+
+            return categoryMap[args.slug]
         }
     }
 }
