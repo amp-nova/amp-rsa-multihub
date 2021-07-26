@@ -51,7 +51,7 @@ class CommerceToolsBackend extends CommerceBackend {
         super(cred, context)
         this.configs = {
             products: {
-                uri: args => `product-projections/search`,
+                uri: args => (args.id || args.slug) ? `product-projections` : `product-projections/search`,
                 args: { expand: ['categories[*]'] },
                 mapper: mapProduct,
                 queryArgs: args => {
