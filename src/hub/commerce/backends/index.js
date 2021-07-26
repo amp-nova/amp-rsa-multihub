@@ -51,7 +51,7 @@ class CommerceBackend {
         let url = this.getRequest(config, args)
 
         try {
-            if (cache.get(url)) {
+            if (false && cache.get(url)) {
                 console.log(`[    cac ] ${url}`)
                 return cache.get(url)
             }

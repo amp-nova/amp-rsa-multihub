@@ -51,7 +51,7 @@ class CommerceToolsBackend extends CommerceBackend {
         super(cred, context)
         this.configs = {
             products: {
-                uri: args => args.keyword ? `product-projections/search` : `product-projections`,
+                uri: args => `product-projections/search`,
                 args: { expand: ['categories[*]'] },
                 mapper: mapProduct,
                 queryArgs: args => {
@@ -138,10 +138,7 @@ class CommerceToolsBackend extends CommerceBackend {
             return category
         }
 
-        return _.map(
-            _.filter(categories, filter),
-            populateChildren
-        )
+        return _.map(_.filter(categories, filter), populateChildren)
     }
 
     async getProductsForCategory(parent, args) {
