@@ -106,9 +106,9 @@ class HybrisBackend extends CommerceBackend {
         return uri
     }
 
-    async translateResults(data, mapper = (args => x => x)) {
+    async translateResponse(data, mapper = (args => x => x)) {
         data.results = data.code ? [data] : (data.categories || data.products)
-        return await super.translateResults(data, mapper)
+        return await super.translateResponse(data, mapper)
     }
 
     async getCategoryHierarchy(parent, args) {

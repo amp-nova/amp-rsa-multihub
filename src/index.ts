@@ -38,6 +38,11 @@ let startServer = async() => {
     })
   })
 
+  app.get('/import', (req, res, next) => {
+    console.log(`foodawg`)
+    return res.status(200).send({ status: 'ok' })
+  })
+
   app.use(bodyParser.json())
 
   server.applyMiddleware({ app })

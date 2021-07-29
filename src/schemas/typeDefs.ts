@@ -67,6 +67,25 @@ module.exports.typeDefs = gql`
     total: Int
   }
 
+  input ProductInput {
+    name: String!
+    slug: String
+    sku: String
+    shortDescription: String
+    longDescription: String
+    variants: [VariantInput!]
+    images: [ImageInput]
+    categories: [String]
+  }
+
+  input VariantInput {
+    sku: String!
+    prices: PriceInput
+    defaultImage: ImageInput
+    images: [ImageInput]
+    attributes: [AttributeInput]
+  }
+
   type Product {
     id: String!
     name: String!
@@ -79,6 +98,13 @@ module.exports.typeDefs = gql`
     source: String!
   }
 
+  input CategoryInput {
+    id: String
+    name: String!
+    slug: String
+    parentId: String
+  }
+
   type Category {
     id: String!
     name: String!
@@ -89,14 +115,24 @@ module.exports.typeDefs = gql`
     source: String!
   }
 
+  input PriceInput {
+    sale: String
+    list: String
+  }
+
   type Prices {
     sale: String
     list: String
   }
 
+  input AttributeInput {
+    name: String!
+    value: String
+  }
+
   type Attribute {
     name: String!
-    value: String!
+    value: String
   }
 
   type Variant {
@@ -107,6 +143,12 @@ module.exports.typeDefs = gql`
     images: [Image!]
     attributes: [Attribute]
     attribute(name: String): String
+  }
+
+  input ImageInput {
+    title: String
+    alt: String
+    url: String!
   }
 
   type Image {
@@ -150,7 +192,13 @@ module.exports.typeDefs = gql`
     product(id: String, sku: String, slug: String, locale: String, currency: String): Product
     categoryHierarchy(locale: String, currency: String): [Category]
     category(id: String, slug: String, locale: String, currency: String): Category
-    source: String
     categories(limit: Int, offset: Int, locale: String, currency: String): CategoryResults
+    source: String
+  }
+
+  type Mutation {
+    createProduct(product: ProductInput): Product
+    deleteProduct(id: String): String
+    createCategory(category: CategoryInput): Category
   }
 `;

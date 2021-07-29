@@ -1,5 +1,6 @@
 const config = require('../../util/config')
 const _ = require('lodash')
+const chalk = require('chalk')
 
 const { SecretsManager } = require("@aws-sdk/client-secrets-manager");
 
@@ -8,6 +9,7 @@ let secretManager = new SecretsManager(config.hub)
 
 let getClient = async context => {
   try {
+    console.log(`looking up secret [ ${context.backendKey} ]`)
     let secret = await secretManager.getSecretValue({ SecretId: context.backendKey })
     let cred = JSON.parse(secret.SecretString)
     if (cred) {
@@ -39,5 +41,7 @@ module.exports = {
     let products = await (await getClient(context)).getProductsForCategory(parent, args, context, info)
     return _.filter(products, prod => _.isEmpty(args.query) || prod.name.toLowerCase().includes(args.query))
   },
-  getMeta: async (parent, args, context, info) => (await getClient(context)).getMeta(parent, args, context, info)
+  postProduct: async (parent, args, context, info) => (await getClient(context)).postProduct(parent, args, context, info),
+  deleteProduct: async (parent, args, context, info) => (await getClient(context)).deleteProduct(parent, args, context, info),
+  postCategory: async (parent, args, context, info) => (await getClient(context)).postCategory(parent, args, context, info)
 }
