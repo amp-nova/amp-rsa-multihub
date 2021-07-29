@@ -9,7 +9,6 @@ let secretManager = new SecretsManager(config.hub)
 
 let getClient = async context => {
   try {
-    console.log(`looking up secret [ ${context.backendKey} ]`)
     let secret = await secretManager.getSecretValue({ SecretId: context.backendKey })
     let cred = JSON.parse(secret.SecretString)
     if (cred) {
@@ -26,8 +25,7 @@ let getClient = async context => {
       throw new Error(`No commerce backend matches key [ ${key} ]. Please make sure you have set the 'x-commerce-backend-key' header.`)
     }
   } catch (error) {
-    console.error(`Error retrieving secret: ${error}`)
-    console.log(error.stack)
+    console.error(chalk.red(`Error retrieving secret: ${error}`))
   }
 }
 

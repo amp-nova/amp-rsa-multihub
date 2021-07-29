@@ -16,6 +16,7 @@
     "apollo-server-express": "^2.21.2",
     "aws-sdk": "^2.893.0",
     "axios": "^0.21.1",
+    "chalk": "^4.1.1",
     "express": "^4.17.1",
     "firebase-admin": "^9.6.0",
     "fs-extra": "^10.0.0",

@@ -1,6 +1,6 @@
 const _ = require('lodash')
-const axios = require('axios')
 const https = require('https')
+const request = require('../../util/short-term-rolling-cache')
 
 class Operation {
     constructor(args, cred) {
@@ -48,8 +48,6 @@ class Operation {
         let url = this.getRequest()
 
         try {
-            console.log(`[ ${method.padStart(6, ' ')} ] ${url}`)
-
             const httpsAgent = new https.Agent({ rejectUnauthorized: false });
 
             // if (this.args.body) {
@@ -57,7 +55,7 @@ class Operation {
             // }
 
             // next, execute the request with headers gotten from the backend
-            let response = await axios({ url, method, headers: await this.getHeaders(), httpsAgent, data: this.args.body })
+            let response = await request({ url, method, headers: await this.getHeaders(), httpsAgent, data: this.args.body })
 
             let x = await this.translateResponse(response.data, _.bind(this.mapOutput, this))
 

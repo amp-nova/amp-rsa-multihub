@@ -1,5 +1,7 @@
 const URI = require('urijs')
 const _ = require('lodash')
+const uuid = require('uuid')
+
 const Operation = require('../../../operations/operation')
 const { formatMoneyString } = require('../../../../util/locale-formatter')
 const { findCategory } = require('../../../../util/helpers')
@@ -62,8 +64,7 @@ class BigCommerceCategoryOperation extends BigCommerceOperation {
         super(args, cred)
         this.uri = `categories/tree`
         this.args = { 
-            ..._.omit(this.args, 'slug'),
-            limit: 500,
+            ...this.args,
             body: args.category && this.mapInput(args.category)
         }
     }
@@ -100,7 +101,12 @@ class BigCommerceCategoryOperation extends BigCommerceOperation {
 class BigCommerceProductOperation extends BigCommerceOperation {
     constructor(args, cred) {
         super(args, cred)
-        this.uri = args.id ? `products/${args.id}` : `products`
+
+        if (uuid.validate(this.args.id)) {
+            this.args.id = '5529'
+        }
+
+        this.uri = args.id ? `products/${this.args.id}` : `products`
         this.args = {
             ...this.args,
             include: 'images,variants',
