@@ -16,8 +16,7 @@ class BigCommerceBackend extends CommerceBackend {
     // override
     async getCategory(parent, args) {
         let hierarchy = await this.getCategoryHierarchy(parent, {})
-        let category = findCategory(hierarchy, args)
-        return category
+        return findCategory(hierarchy, args)
     }
 
     async getCategoryHierarchy(parent, args) {
