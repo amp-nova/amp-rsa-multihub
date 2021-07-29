@@ -1,6 +1,6 @@
 const _ = require('lodash')
 const https = require('https')
-const request = require('../../util/short-term-rolling-cache')
+const request = require('../../util/http/no-cache')
 
 class Operation {
     constructor(args, cred) {

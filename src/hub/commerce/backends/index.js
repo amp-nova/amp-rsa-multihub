@@ -33,6 +33,10 @@ class CommerceBackend {
         let operation = this.productOperation(args, this.cred)
         return await operation.delete()
     }
+    
+    async getImagesForVariant(parent, args) {
+        return parent.images
+    }
 
     getSource() {
         return `${this.cred.type}/${this.cred.id}`

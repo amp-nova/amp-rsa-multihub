@@ -25,11 +25,13 @@ class BigCommerceBackend extends CommerceBackend {
     }
 
     async getProductsForCategory(parent) {
-        // let x = await this.getProducts(parent, { "categories:in": parent.id })
-
-        // console.log(x)
-
+        // how to get products from child categories?
         return _.get(await this.getProducts(parent, { "categories:in": parent.id }), 'results')
+    }
+
+    async getImagesForVariant(parent) {
+        let imageSetNumber = _.get(_.find(parent.attributes, att => att.name.toLowerCase() === 'articlenumbermax'), 'value').padStart(6, '0')
+        return [{ url: `https://i8.amplience.net/s/willow/${imageSetNumber}` }]
     }
 }
 

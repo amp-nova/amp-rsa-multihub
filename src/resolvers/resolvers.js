@@ -1,4 +1,4 @@
-const _ = require('lodash')
+const _ = require('lodash');
 const commercehub = require('../hub/commerce')
 
 module.exports.resolvers = {
@@ -18,7 +18,8 @@ module.exports.resolvers = {
   },
   Variant: {
     attribute:          (parent, args) => _.get(_.find(parent.attributes, att => att.name.toLowerCase() === args.name.toLowerCase()), 'value'),
-    defaultImage:       (parent, args) => _.first(parent.images)
+    defaultImage:       (parent, args) => _.first(parent.images),
+    images:             commercehub.getImagesForVariant,
   },
   Mutation: {
     createProduct:      commercehub.postProduct,

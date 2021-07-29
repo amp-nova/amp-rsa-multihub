@@ -101,11 +101,6 @@ class BigCommerceCategoryOperation extends BigCommerceOperation {
 class BigCommerceProductOperation extends BigCommerceOperation {
     constructor(args, cred) {
         super(args, cred)
-
-        if (uuid.validate(this.args.id)) {
-            this.args.id = '5529'
-        }
-
         this.uri = args.id ? `products/${this.args.id}` : `products`
         this.args = {
             ...this.args,

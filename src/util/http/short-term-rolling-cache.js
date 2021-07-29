@@ -1,7 +1,7 @@
 const axios = require('axios')
 const _ = require('lodash')
 const chalk = require('chalk')
-const logger = require('./logger')
+const logger = require('../logger')
 
 let cache = {}
 
