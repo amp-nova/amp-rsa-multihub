@@ -9,7 +9,7 @@ let secretManager = new SecretsManager(config.hub)
 
 let getClient = async context => {
   try {
-    console.log(await secretManager.listSecrets({}))
+    // console.log(await secretManager.listSecrets({}))
 
     let secret = await secretManager.getSecretValue({ SecretId: context.backendKey })
     let cred = JSON.parse(secret.SecretString)
