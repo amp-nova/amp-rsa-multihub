@@ -9,7 +9,11 @@ let secretManager = new SecretsManager(config.hub)
 
 let getClient = async context => {
   try {
-    // console.log(await secretManager.listSecrets({}))
+    try {      
+      console.log(await secretManager.listSecrets({}))
+    } catch (error) {
+      console.error(chalk.red(`Error listing secrets: ${error}`))      
+    }
 
     let secret = await secretManager.getSecretValue({ SecretId: context.backendKey })
     let cred = JSON.parse(secret.SecretString)
@@ -20,8 +24,9 @@ let getClient = async context => {
         type: credType,
         id: credId
       }
-      let backend = require(`./backends/${cred.type}`)
-      return new backend(cred, context)
+      let backendType = require(`./backends/${cred.type}`)
+      let backend = new backendType(cred, context)
+      return backend
     }
     else {
       throw new Error(`No commerce backend matches key [ ${key} ]. Please make sure you have set the 'x-commerce-backend-key' header.`)
