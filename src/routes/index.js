@@ -1,6 +1,13 @@
 const fs = require('fs-extra')
 const express = require('express')
 const router = express.Router()
+const _ = require('lodash')
+
+const config = require('../util/config')
+const { SecretsManager } = require("@aws-sdk/client-secrets-manager");
+
+// note: if config.hub is undefined, credentials need to be available elsewhere.
+let secretManager = new SecretsManager(config.hub)
 
 router.get('/check', (req, res, next) => {
     res.status(200).send({ status: 'ok' })
@@ -16,6 +23,17 @@ router.get('/meta', (req, res, next) => {
 
 router.get('/import', (req, res, next) => {
     return res.status(200).send({ status: 'ok' })
+})
+
+router.get('/keys', async (req, res, next) => {
+    try {
+        let secretsList = await secretManager.listSecrets({})
+        res.status(200).send({
+            keys: _.map(secretsList.SecretList, 'Name')
+        })
+    } catch (error) {
+        console.error(error)
+    }
 })
 
 module.exports = router
