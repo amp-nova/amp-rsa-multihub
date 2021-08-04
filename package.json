@@ -1,5 +1,5 @@
 {
-  "name": "amp-rsa-commercehub",
+  "name": "amp-rsa-multihub",
   "scripts": {
     "dev": "nodemon src/index.ts --watch src --ext ts,json,js",
     "clean": "rimraf dist",
