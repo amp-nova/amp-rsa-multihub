@@ -1,6 +1,5 @@
 const URI = require('urijs')
 const _ = require('lodash')
-const uuid = require('uuid')
 
 const Operation = require('../../../operations/operation')
 const { formatMoneyString } = require('../../../../util/locale-formatter')
@@ -11,15 +10,19 @@ const slugify = require('slugify')
 require('../../../../util/helpers')
 
 class BigCommerceOperation extends Operation {
-    getRequestURL() {
-        let uri = new URI(`${this.cred.apiUrl}/stores/${this.cred.storeHash}/v3/catalog/${this.uri}`)
+    getBaseURL() {
+        return `${this.cred.apiUrl}/stores/${this.cred.storeHash}/v3/catalog`
+    }
 
-        if (this.args && this.args.limit && this.args.offset) {
-            this.args.page = Math.floor(this.args.offset / this.args.limit + 1)
+    getRequest(args) {
+        let uri = new URI(this.getURL(args))
+
+        if (args && args.limit && args.offset) {
+            args.page = Math.floor(args.offset / args.limit + 1)
             // delete args.offset
         }
 
-        let queryArgs = _.omit(this.args, [
+        let queryArgs = _.omit(args, [
             'locale',
             'offset',
             'language',
@@ -28,11 +31,12 @@ class BigCommerceOperation extends Operation {
             'category',
             'product',
             'body',
-            'slug'
+            'slug',
+            'method'
         ])
 
         uri.addQuery(queryArgs)
-        return uri
+        return uri.toString()
     }
     
     async translateResponse(response, mapper = x => x) {
@@ -52,7 +56,7 @@ class BigCommerceOperation extends Operation {
 
     async getHeaders() {
         return {
-            'X-Auth-Token': this.cred.apiToken ,
+            'X-Auth-Token': this.cred.apiToken,
             'Content-Type': `application/json` 
         }
     }
@@ -60,24 +64,27 @@ class BigCommerceOperation extends Operation {
 
 // category operation
 class BigCommerceCategoryOperation extends BigCommerceOperation {
-    constructor(args, cred) {
-        super(args, cred)
-        this.uri = `categories/tree`
-        this.args = { 
-            ...this.args,
-            body: args.category && this.mapInput(args.category)
-        }
+    getRequestPath(args) {
+        return `categories/tree`
     }
 
-    mapInput(input) {
+    async post(args) {
+        args = {
+            ...args,
+            body: import(args.category)
+        }
+        return await super.post(args)
+    }
+
+    import(input) {
         return {
             name: input.name,
             parent_id: input.parentId
         }
     }
 
-    mapOutput(cat) {
-        return this.mapCategory()(cat)
+    export(args) {
+        return this.mapCategory()
     }
 
     mapCategory(parentSlug) {
@@ -99,18 +106,28 @@ class BigCommerceCategoryOperation extends BigCommerceOperation {
 
 // product operation
 class BigCommerceProductOperation extends BigCommerceOperation {
-    constructor(args, cred) {
-        super(args, cred)
-        this.uri = args.id ? `products/${this.args.id}` : `products`
-        this.args = {
-            ...this.args,
-            include: 'images,variants',
-            body: args.product && this.mapInput(args.product)
-        }
+    getRequestPath(args) {
+        return args.id ? `products/${args.id}` : `products`
     }
 
-    mapOutput(prod) {
-        return {
+    async get(args) {
+        args = {
+            ...args,
+            include: 'images,variants'
+        }
+        return await super.get(args)
+    }
+
+    async post(args) {
+        args = {
+            ...args,
+            body: args.product && this.import(args.product)
+        }
+        return await super.post(args)
+    }
+
+    export(args) {
+        return prod => ({
             ...prod,
             shortDescription: prod.description,
             longDescription: prod.description,
@@ -125,14 +142,12 @@ class BigCommerceProductOperation extends BigCommerceOperation {
                     name: opt.option_display_name.toLowerCase(),
                     value: opt.label
                 })),
-                images: variant.image_url
-                    ? [{ url: variant.image_url }]
-                    : _.map(prod.images, mapImage)
+                images: variant.image_url ? [{ url: variant.image_url }] : _.map(prod.images, mapImage)
             }))
-        }
+        })
     }
 
-    mapInput(input) {
+    import(input) {
         return {
             // required BC fields
             name: input.name,
@@ -155,17 +170,17 @@ class BigCommerceProductOperation extends BigCommerceOperation {
     }
 
     async postProcessor(products) {
-        let operation = new BigCommerceCategoryOperation({}, this.cred)
-        let categories = _.get(await operation.get(), 'results')
-        _.each(products, prod => {
-            prod.categories = _.map(prod.categories, id => findCategory(categories, { id: `${id}` }))
-        })
-        return products
+        let operation = new BigCommerceCategoryOperation(this.cred)
+        let categories = (await operation.get({})).getResults()
+        return _.map(products, prod => ({
+            ...prod,
+            categories: _.map(prod.categories, id => findCategory(categories, { id: `${id}` }))
+        }))
     }
 }
 // end product operations
 
 module.exports = {
-    productOperation: (args, cred) => new BigCommerceProductOperation(args, cred),
-    categoryOperation: (args, cred) => new BigCommerceCategoryOperation(args, cred),
+    productOperation: cred => new BigCommerceProductOperation(cred),
+    categoryOperation: cred => new BigCommerceCategoryOperation(cred),
 }

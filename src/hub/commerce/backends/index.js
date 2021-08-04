@@ -1,40 +1,46 @@
 const _ = require('lodash')
 const Operation = require('../../operations/operation')
 
+let defaultArgs = {
+    currency: 'USD',
+    locale: 'en-US',
+    language: 'en',
+    country: 'US'
+}
+
 class CommerceBackend {
     constructor(cred, context) {
         this.cred = cred
         this.context = context
-        this.productOperation = (args, cred) => new Operation(args, cred)
-        this.categoryOperation = (args, cred) => new Operation(args, cred)
+        this.productOperation = new Operation(cred)
+        this.categoryOperation = new Operation(cred)
     }
 
-    async getCategory(parent, args, context, info) {
-        let operation = this.categoryOperation(args, this.cred)
-        return await operation.get()
+    async getCategory(args) {
+        return await this.categoryOperation.get({ ...defaultArgs, ...args })
     }
 
-    async postCategory(parent, args, context, info) {
-        let operation = this.categoryOperation(args, this.cred)
-        return await operation.post()
+    async postCategory(args) {
+        return await this.categoryOperation.post({ ...defaultArgs, ...args })
     }
 
-    async getProducts(parent, args, context, info) {
-        let operation = this.productOperation(args, this.cred)
-        return await operation.get()
+    async getProduct(args) {
+        return await this.productOperation.get({ ...defaultArgs, ...args })
     }
 
-    async postProduct(parent, args, context, info) {
-        let operation = this.productOperation(args, this.cred)
-        return await operation.post()
+    async getProducts(args) {
+        return await this.productOperation.get({ ...defaultArgs, ...args })
     }
 
-    async deleteProduct(parent, args, context, info) {
-        let operation = this.productOperation(args, this.cred)
-        return await operation.delete()
+    async postProduct(args) {
+        return await this.productOperation.post({ ...defaultArgs, ...args })
+    }
+
+    async deleteProduct(args) {
+        return await this.productOperation.delete({ ...defaultArgs, ...args })
     }
     
-    async getImagesForVariant(parent, args) {
+    async getImagesForVariant(parent) {
         return parent.images
     }
 

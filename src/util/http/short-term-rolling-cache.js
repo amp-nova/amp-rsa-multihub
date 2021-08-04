@@ -1,16 +1,15 @@
 const axios = require('axios')
 const _ = require('lodash')
-const chalk = require('chalk')
 const logger = require('../logger')
 
 let cache = {}
 
-let timer = url => setTimeout(() => {
+let timer = (url, seconds = 10) => setTimeout(() => {
     logger.debug(`decached [${url}]`)
     delete cache[url] 
-}, 10000)
+}, seconds * 1000)
 
-module.exports = async (request) => {
+module.exports = seconds => async (request) => {
     switch (request.method) {
         case 'get':
             if (cache[request.url]) {
@@ -26,7 +25,7 @@ module.exports = async (request) => {
                 let x = await axios(request)
                 cache[request.url] = {
                     response: x.data,
-                    timeout: timer(request.url)
+                    timeout: timer(request.url, seconds)
                 }
                 return x
             }

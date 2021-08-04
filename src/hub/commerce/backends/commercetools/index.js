@@ -8,19 +8,17 @@ const { productOperation, categoryOperation } = require('./operations')
 class CommerceToolsBackend extends CommerceBackend {
     constructor(cred, context) {
         super(cred, context)
-        this.productOperation = productOperation
-        this.categoryOperation = categoryOperation
+        this.productOperation = productOperation(cred)
+        this.categoryOperation = categoryOperation(cred)
     }
 
-    async getCategoryHierarchy(parent, args) {
+    async getCategoryHierarchy(args) {
         let filter = 
             args.id && (c => c.id === args.id) ||
             args.slug && (c => c.slug === args.slug) ||
             (c => c.ancestors.length === 0)
 
-        let operation = categoryOperation(args, this.cred)
-        let categories = _.get(await operation.get(), 'results')
-
+        let categories = (await this.categoryOperation.get(args)).getResults()
         let populateChildren = category => {
             category.children = _.filter(categories, c => c.parent && c.parent.id === category.id)
             _.each(category.children, populateChildren)
@@ -31,11 +29,10 @@ class CommerceToolsBackend extends CommerceBackend {
     }
 
     async getProductsForCategory(parent, args) {
-        let operation = productOperation({
+        return (await this.productOperation.get({
             ...args,
             filter: args.full ? [`categories.id: subtree("${parent.id}")`] : [`categories.id: "${parent.id}"`]
-        }, this.cred)
-        return _.get(await operation.get(), 'results')
+        })).getResults()
     }
 }
 

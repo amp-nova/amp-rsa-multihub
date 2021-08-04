@@ -72,19 +72,14 @@ export class RsaMultihubStack extends Stack {
       redirectHTTP: true
     });
 
-    // rsaMultihubTaskDefinition.addToTaskRolePolicy(
-    //   new PolicyStatement({
-    //     actions: [
-    //       "s3:DeleteObject",
-    //       "s3:GetObject",
-    //       "s3:ListBucket",
-    //       "s3:PutObject"          
-    //     ],
-    //     resources: [
-    //       "arn:aws:s3:::amp-rsa-multihub-logs"
-    //     ]
-    //   })
-    // );
+    rsaMultihubTaskDefinition.addToExecutionRolePolicy(
+      new PolicyStatement({
+        actions: [
+          "secretsmanager:ListSecrets"
+        ],
+        resources: ["*"]
+      })
+    );
 
     rsaMultihubService.targetGroup.configureHealthCheck({
       path: "/check",

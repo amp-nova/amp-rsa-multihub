@@ -1,4 +1,3 @@
-
 // 3rd party libs
 const _ = require('lodash')
 
@@ -10,34 +9,33 @@ const { formatMoneyString } = require('../../../../util/locale-formatter')
 const mapImage = image => image && ({ url: image.url })
 
 class CommerceToolsOperation extends Operation {
-    constructor(args, cred) {
-        super(args, cred)
+    constructor(cred) {
+        super(cred)
         this.accessToken = null
     }
 
-    getRequest() {
-        let url = this.getRequestURL()
-        return url.toString()
+    getBaseURL() {
+        return `${this.cred.api_url}/${this.cred.project}`
     }
 
-    getRequestURL() {
-        let uri = new URI(`${this.cred.api_url}/${this.cred.project}/${this.uri}`)
+    getRequest(args) {
+        let uri = new URI(this.getURL(args))
 
         let query = {
-            limit: this.args.limit,
-            offset: this.args.offset,
-            where: this.args.where,
-            filter: this.args.filter,
-            ...this.args,
+            limit: args.limit,
+            offset: args.offset,
+            where: args.where,
+            filter: args.filter,
+            ...args,
         }
 
         // add any filters based on the args
         uri.addQuery(query)
 
-        return uri
+        return uri.toString()
     }
 
-    localize(text) {
+    localize(text, args) {
         if (text.label) {
             text = text.label
         }
@@ -46,7 +44,7 @@ class CommerceToolsOperation extends Operation {
             return text
         }
     
-        return text[this.args.locale] || text[this.args.language] || text['en'] || text[Object.keys(text)[0]]
+        return text[args.locale] || text[args.language] || text['en'] || text[Object.keys(text)[0]]
     }
 
     async authenticate() {
@@ -88,106 +86,90 @@ class CommerceToolsOperation extends Operation {
 
 // category operation
 class CommerceToolsCategoryOperation extends CommerceToolsOperation {
-    constructor(args, cred) {
-        super(args, cred)
-        this.uri = `categories`
-
-        this.args = { 
-            ...this.args,
-            limit: 500,
-            where: 
-                this.args.slug && [`slug(${this.args.language}="${this.args.slug}") or slug(en="${this.args.slug}")`] ||
-                this.args.id && [`id="${this.args.id}"`]
-        }
+    export(args) {
+        return (category) => ({
+            ...category,
+            name: this.localize(category.name, args),
+            slug: this.localize(category.slug, args)
+        })
     }
 
-    mapOutput(category) {
-        return {
-            ...category,
-            name: this.localize(category.name),
-            slug: this.localize(category.slug)
+    getRequestPath(args) {
+        return `categories`
+    }
+
+    async get(args) {
+        args = { 
+            ...args,
+            limit: 500,
+            where: 
+                args.slug && [`slug(${args.language}="${args.slug}") or slug(en="${args.slug}")`] ||
+                args.id && [`id="${args.id}"`]
         }
+        return await super.get(args)
     }
 }
 // end category operations
 
 // product operation
 class CommerceToolsProductOperation extends CommerceToolsOperation {
-    constructor(args, cred) {
-        super(args, cred)
-        this.uri = (args.id || args.slug) ? `product-projections` : `product-projections/search`
-        this.args = {
-            ...this.args,
-            expand: ['categories[*]'],
-            priceCountry: this.args.country,
-            priceCurrency: this.args.currency,
-            [`text.${this.args.language}`]: this.args.keyword,
-            where: 
-                this.args.id && [`id="${this.args.id}"`] ||
-                this.args.slug && [`slug(${this.args.language}="${this.args.slug}") or slug(en="${this.args.slug}")`] ||
-                this.args.sku && [`variants(sku="${this.args.sku}")`]
-        }
+    getRequestPath(args) {
+        return args.keyword ? `product-projections/search` : `product-projections`
     }
 
-    mapOutput(product) {
-        return {
+    async get(args) {
+        args = {
+            ...args,
+            expand: ['categories[*]'],
+            priceCountry: args.country,
+            priceCurrency: args.currency,
+            [`text.${args.language}`]: args.keyword,
+            where: 
+                args.id && [`id="${args.id}"`] ||
+                args.slug && [`slug(${args.language}="${args.slug}") or slug(en="${args.slug}")`] ||
+                args.sku && [`variants(sku="${args.sku}")`]
+        }
+        return await super.get(args)
+    }
+
+    async post(args) {
+        args = {
+            ...args,
+            body: import(args.product)
+        }
+        return await super.post(args)
+    }
+
+    export(args) {
+        return product => ({
             ...product,
-            name: this.localize(product.name),
-            slug: this.localize(product.slug),
-            longDescription: product.metaDescription && this.localize(product.metaDescription),
+            name: this.localize(product.name, args),
+            slug: this.localize(product.slug, args),
+            longDescription: product.metaDescription && this.localize(product.metaDescription, args),
             variants: _.map(_.concat(product.variants, [product.masterVariant]), variant => ({
                 ...variant,
-                prices: { list: formatMoneyString(_.get(variant.scopedPrice || _.first(variant.prices), 'value.centAmount') / 100, this.args.locale, this.args.currency) },
+                prices: { list: formatMoneyString(_.get(variant.scopedPrice || _.first(variant.prices), 'value.centAmount') / 100, args.locale, args.currency) },
                 images: _.map(variant.images, mapImage),
-                attributes: _.map(variant.attributes, att => ({ name: att.name, value: this.localize(att.value) }))
+                attributes: _.map(variant.attributes, att => ({ name: att.name, value: this.localize(att.value, args) }))
             })),
             categories: _.map(product.categories, cat => {
                 let category = cat.obj || cat
                 return {
                     ...category,
-                    name: this.localize(category.name),
-                    slug: this.localize(category.slug)
+                    name: this.localize(category.name, args),
+                    slug: this.localize(category.slug, args)
                 }            
             })
-        }
+        })
     }
 
-    mapInput(input) {
+    import(input) {
         return {
         }
     }
 }
 
-class CommerceToolsGetProductOperation extends CommerceToolsProductOperation {
-    constructor(args, cred) {
-        super(args, cred)
-
-        this.args = {
-            ...this.args,
-            expand: ['categories[*]'],
-            priceCountry: this.args.country,
-            priceCurrency: this.args.currency,
-            [`text.${this.args.language}`]: this.args.keyword,
-            where: 
-                this.args.id && [`id="${this.args.id}"`] ||
-                this.args.slug && [`slug(${this.args.language}="${this.args.slug}") or slug(en="${this.args.slug}")`] ||
-                this.args.sku && [`variants(sku="${this.args.sku}")`]
-        }
-    }
-}
-
-class CommerceToolsPutProductOperation extends CommerceToolsProductOperation {
-    constructor(args, cred) {
-        super(args, cred)
-        this.method = 'post'
-        this.args = {
-            ...this.args,
-            body: this.mapInput(args.product)
-        }
-    }
-}
-
 module.exports = {
-    productOperation: (args, cred) => new CommerceToolsProductOperation(args, cred),
-    categoryOperation: (args, cred) => new CommerceToolsCategoryOperation(args, cred),
+    productOperation: cred => new CommerceToolsProductOperation(cred),
+    categoryOperation: cred => new CommerceToolsCategoryOperation(cred),
 }

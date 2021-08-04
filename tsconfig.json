@@ -1,5 +1,7 @@
 {
   "compilerOptions": {
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true,
     "baseUrl": "./src",
     "outDir": "dist",
     "allowJs": true,
@@ -7,6 +9,7 @@
     "target": "es2019",
     "module": "commonjs",
     "resolveJsonModule": true,
+    "lib": ["es2019", "esnext.asynciterable"],
     "paths": {
       "@/*": ["src/*"]
     }

@@ -1,45 +1,46 @@
-const { gql } = require('apollo-server');
+const { gql } = require('apollo-server')
+import "../types"
 
-type Product = {
+type ProductType = {
   id: string,
   slug?: string,
   name: string,
   shortDescription?: string,
   longDescription?: string,
-  categories?: Category[],
-  variants: Variant[],
-  attributes: Attribute[],
+  categories?: CategoryType[],
+  variants: VariantType[],
+  attributes: AttributeType[],
   raw: string
 }
 
-type Attribute = {
+type AttributeType = {
   name: string,
   value: string
 }
 
-type Variant = {
+type VariantType = {
   id: string,
   sku: string,
   prices: Prices,
-  defaultImage?: Image,
-  images: Image[]
+  defaultImage?: ImageType,
+  images: ImageType[]
 }
 
-type Image = {
+type ImageType = {
   url: string
 }
 
-type Category = {
+type CategoryType = {
   id: string,
   name: string,
   slug: string,
-  children: Category[],
-  products: Product[],
+  children: CategoryType[],
+  products: ProductType[],
   raw: string
 }
 
-type SearchResult = {
-  products: Product[]
+type SearchResultType = {
+  products: ProductType[]
 }
 
 type Prices = {

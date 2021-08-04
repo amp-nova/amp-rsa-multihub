@@ -9,12 +9,6 @@ let secretManager = new SecretsManager(config.hub)
 
 let getClient = async context => {
   try {
-    try {      
-      console.log(await secretManager.listSecrets({}))
-    } catch (error) {
-      console.error(chalk.red(`Error listing secrets: ${error}`))      
-    }
-
     let secret = await secretManager.getSecretValue({ SecretId: context.backendKey })
     let cred = JSON.parse(secret.SecretString)
     if (cred) {
@@ -36,20 +30,6 @@ let getClient = async context => {
   }
 }
 
-// author's note: i hate this implementation and wish it were more elegant.  proxy objects maybe?
-module.exports = {
-  getProduct:             async (parent, args, context, info) => (await getClient(context)).getProduct(parent, args, context, info),
-  getProducts:            async (parent, args, context, info) => (await getClient(context)).getProducts(parent, args, context, info),
-  postProduct:            async (parent, args, context, info) => (await getClient(context)).postProduct(parent, args, context, info),
-  deleteProduct:          async (parent, args, context, info) => (await getClient(context)).deleteProduct(parent, args, context, info),
-  getImagesForVariant:    async (parent, args, context, info) => (await getClient(context)).getImagesForVariant(parent, args, context, info),
-
-  getCategory:            async (parent, args, context, info) => (await getClient(context)).getCategory(parent, args, context, info),
-  getCategoryHierarchy:   async (parent, args, context, info) => (await getClient(context)).getCategoryHierarchy(parent, args, context, info),
-  postCategory:           async (parent, args, context, info) => (await getClient(context)).postCategory(parent, args, context, info),
-
-  getProductsForCategory: async (parent, args, context, info) => {
-    let products = await (await getClient(context)).getProductsForCategory(parent, args, context, info)
-    return _.filter(products, prod => _.isEmpty(args.query) || prod.name.toLowerCase().includes(args.query))
-  }
+module.exports = async context => {
+  return await getClient(context)
 }
