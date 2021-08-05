@@ -12,6 +12,7 @@
     "@aws-sdk/client-dynamodb": "^3.13.1",
     "@aws-sdk/client-s3": "^3.17.0",
     "@aws-sdk/client-secrets-manager": "^3.13.1",
+    "amp-rsa-gql": "github:amp-nova/amp-rsa-gql",
     "apollo-server": "^2.21.1",
     "apollo-server-express": "^2.21.2",
     "aws-sdk": "^2.893.0",
