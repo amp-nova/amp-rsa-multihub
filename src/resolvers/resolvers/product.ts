@@ -1,7 +1,8 @@
 import { Args, ArgsType, Ctx, Query, Resolver, Field, FieldResolver, Root } from 'type-graphql'
-import { Product, Variant, ProductResults, ProductImage } from '../../types'
 import { CommonArgs, ListArgs, Context } from './common'
 import _ from 'lodash'
+
+import { Product, ProductResults } from 'amp-rsa-gql'
 
 @ArgsType()
 class GetProductsArgs extends ListArgs {

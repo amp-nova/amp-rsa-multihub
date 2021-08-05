@@ -114,7 +114,7 @@ class CommerceToolsCategoryOperation extends CommerceToolsOperation {
 // product operation
 class CommerceToolsProductOperation extends CommerceToolsOperation {
     getRequestPath(args) {
-        return args.keyword ? `product-projections/search` : `product-projections`
+        return (args.keyword || args.filter) ? `product-projections/search` : `product-projections`
     }
 
     async get(args) {
@@ -146,12 +146,16 @@ class CommerceToolsProductOperation extends CommerceToolsOperation {
             name: this.localize(product.name, args),
             slug: this.localize(product.slug, args),
             longDescription: product.metaDescription && this.localize(product.metaDescription, args),
-            variants: _.map(_.concat(product.variants, [product.masterVariant]), variant => ({
-                ...variant,
-                prices: { list: formatMoneyString(_.get(variant.scopedPrice || _.first(variant.prices), 'value.centAmount') / 100, args.locale, args.currency) },
-                images: _.map(variant.images, mapImage),
-                attributes: _.map(variant.attributes, att => ({ name: att.name, value: this.localize(att.value, args) }))
-            })),
+            variants: _.map(_.concat(product.variants, [product.masterVariant]), variant => { 
+                console.log(product)
+                return {
+                    ...variant,
+                    sku: variant.sku || product.key,
+                    prices: { list: formatMoneyString(_.get(variant.scopedPrice || _.first(variant.prices), 'value.centAmount') / 100, args.locale, args.currency) },
+                    images: _.map(variant.images, mapImage),
+                    attributes: _.map(variant.attributes, att => ({ name: att.name, value: this.localize(att.value, args) }))
+                }
+            }),
             categories: _.map(product.categories, cat => {
                 let category = cat.obj || cat
                 return {

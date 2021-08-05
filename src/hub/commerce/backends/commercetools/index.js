@@ -31,7 +31,7 @@ class CommerceToolsBackend extends CommerceBackend {
     async getProductsForCategory(parent, args) {
         return (await this.productOperation.get({
             ...args,
-            filter: args.full ? [`categories.id: subtree("${parent.id}")`] : [`categories.id: "${parent.id}"`]
+            filter: `categories.id: subtree("${parent.id}")`
         })).getResults()
     }
 }

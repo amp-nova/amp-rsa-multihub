@@ -1,8 +1,9 @@
 import { Args, ArgsType, Ctx, Query, Resolver, Field, FieldResolver, Root } from 'type-graphql'
-import { Category } from '../../types'
 import { CommonArgs, Context } from './common'
 import _ from 'lodash'
 import { bool } from 'aws-sdk/clients/signer'
+
+import { Category } from 'amp-rsa-gql'
 
 @ArgsType()
 class GetCategoryArgs extends CommonArgs {

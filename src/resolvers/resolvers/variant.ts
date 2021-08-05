@@ -1,6 +1,7 @@
 import { Args, ArgsType, Resolver, Field, FieldResolver, Root } from 'type-graphql'
-import { Variant, ProductImage } from '../../types'
 import _ from 'lodash';
+
+import { Variant, ProductImage } from 'amp-rsa-gql'
 
 @ArgsType()
 class GetAttributeArgs {
@@ -10,7 +11,7 @@ class GetAttributeArgs {
 
 @Resolver(Variant)
 export class VariantResolver {
-    @FieldResolver(returns => String)
+    @FieldResolver(returns => String, { nullable: true })
     async attribute(@Root() variant: Variant, @Args() args: GetAttributeArgs) {
         return _.get(_.find(variant.attributes, att => att.name.toLowerCase() === args.name.toLowerCase()), 'value')
     }
