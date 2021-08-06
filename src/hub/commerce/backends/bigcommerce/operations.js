@@ -143,7 +143,8 @@ class BigCommerceProductOperation extends BigCommerceOperation {
                     value: opt.label
                 })),
                 images: variant.image_url ? [{ url: variant.image_url }] : _.map(prod.images, mapImage)
-            }))
+            })),
+            productType: 'product'
         })
     }
 
@@ -169,13 +170,15 @@ class BigCommerceProductOperation extends BigCommerceOperation {
         }
     }
 
-    async postProcessor(products) {
-        let operation = new BigCommerceCategoryOperation(this.cred)
-        let categories = (await operation.get({})).getResults()
-        return _.map(products, prod => ({
-            ...prod,
-            categories: _.map(prod.categories, id => findCategory(categories, { id: `${id}` }))
-        }))
+    postProcessor(args) {
+        return async products => {
+            let operation = new BigCommerceCategoryOperation(this.cred)
+            let categories = (await operation.get({})).getResults()
+            return _.map(products, prod => ({
+                ...prod,
+                categories: _.map(prod.categories, id => findCategory(categories, { id: `${id}` }))
+            }))
+        }
     }
 }
 // end product operations

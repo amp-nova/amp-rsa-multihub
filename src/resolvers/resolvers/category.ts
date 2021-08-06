@@ -18,6 +18,9 @@ class GetCategoryArgs extends CommonArgs {
 class GetCategoryProductArgs extends CommonArgs {
     @Field({ nullable: true })
     full: bool
+
+    @Field({ nullable: true })
+    customerSegment: string
 }
 
 @Resolver(Category)

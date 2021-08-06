@@ -110,7 +110,8 @@ class HybrisProductOperation extends HybrisOperation {
                 prices: { list: prod.price && prod.price.formattedValue },
                 images: [{ url: `${this.cred.imageUrlFormat.replace("{{id}}", prod.code)}` }],
                 defaultImage: { url: `${this.cred.imageUrlFormat.replace("{{id}}", prod.code)}` }
-            }]
+            }],
+            productType: 'product'
         })
     }
 

@@ -11,8 +11,8 @@ class Operation {
         return native
     }
 
-    export(native) {
-        return native
+    export(args) {
+        return native => native
     }
 
     async get(args) {
@@ -48,6 +48,10 @@ class Operation {
         return url.toString()
     }
 
+    postProcessor(args) {
+        return native => native
+    }
+
     async request(args) {
         // get the URL from the backend
         let url = this.getRequest(args)
@@ -68,7 +72,7 @@ class Operation {
             // console.log(JSON.stringify(x.results))
 
             if (x) {
-                let px = this.postProcessor && _.bind(this.postProcessor, this)
+                let px = await this.postProcessor(args)
                 if (px) {
                     x.results = await px(x.results)
                 }

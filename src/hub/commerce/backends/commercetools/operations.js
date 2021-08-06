@@ -3,6 +3,8 @@ const _ = require('lodash')
 
 const URI = require('urijs');
 const axios = require('axios')
+const currency = require('currency.js')
+
 const Operation = require('../../../operations/operation')
 
 const { formatMoneyString } = require('../../../../util/locale-formatter')
@@ -111,6 +113,14 @@ class CommerceToolsCategoryOperation extends CommerceToolsOperation {
 }
 // end category operations
 
+// cart discount operation
+class CommerceToolsCartDiscountOperation extends CommerceToolsOperation {
+    getRequestPath(args) {
+        return `cart-discounts`
+    }
+}
+// end cart discount operations
+
 // product operation
 class CommerceToolsProductOperation extends CommerceToolsOperation {
     getRequestPath(args) {
@@ -147,7 +157,6 @@ class CommerceToolsProductOperation extends CommerceToolsOperation {
             slug: this.localize(product.slug, args),
             longDescription: product.metaDescription && this.localize(product.metaDescription, args),
             variants: _.map(_.concat(product.variants, [product.masterVariant]), variant => { 
-                console.log(product)
                 return {
                     ...variant,
                     sku: variant.sku || product.key,
@@ -163,8 +172,41 @@ class CommerceToolsProductOperation extends CommerceToolsOperation {
                     name: this.localize(category.name, args),
                     slug: this.localize(category.slug, args)
                 }            
-            })
+            }),
+            productType: product.productType.id
         })
+    }
+
+    async postProcessor(args) {
+        let discountOperation = new CommerceToolsCartDiscountOperation(this.cred)
+        let cartDiscounts = (await discountOperation.get({})).getResults()
+        let applicableDiscounts = _.filter(cartDiscounts, cd => args.customerSegment && cd.cartPredicate === `customer.customerGroup.key = "${args.customerSegment.toUpperCase()}"`)
+
+        return async products => {
+            return _.map(products, product => {
+                return {
+                    ...product,
+                    variants: _.map(product.variants, variant => {
+                        let sale = currency(variant.prices.list).value
+
+                        _.each(applicableDiscounts, discount => {
+                            if (discount.target.type === 'lineItems') {
+                                let [predicateKey, predicateValue] = discount.target.predicate.split(" = ")
+                                if (discount.target.predicate === '1 = 1' || (predicateKey === 'productType.id' && `"${product.productType}"` === predicateValue)) {
+                                    if (discount.value.type === 'relative') {
+                                        // permyriad is pct off * 10000
+                                        sale = sale * (1 - discount.value.permyriad / 10000)
+                                    }
+                                }
+                            }
+                        })
+
+                        variant.prices.sale = currency(sale).format()
+                        return variant
+                    })
+                }
+            })
+        }
     }
 
     import(input) {

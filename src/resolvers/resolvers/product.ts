@@ -8,6 +8,9 @@ import { Product, ProductResults } from 'amp-rsa-gql'
 class GetProductsArgs extends ListArgs {
     @Field({ nullable: true })
     keyword: string
+
+    @Field({ nullable: true })
+    customerSegment: string
 }
 
 @ArgsType()
@@ -20,6 +23,9 @@ class GetProductArgs extends CommonArgs {
 
     @Field({ nullable: true })
     slug: string
+
+    @Field({ nullable: true })
+    customerSegment: string
 }
 
 @Resolver(Product)
