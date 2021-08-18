@@ -1,27 +1,6 @@
-import { Args, ArgsType, Ctx, Query, Resolver, Field, FieldResolver, Root } from 'type-graphql'
-import { CommonArgs, Context } from './common'
 import _ from 'lodash'
-import { bool } from 'aws-sdk/clients/signer'
-
-import { Category } from 'amp-rsa-gql'
-
-@ArgsType()
-class GetCategoryArgs extends CommonArgs {
-    @Field({ nullable: true })
-    id: string
-
-    @Field({ nullable: true })
-    slug: string
-}
-
-@ArgsType()
-class GetCategoryProductArgs extends CommonArgs {
-    @Field({ nullable: true })
-    full: bool
-
-    @Field({ nullable: true })
-    customerSegment: string
-}
+import { Args, Ctx, Query, Resolver, FieldResolver, Root } from 'type-graphql'
+import { Category, GetCategoryArgs, GetCategoryProductArgs, Context } from 'amp-rsa-gql'
 
 @Resolver(Category)
 export class CategoryResolver {

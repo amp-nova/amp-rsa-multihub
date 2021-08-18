@@ -1,32 +1,6 @@
-import { Args, ArgsType, Ctx, Query, Resolver, Field, FieldResolver, Root } from 'type-graphql'
-import { CommonArgs, ListArgs, Context } from './common'
 import _ from 'lodash'
-
-import { Product, ProductResults } from 'amp-rsa-gql'
-
-@ArgsType()
-class GetProductsArgs extends ListArgs {
-    @Field({ nullable: true })
-    keyword: string
-
-    @Field({ nullable: true })
-    customerSegment: string
-}
-
-@ArgsType()
-class GetProductArgs extends CommonArgs {
-    @Field({ nullable: true })
-    id: string
-
-    @Field({ nullable: true })
-    sku: string
-
-    @Field({ nullable: true })
-    slug: string
-
-    @Field({ nullable: true })
-    customerSegment: string
-}
+import { Args, Ctx, Query, Resolver } from 'type-graphql'
+import { Product, ProductResults, GetProductsArgs, GetProductArgs, Context } from 'amp-rsa-gql'
 
 @Resolver(Product)
 export class ProductResolver {

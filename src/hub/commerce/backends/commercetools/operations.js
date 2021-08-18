@@ -213,11 +213,6 @@ class CommerceToolsProductOperation extends CommerceToolsOperation {
             }
         }
     }
-
-    import(input) {
-        return {
-        }
-    }
 }
 
 module.exports = {

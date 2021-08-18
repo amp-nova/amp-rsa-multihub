@@ -9,6 +9,12 @@
     "deploy": "npm run updateSecretBranch && npm run build && git push heroku secret-branch:master"
   },
   "dependencies": {
+    "@aws-cdk/aws-certificatemanager": "^1.117.0",
+    "@aws-cdk/aws-ecs-patterns": "^1.117.0",
+    "@aws-cdk/aws-elasticloadbalancingv2": "^1.117.0",
+    "@aws-cdk/aws-iam": "^1.117.0",
+    "@aws-cdk/aws-route53": "^1.117.0",
+    "@aws-cdk/core": "^1.117.0",
     "@aws-sdk/client-dynamodb": "^3.13.1",
     "@aws-sdk/client-s3": "^3.17.0",
     "@aws-sdk/client-secrets-manager": "^3.13.1",
@@ -30,6 +36,7 @@
     "reflect-metadata": "^0.1.13",
     "rimraf": "^3.0.2",
     "slugify": "^1.5.3",
+    "source-map-support": "^0.5.19",
     "string-strip-html": "^8.3.0",
     "ts-node": "^9.1.1",
     "type-graphql": "^1.1.1",

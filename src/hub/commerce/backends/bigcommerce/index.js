@@ -20,7 +20,7 @@ class BigCommerceBackend extends CommerceBackend {
     }
 
     async getCategoryHierarchy(args) {
-        return (await super.getCategory({})).results
+        return (await super.getCategory({})).getResults()
     }
 
     async getProductsForCategory(parent) {

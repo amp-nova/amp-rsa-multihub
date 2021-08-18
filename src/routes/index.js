@@ -26,6 +26,11 @@ router.get('/import', (req, res, next) => {
     return res.status(200).send({ status: 'ok' })
 })
 
+router.post('/update', (req, res, next) => {
+    console.log(JSON.stringify(req.body))
+    return res.status(200).send({ status: 'ok' })
+})
+
 router.get('/keys', async (req, res, next) => {
     try {
         let secretsList = await secretManager.listSecrets({})

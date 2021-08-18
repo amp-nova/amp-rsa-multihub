@@ -69,11 +69,10 @@ class BigCommerceCategoryOperation extends BigCommerceOperation {
     }
 
     async post(args) {
-        args = {
+        return await super.post({
             ...args,
             body: import(args.category)
-        }
-        return await super.post(args)
+        })
     }
 
     import(input) {
@@ -111,19 +110,17 @@ class BigCommerceProductOperation extends BigCommerceOperation {
     }
 
     async get(args) {
-        args = {
+        return await super.get({
             ...args,
             include: 'images,variants'
-        }
-        return await super.get(args)
+        })
     }
 
     async post(args) {
-        args = {
+        return await super.post({
             ...args,
             body: args.product && this.import(args.product)
-        }
-        return await super.post(args)
+        })
     }
 
     export(args) {
