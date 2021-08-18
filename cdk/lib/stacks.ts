@@ -9,6 +9,7 @@ import { ApplicationProtocol } from '@aws-cdk/aws-elasticloadbalancingv2';
 import * as path from 'path';
 import { PolicyStatement } from '@aws-cdk/aws-iam';
 
+let pkg = require('../../package.json')
 
 export interface RsaMultihubStackProps extends StackProps {
   arm_branch: string
@@ -45,7 +46,8 @@ export class RsaMultihubStack extends Stack {
         directory: '..',
         buildArgs: { 
           arm_branch,
-          arm_build_date: new Date().toISOString()
+          arm_build_date: new Date().toISOString(),
+          arm_version: pkg.version
         },
         exclude: [
           'node_modules',

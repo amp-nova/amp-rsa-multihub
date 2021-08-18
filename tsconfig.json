@@ -3,16 +3,14 @@
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
     "baseUrl": "./src",
+    "rootDir": "./src",
     "outDir": "dist",
     "allowJs": true,
     "esModuleInterop": true,
     "target": "es2019",
     "module": "commonjs",
     "resolveJsonModule": true,
-    "lib": ["es2019", "esnext.asynciterable"],
-    "paths": {
-      "@/*": ["src/*"]
-    }
+    "lib": ["es2019", "esnext.asynciterable"]
   },
   "include": [
     "src/**/*",

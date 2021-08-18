@@ -2,9 +2,11 @@ FROM node:14
 
 ARG arm_branch
 ARG arm_build_date
+ARG arm_version
 
 ENV arm_branch=${arm_branch}
 ENV arm_build_date=${arm_build_date}
+ENV arm_version=${arm_version}
 
 # create app directory
 WORKDIR /usr/src/app
