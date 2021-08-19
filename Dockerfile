@@ -18,6 +18,6 @@ COPY ./config/settings.yaml /usr/src/app/config
 RUN npm install
 RUN npm run build
  
-EXPOSE 3000
+EXPOSE 6393
 
 ENTRYPOINT [ "npm", "start" ]
