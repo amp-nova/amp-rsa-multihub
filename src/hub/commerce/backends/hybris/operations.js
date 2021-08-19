@@ -59,12 +59,14 @@ class HybrisCategoryOperation extends HybrisOperation {
     }
 
     export(args) {
-        return category => ({
-            id: category.id || category.code,
-            name: category.name,
-            slug: slugify(category.name, { lower: true }),
-            children: _.map(category.subcategories, _.bind(this.export(args), this))
-        })
+        return category => { 
+            return {
+                id: category.id || category.code,
+                name: category.name || category.code,
+                slug: slugify(category.name || category.code, { lower: true }),
+                children: _.map(category.subcategories, _.bind(this.export(args), this))
+            }
+        }
     }
 
     async post(args) {

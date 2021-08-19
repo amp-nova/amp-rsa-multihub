@@ -40,6 +40,7 @@ let startServer = async () => {
     logger.info(`🚀 Server ready at http://localhost:${port}${server.graphqlPath}`);
     return { server, app };
   } catch (error) {
+    logger.error(error.stack)
     logger.error(JSON.stringify(error))    
   }
 }
