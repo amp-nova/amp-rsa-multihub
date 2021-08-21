@@ -4,7 +4,7 @@
     "dev": "nodemon src/index.ts --watch src --ext ts,json,js",
     "clean": "rimraf dist",
     "build": "npm run clean && tsc",
-    "start": "node dist/index.js",
+    "start": "ts-node src/index.ts",
     "updateSecretBranch": "rm -f /tmp/settings.yaml && mv config/settings.yaml /tmp && git co secret-branch && git merge master -m \"merge\" && git co master && mv /tmp/settings.yaml ./config",
     "deploy": "npm run updateSecretBranch && npm run build && git push heroku secret-branch:master"
   },
