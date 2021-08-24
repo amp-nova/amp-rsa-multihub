@@ -109,7 +109,7 @@ class HybrisProductOperation extends HybrisOperation {
             categories: _.map(prod.categories, cat => { return categoryOperation.export(args)(cat) }),
             variants: [{
                 sku: prod.code,
-                prices: { list: prod.price && prod.price.formattedValue },
+                prices: { list: prod.price && prod.price.formattedValue, sale: prod.price && prod.price.formattedValue },
                 images: [{ url: `${this.config.cred.imageUrlFormat.replace("{{id}}", prod.code)}` }],
                 defaultImage: { url: `${this.config.cred.imageUrlFormat.replace("{{id}}", prod.code)}` }
             }],
