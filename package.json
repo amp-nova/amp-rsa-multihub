@@ -1,6 +1,6 @@
 {
   "name": "amp-rsa-multihub",
-  "types": "src/schemas/types.ts",
+  "types": "dist/schemas/types.d.ts",
   "main": "dist/index.js",
   "scripts": {
     "dev": "nodemon src/index.ts --watch src --ext ts,json,js",
