@@ -9,11 +9,10 @@ let defaultArgs = {
 }
 
 class CommerceBackend {
-    constructor(cred, context) {
-        this.cred = cred
-        this.context = context
-        this.productOperation = new Operation(cred)
-        this.categoryOperation = new Operation(cred)
+    constructor(config) {
+        this.config = config
+        this.productOperation = new Operation(this.config)
+        this.categoryOperation = new Operation(this.config)
     }
 
     async getCategory(args) {
@@ -45,7 +44,7 @@ class CommerceBackend {
     }
 
     getSource() {
-        return `${this.cred.type}/${this.cred.id}`
+        return `${this.config.cred.type}/${this.config.cred.id}`
     }
 }
 

@@ -19,7 +19,7 @@ let getClient = async context => {
         id: credId
       }
       let backendType = require(`./backends/${cred.type}`)
-      let backend = new backendType(cred, context)
+      let backend = new backendType({ cred, context })
       return backend
     }
     else {

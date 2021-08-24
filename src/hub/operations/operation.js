@@ -1,10 +1,11 @@
 const _ = require('lodash')
 const https = require('https')
-const request = require('../../util/http/short-term-rolling-cache')(30)
+// const request = require('../../util/http/short-term-rolling-cache')(30)
+const request = require('../../util/http/no-cache')
 
 class Operation {
-    constructor(cred) {
-        this.cred = cred
+    constructor(config) {
+        this.config = config
     }
 
     import(native) {

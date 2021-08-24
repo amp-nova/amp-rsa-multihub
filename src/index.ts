@@ -1,5 +1,6 @@
 import "reflect-metadata";
 import _ from 'lodash'
+import camelcase from 'camelcase'
 
 const express = require('express')
 const { ApolloServer } = require('apollo-server-express');
@@ -11,6 +12,17 @@ const commercehub = require('./hub/commerce')
 require('./util/helpers')
 
 const port = process.env.PORT || 6393
+
+const headersForTag = tag => (val, key) => {
+  return key.indexOf(`-${tag}-`) > -1
+}
+
+const getAmplienceConfigFromHeaders = headers => {
+  return {
+    cmsContext: _.mapKeys(_.pickBy(headers, headersForTag('cms')), (val, key) => camelcase(key.replace('x-amplience-cms-', ''))),
+    userContext: _.mapKeys(_.pickBy(headers, headersForTag('user')), (val, key) => camelcase(key.replace('x-amplience-user-', '')))
+  }
+}
 
 let startServer = async () => {
   try {
@@ -24,8 +36,8 @@ let startServer = async () => {
       introspection: true,
       context: async ({ req }) => {
         return {
-          commercehub: await commercehub({ backendKey: req.headers['x-commerce-backend-key'] }),
-          backendKey: req.headers['x-commerce-backend-key']
+          commercehub: await commercehub({ backendKey: req.headers['x-commerce-backend-key'], ...getAmplienceConfigFromHeaders(req.headers) }),
+          backendKey: req.headers['x-commerce-backend-key']          
         }
       }
     });
@@ -45,4 +57,5 @@ let startServer = async () => {
   }
 }
 
-module.exports = startServer()
+startServer()
+export * from './schemas/types'

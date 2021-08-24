@@ -5,10 +5,10 @@ const Operation = require('../../../operations/operation')
 const slugify = require('slugify')
 
 class HybrisOperation extends Operation {
-    constructor(cred) {
-        super(cred)
-        this.accessToken = null
-    }
+    // constructor(cred) {
+    //     super(cred)
+    //     this.accessToken = null
+    // }
 
     getRequest(args) {
         let uri = new URI(this.getURL(args))
@@ -17,25 +17,25 @@ class HybrisOperation extends Operation {
     }
 
     getBaseURL() {
-        return `${this.cred.server}/occ/v2/${this.cred.baseSiteId}`
+        return `${this.config.cred.server}/occ/v2/${this.config.cred.baseSiteId}`
     }
 
     // as far as i can tell, there's no authentication required for the endpoints we need
-    async authenticate() {
-        if (!this.accessToken) {
-            let response = await axios.post(this.getOauthURL())
-            this.accessToken = `${response.data.token_type} ${response.data.access_token}`
-        }
-        return this.accessToken
-    }
+    // async authenticate() {
+    //     if (!this.accessToken) {
+    //         let response = await axios.post(this.getOauthURL())
+    //         this.accessToken = `${response.data.token_type} ${response.data.access_token}`
+    //     }
+    //     return this.accessToken
+    // }
 
     getOauthURL() {
-        return `${this.cred.server}/authorizationserver/oauth/token?
-            client_id=${this.cred.clientId}&
-            client_secret=${this.cred.clientSecret}&
+        return `${this.config.cred.server}/authorizationserver/oauth/token?
+            client_id=${this.config.cred.clientId}&
+            client_secret=${this.config.cred.clientSecret}&
             grant_type=password&
-            username=${this.cred.username}&
-            password=${this.cred.password}`
+            username=${this.config.cred.username}&
+            password=${this.config.cred.password}`
     }
 
     async translateResponse(response, mapper = x => x) {
@@ -55,7 +55,7 @@ class HybrisOperation extends Operation {
 // category operation
 class HybrisCategoryOperation extends HybrisOperation {
     getRequestPath(args) {
-        return `catalogs/${this.cred.catalogId}/${this.cred.catalogVersion}/categories/${(args.id || "1")}`        
+        return `catalogs/${this.config.cred.catalogId}/${this.config.cred.catalogVersion}/categories/${(args.id || "1")}`        
     }
 
     export(args) {
@@ -98,7 +98,7 @@ class HybrisProductOperation extends HybrisOperation {
 
     // export: native format to common format
     export(args) {
-        let categoryOperation = new HybrisCategoryOperation(this.cred)
+        let categoryOperation = new HybrisCategoryOperation(this.config.cred)
         return prod => ({
             ...prod,
             name: prod.name.stripHTML(),
@@ -110,8 +110,8 @@ class HybrisProductOperation extends HybrisOperation {
             variants: [{
                 sku: prod.code,
                 prices: { list: prod.price && prod.price.formattedValue },
-                images: [{ url: `${this.cred.imageUrlFormat.replace("{{id}}", prod.code)}` }],
-                defaultImage: { url: `${this.cred.imageUrlFormat.replace("{{id}}", prod.code)}` }
+                images: [{ url: `${this.config.cred.imageUrlFormat.replace("{{id}}", prod.code)}` }],
+                defaultImage: { url: `${this.config.cred.imageUrlFormat.replace("{{id}}", prod.code)}` }
             }],
             productType: 'product'
         })
@@ -136,6 +136,6 @@ class HybrisProductOperation extends HybrisOperation {
 // end product operations
 
 module.exports = {
-    productOperation: cred => new HybrisProductOperation(cred),
-    categoryOperation: cred => new HybrisCategoryOperation(cred),
+    productOperation: config => new HybrisProductOperation(config),
+    categoryOperation: config => new HybrisCategoryOperation(config),
 }

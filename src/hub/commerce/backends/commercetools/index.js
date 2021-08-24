@@ -6,10 +6,10 @@ const CommerceBackend = require('../index')
 const { productOperation, categoryOperation } = require('./operations')
 
 class CommerceToolsBackend extends CommerceBackend {
-    constructor(cred, context) {
-        super(cred, context)
-        this.productOperation = productOperation(cred)
-        this.categoryOperation = categoryOperation(cred)
+    constructor(config) {
+        super(config)
+        this.productOperation = productOperation(config)
+        this.categoryOperation = categoryOperation(config)
     }
 
     async getCategoryHierarchy(args) {
