@@ -54,7 +54,7 @@ let startServer = async () => {
         app.use(require('./routes'));
         server.applyMiddleware({ app });
         await app.listen({ port });
-        logger.info(`🚀 Server ready at http://localhost:${port}${server.graphqlPath}`);
+        logger.info(`🚀 Server is ready at http://localhost:${port}${server.graphqlPath}`);
         return { server, app };
     }
     catch (error) {
