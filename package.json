@@ -22,6 +22,7 @@
     "@aws-sdk/client-secrets-manager": "^3.13.1",
     "apollo-server": "^2.21.1",
     "apollo-server-express": "^2.21.2",
+    "atob": "^2.1.2",
     "aws-sdk": "^2.893.0",
     "axios": "^0.21.1",
     "camelcase": "^6.2.0",

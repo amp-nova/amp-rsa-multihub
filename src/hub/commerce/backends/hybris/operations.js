@@ -1,5 +1,6 @@
 const URI = require('urijs')
 const _ = require('lodash')
+const atob = require('atob')
 
 const Operation = require('../../../operations/operation')
 const slugify = require('slugify')
@@ -12,6 +13,8 @@ class HybrisOperation extends Operation {
 
     getRequest(args) {
         let uri = new URI(this.getURL(args))
+        args.pageSize = args.limit
+        args.currentPage = args.offset
         uri.addQuery(args)
         return uri.toString()
     }
@@ -55,11 +58,11 @@ class HybrisOperation extends Operation {
 // category operation
 class HybrisCategoryOperation extends HybrisOperation {
     getRequestPath(args) {
-        return `catalogs/${this.config.cred.catalogId}/${this.config.cred.catalogVersion}/categories/${(args.id || "1")}`        
+        return `catalogs/${this.config.cred.catalogId}/${this.config.cred.catalogVersion}/categories/${(args.id || "1")}`
     }
 
     export(args) {
-        return category => { 
+        return category => {
             return {
                 id: category.id || category.code,
                 name: category.name || category.code,
@@ -70,7 +73,7 @@ class HybrisCategoryOperation extends HybrisOperation {
     }
 
     async post(args) {
-        args = { 
+        args = {
             ...args,
             body: args.category && this.import(args.category)
         }
@@ -78,6 +81,20 @@ class HybrisCategoryOperation extends HybrisOperation {
     }
 }
 // end category operations
+
+const imageContainer = () => {
+    let images = []
+    return {
+        addImage: image => {
+            let [__, blob] = image.url.split('=')
+            let decoded = atob(blob)
+            let [sysdir, ___, size, imageType, imagePath, ____] = decoded.split('|')
+            image.size = parseInt(size)
+            images.push(image)
+        },
+        toUrl: () => ({ url: _.first(_.reverse(_.sortBy(images, 'size'))).url })
+    }
+}
 
 // product operation
 class HybrisProductOperation extends HybrisOperation {
@@ -99,22 +116,41 @@ class HybrisProductOperation extends HybrisOperation {
     // export: native format to common format
     export(args) {
         let categoryOperation = new HybrisCategoryOperation(this.config.cred)
-        return prod => ({
-            ...prod,
-            name: prod.name.stripHTML(),
-            id: prod.code,
-            slug: slugify(prod.name.stripHTML(), { lower: true }),
-            shortDescription: prod.summary && prod.summary.stripHTML(),
-            longDescription: prod.description && prod.description.stripHTML(),
-            categories: _.map(prod.categories, cat => { return categoryOperation.export(args)(cat) }),
-            variants: [{
-                sku: prod.code,
-                prices: { list: prod.price && prod.price.formattedValue, sale: prod.price && prod.price.formattedValue },
-                images: [{ url: `${this.config.cred.imageUrlFormat.replace("{{id}}", prod.code)}` }],
-                defaultImage: { url: `${this.config.cred.imageUrlFormat.replace("{{id}}", prod.code)}` }
-            }],
-            productType: 'product'
-        })
+        return prod => {
+            let primaryImage = null
+            let gallery = {}
+
+            if (!_.isEmpty(prod.images)) {
+                primaryImage = imageContainer()
+
+                _.each(prod.images, image => {
+                    let galleryImage = gallery[image.galleryIndex] || imageContainer()
+                    let source = image.imageType === 'PRIMARY' ? primaryImage : galleryImage
+                    source.addImage(image)
+
+                    if (image.imageType === 'GALLERY') {
+                        gallery[image.galleryIndex] = source
+                    }
+                })
+            }
+
+            return {
+                ...prod,
+                name: prod.name.stripHTML(),
+                id: prod.code,
+                slug: slugify(prod.name.stripHTML(), { lower: true }),
+                shortDescription: prod.summary && prod.summary.stripHTML(),
+                longDescription: prod.description && prod.description.stripHTML(),
+                categories: _.map(prod.categories, cat => { return categoryOperation.export(args)(cat) }),
+                variants: [{
+                    sku: prod.code,
+                    prices: { list: prod.price && prod.price.formattedValue, sale: prod.price && prod.price.formattedValue },
+                    images: _.map(_.values(gallery), g => g.toUrl()),
+                    defaultImage: primaryImage.toUrl()
+                }],
+                productType: 'product'
+            }
+        }
     }
 
     async get(args) {
