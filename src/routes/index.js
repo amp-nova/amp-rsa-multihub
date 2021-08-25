@@ -30,7 +30,7 @@ router.post('/update', (req, res, next) => {
     console.log(JSON.stringify(req.body))
 
     const { exec } = require('child_process');
-    exec('git pull --ff-only', (err, stdout, stderr) => {
+    exec('git checkout -- . && git pull --ff-only', (err, stdout, stderr) => {
         exec('npm i', (npmerr, npmstdout, npmstderr) => {
             return res.status(200).send({ npmerr, npmstdout, npmstderr, err, stdout, stderr })
         });
