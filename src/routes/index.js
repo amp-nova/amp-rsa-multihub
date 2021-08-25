@@ -28,7 +28,13 @@ router.get('/import', (req, res, next) => {
 
 router.post('/update', (req, res, next) => {
     console.log(JSON.stringify(req.body))
-    return res.status(200).send({ status: 'ok' })
+
+    const { exec } = require('child_process');
+    exec('git pull --ff-only', (err, stdout, stderr) => {
+        exec('npm i', (npmerr, npmstdout, npmstderr) => {
+            return res.status(200).send({ npmerr, npmstdout, npmstderr, err, stdout, stderr })
+        });
+    })
 })
 
 router.get('/keys', async (req, res, next) => {
