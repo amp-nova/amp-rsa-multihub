@@ -13,6 +13,12 @@ export class Prices {
 export class ProductImage {
     @Field()
     url: string
+
+    @Field()
+    large?: string
+
+    @Field()
+    thumb?: string
 }
 
 @ObjectType()

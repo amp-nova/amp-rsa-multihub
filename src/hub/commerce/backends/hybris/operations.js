@@ -82,7 +82,7 @@ class HybrisCategoryOperation extends HybrisOperation {
 }
 // end category operations
 
-const imageContainer = () => {
+const imageContainer = (cred) => {
     let images = []
     return {
         addImage: image => {
@@ -92,7 +92,11 @@ const imageContainer = () => {
             image.size = parseInt(size)
             images.push(image)
         },
-        toUrl: () => ({ url: _.first(_.reverse(_.sortBy(images, 'size'))).url })
+        toUrl: () => ({ 
+            url: `${cred.server}${_.first(_.reverse(_.sortBy(images, 'size'))).url}`,
+            large: `${cred.server}${_.first(_.reverse(_.sortBy(images, 'size'))).url}`,
+            thumb: `${cred.server}${_.first(_.sortBy(images, 'size')).url}`
+        })
     }
 }
 
@@ -121,10 +125,10 @@ class HybrisProductOperation extends HybrisOperation {
             let gallery = {}
 
             if (!_.isEmpty(prod.images)) {
-                primaryImage = imageContainer()
+                primaryImage = imageContainer(this.config.cred)
 
                 _.each(prod.images, image => {
-                    let galleryImage = gallery[image.galleryIndex] || imageContainer()
+                    let galleryImage = gallery[image.galleryIndex] || imageContainer(this.config.cred)
                     let source = image.imageType === 'PRIMARY' ? primaryImage : galleryImage
                     source.addImage(image)
 
@@ -132,6 +136,10 @@ class HybrisProductOperation extends HybrisOperation {
                         gallery[image.galleryIndex] = source
                     }
                 })
+            }
+
+            if (_.isEmpty(gallery) && primaryImage) {
+                gallery.primary = primaryImage
             }
 
             return {
@@ -146,7 +154,7 @@ class HybrisProductOperation extends HybrisOperation {
                     sku: prod.code,
                     prices: { list: prod.price && prod.price.formattedValue, sale: prod.price && prod.price.formattedValue },
                     images: _.map(_.values(gallery), g => g.toUrl()),
-                    defaultImage: primaryImage.toUrl()
+                    defaultImage: primaryImage && primaryImage.toUrl()
                 }],
                 productType: 'product'
             }

@@ -4,6 +4,8 @@ export declare class Prices {
 }
 export declare class ProductImage {
     url: string;
+    large?: string;
+    thumb?: string;
 }
 export declare class ResultsMeta {
     limit: number;
