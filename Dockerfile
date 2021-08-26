@@ -16,7 +16,7 @@ RUN git clone -b $arm_branch https://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:x-
 RUN git rev-parse --short HEAD >> /etc/arm_commit_hash
 
 # DAVE don't forget to comment this line out for prod builds
-COPY . .
+# COPY . .
 
 COPY ./config/settings.yaml /usr/src/app/config
 
