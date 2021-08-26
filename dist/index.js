@@ -54,9 +54,8 @@ let startServer = async () => {
         app.use(bodyParser.json());
         app.use(require('./routes'));
         server.applyMiddleware({ app });
-        await config.init();
         await app.listen({ port });
-        logger.info(`🚀 Server [ v${config.packageJson.version}/${config.cli.git} ] is ready at http://localhost:${port}${server.graphqlPath}`);
+        logger.info(`🚀 Server [ v${config.packageJson.version}/${config.git.branch} ] is ready at http://localhost:${port}${server.graphqlPath}`);
         return { server, app };
     }
     catch (error) {

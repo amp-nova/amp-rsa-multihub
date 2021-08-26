@@ -17,7 +17,7 @@ router.get('/check', (req, res, next) => {
 
 router.get('/meta', (req, res, next) => {
     res.status(200).send({
-        branch: config.cli.git,
+        branch: config.git.branch,
         build_date: process.env.arm_build_date || new Date(),
         commit_hash: fs.existsSync('/etc/arm_commit_hash') && fs.readFileSync('/etc/arm_commit_hash', 'utf8').trim(),
         version: config.packageJson.version
@@ -34,7 +34,7 @@ router.post('/update', async (req, res, next) => {
     }
 
     // check if we are on the same branch as the update
-    if (req.body.ref === `refs/heads/${config.cli.git}`) {
+    if (req.body.ref === `refs/heads/${config.git.branch}`) {
         console.log(`Received git update for this branch`)
 
         // do the git checkout

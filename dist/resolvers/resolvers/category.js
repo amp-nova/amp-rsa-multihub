@@ -28,21 +28,25 @@ let CategoryResolver = class CategoryResolver {
 };
 __decorate([
     type_graphql_1.Query(returns => types_1.Category),
-    __param(0, type_graphql_1.Args()), __param(1, type_graphql_1.Ctx()),
+    __param(0, type_graphql_1.Args()),
+    __param(1, type_graphql_1.Ctx()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [types_1.GetCategoryArgs, types_1.Context]),
     __metadata("design:returntype", Promise)
 ], CategoryResolver.prototype, "category", null);
 __decorate([
     type_graphql_1.Query(returns => [types_1.Category]),
-    __param(0, type_graphql_1.Args()), __param(1, type_graphql_1.Ctx()),
+    __param(0, type_graphql_1.Args()),
+    __param(1, type_graphql_1.Ctx()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [types_1.GetCategoryArgs, types_1.Context]),
     __metadata("design:returntype", Promise)
 ], CategoryResolver.prototype, "categoryHierarchy", null);
 __decorate([
     type_graphql_1.FieldResolver(),
-    __param(0, type_graphql_1.Root()), __param(1, type_graphql_1.Args()), __param(2, type_graphql_1.Ctx()),
+    __param(0, type_graphql_1.Root()),
+    __param(1, type_graphql_1.Args()),
+    __param(2, type_graphql_1.Ctx()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [types_1.Category, types_1.GetCategoryProductArgs, types_1.Context]),
     __metadata("design:returntype", Promise)
