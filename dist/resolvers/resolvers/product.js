@@ -25,16 +25,14 @@ let ProductResolver = class ProductResolver {
 };
 __decorate([
     type_graphql_1.Query(returns => types_1.ProductResults),
-    __param(0, type_graphql_1.Args()),
-    __param(1, type_graphql_1.Ctx()),
+    __param(0, type_graphql_1.Args()), __param(1, type_graphql_1.Ctx()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [types_1.GetProductsArgs, types_1.Context]),
     __metadata("design:returntype", Promise)
 ], ProductResolver.prototype, "products", null);
 __decorate([
     type_graphql_1.Query(returns => types_1.Product),
-    __param(0, type_graphql_1.Args()),
-    __param(1, type_graphql_1.Ctx()),
+    __param(0, type_graphql_1.Args()), __param(1, type_graphql_1.Ctx()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [types_1.GetProductArgs, types_1.Context]),
     __metadata("design:returntype", Promise)
