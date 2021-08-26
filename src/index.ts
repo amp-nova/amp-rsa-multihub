@@ -6,6 +6,7 @@ const express = require('express')
 const { ApolloServer } = require('apollo-server-express');
 const { buildSchema } = require('type-graphql')
 const bodyParser = require('body-parser')
+const path = require('path')
 
 const logger = require("./util/logger")
 const commercehub = require('./hub/commerce')
@@ -47,6 +48,10 @@ let startServer = async () => {
     const app = express()  
     app.use(bodyParser.json())
     app.use(require('./routes'))
+
+    app.get('/logs', (req, res, next) => {
+      res.sendFile(path.resolve(`${__dirname}/../logs/combined.log`))
+    })
     
     server.applyMiddleware({ app })
   

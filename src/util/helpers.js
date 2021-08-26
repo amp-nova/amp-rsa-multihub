@@ -36,6 +36,8 @@ const { exec } = require('child_process');
 const execAsync = async (command, opts = {}) => {
     let result = null
 
+    console.log(`[ ${command} ] exec`)
+
     exec(command, (err, stdout, stderr) => {
         result = { err, stdout, stderr }
     })
@@ -44,15 +46,16 @@ const execAsync = async (command, opts = {}) => {
         await sleep(10)
     }
 
-    if (result.err) {
-        console.error(result.err)
-    }
-    else {
-        if (!opts.quiet) {
-            console.log(`[ ${command} ]\n\n${result.stdout}`)
+    if (!opts.quiet) {
+        if (result.err) {
+            console.error(`[ ${command} ] [ err ] ${result.err.message}`)
+        }
+        else {
+            console.log(`[ ${command} ] ${result.stdout}`)
         }
     }
 
+    console.log(`[ ${command} ] finished`)
     return result
 }
 
