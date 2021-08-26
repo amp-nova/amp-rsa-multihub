@@ -52,12 +52,5 @@
     "uuid": "^8.3.2",
     "winston": "^3.3.3"
   },
-<<<<<<< HEAD
   "version": "0.0.30"
-=======
-  "version": "0.0.29",
-  "devDependencies": {
-    "husky": "^7.0.2"
-  }
->>>>>>> c5636f678723375bc7e66f34f8b40725a6a8d9d5
 }
