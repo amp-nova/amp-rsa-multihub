@@ -17,10 +17,10 @@ router.get('/check', (req, res, next) => {
 
 router.get('/meta', (req, res, next) => {
     res.status(200).send({
-        branch: process.env.arm_branch,
+        branch: config.cli.git,
         build_date: process.env.arm_build_date || new Date(),
         commit_hash: fs.existsSync('/etc/arm_commit_hash') && fs.readFileSync('/etc/arm_commit_hash', 'utf8').trim(),
-        version: process.env.arm_version
+        version: config.packageJson.version
     })
 })
 
