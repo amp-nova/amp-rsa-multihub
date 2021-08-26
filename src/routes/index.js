@@ -33,9 +33,13 @@ router.post('/update', async (req, res, next) => {
 
     // do the git checkout
     let gitOutput = await execAsync('git checkout -- . && git pull --ff-only')
+    console.log(`git output`)
+    console.log(JSON.stringify(req.body))
 
     // do the npm install
     let npmOutput = await execAsync('npm i')
+    console.log(`npm output`)
+    console.log(JSON.stringify(req.body))
 
     return res.status(200).send({ npmOutput, gitOutput })
 })
