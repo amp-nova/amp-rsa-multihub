@@ -6,6 +6,8 @@ const _ = require('lodash')
 const config = require('../util/config')
 const { SecretsManager } = require("@aws-sdk/client-secrets-manager");
 
+const { execAsync } = require('../util/helpers')
+
 // note: if config.hub is undefined, credentials need to be available elsewhere.
 let secretManager = new SecretsManager(config.hub)
 
@@ -26,15 +28,16 @@ router.get('/import', (req, res, next) => {
     return res.status(200).send({ status: 'ok' })
 })
 
-router.post('/update', (req, res, next) => {
+router.post('/update', async (req, res, next) => {
     console.log(JSON.stringify(req.body))
 
-    const { exec } = require('child_process');
-    exec('git checkout -- . && git pull --ff-only', (err, stdout, stderr) => {
-        exec('npm i', (npmerr, npmstdout, npmstderr) => {
-            return res.status(200).send({ npmerr, npmstdout, npmstderr, err, stdout, stderr })
-        });
-    })
+    // do the git checkout
+    let gitOutput = await execAsync('git checkout -- . && git pull --ff-only')
+
+    // do the npm install
+    let npmOutput = await execAsync('npm i')
+
+    return res.status(200).send({ npmOutput, gitOutput })
 })
 
 router.get('/keys', async (req, res, next) => {
