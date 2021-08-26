@@ -29,8 +29,7 @@ let VariantResolver = class VariantResolver {
 };
 __decorate([
     type_graphql_1.FieldResolver(returns => String, { nullable: true }),
-    __param(0, type_graphql_1.Root()),
-    __param(1, type_graphql_1.Args()),
+    __param(0, type_graphql_1.Root()), __param(1, type_graphql_1.Args()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [types_1.Variant, types_1.GetAttributeArgs]),
     __metadata("design:returntype", Promise)

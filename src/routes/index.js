@@ -29,19 +29,29 @@ router.get('/import', (req, res, next) => {
 })
 
 router.post('/update', async (req, res, next) => {
-    console.log(JSON.stringify(req.body))
+    if (req.body.ref) {
+        console.log(`git update [ ${req.body.ref} ]`)
+    }
 
-    // do the git checkout
-    let gitOutput = await execAsync('git checkout -- . && git pull --ff-only')
-    console.log(`git output`)
-    console.log(JSON.stringify(gitOutput))
+    // check if we are on the same branch as the update
+    if (req.body.ref === `refs/heads/${config.cli.git}`) {
+        console.log(`Received git update for this branch`)
 
-    // do the npm install
-    let npmOutput = await execAsync('npm i')
-    console.log(`npm output`)
-    console.log(JSON.stringify(npmOutput))
+        // do the git checkout
+        let gitOutput = await execAsync('git checkout -- . && git pull --ff-only')
+        console.log(`git output`)
+        console.log(JSON.stringify(gitOutput))
 
-    return res.status(200).send({ npmOutput, gitOutput })
+        // do the npm install
+        let npmOutput = await execAsync('npm i')
+        console.log(`npm output`)
+        console.log(JSON.stringify(npmOutput))
+
+        return res.status(200).send({ npmOutput, gitOutput })
+    }
+    else {
+        return res.status(200).send({ message: `Received git update but not for this branch` })
+    }
 })
 
 router.get('/keys', async (req, res, next) => {
