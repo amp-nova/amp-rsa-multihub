@@ -29,7 +29,9 @@ router.get('/import', (req, res, next) => {
 })
 
 router.post('/update', async (req, res, next) => {
-    console.log(`Git update webhook called`)
+    if (req.body.ref) {
+        console.log(`git update [ ${req.body.ref} ]`)
+    }
 
     // check if we are on the same branch as the update
     if (req.body.ref === `refs/heads/${config.cli.git}`) {
@@ -48,8 +50,7 @@ router.post('/update', async (req, res, next) => {
         return res.status(200).send({ npmOutput, gitOutput })
     }
     else {
-        console.log(`Received git update but not for this branch`)
-        return res.status(200)
+        return res.status(200).send({ message: `Received git update but not for this branch` })
     }
 })
 
