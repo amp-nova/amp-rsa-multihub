@@ -33,6 +33,9 @@ router.post('/update', async (req, res, next) => {
         console.log(`git update [ ${req.body.ref} ]`)
     }
 
+    if (process.env.NODE_ENV === `production`) {
+        
+    }
     // check if we are on the same branch as the update
     if (req.body.ref === `refs/heads/${config.git.branch}`) {
         console.log(`Received git update for this branch`)
