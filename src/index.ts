@@ -1,5 +1,6 @@
 import "reflect-metadata";
 import _ from 'lodash'
+import camelcase from 'camelcase'
 
 const express = require('express')
 const { ApolloServer } = require('apollo-server-express');
@@ -10,7 +11,20 @@ const logger = require("./util/logger")
 const commercehub = require('./hub/commerce')
 require('./util/helpers')
 
+const config = require('./util/config')
+
 const port = process.env.PORT || 6393
+
+const headersForTag = tag => (val, key) => {
+  return key.indexOf(`-${tag}-`) > -1
+}
+
+const getAmplienceConfigFromHeaders = headers => {
+  return {
+    cmsContext: _.mapKeys(_.pickBy(headers, headersForTag('cms')), (val, key) => camelcase(key.replace('x-amplience-cms-', ''))),
+    userContext: _.mapKeys(_.pickBy(headers, headersForTag('user')), (val, key) => camelcase(key.replace('x-amplience-user-', '')))
+  }
+}
 
 let startServer = async () => {
   try {
@@ -24,8 +38,8 @@ let startServer = async () => {
       introspection: true,
       context: async ({ req }) => {
         return {
-          commercehub: await commercehub({ backendKey: req.headers['x-commerce-backend-key'] }),
-          backendKey: req.headers['x-commerce-backend-key']
+          commercehub: await commercehub({ backendKey: req.headers['x-commerce-backend-key'], ...getAmplienceConfigFromHeaders(req.headers) }),
+          backendKey: req.headers['x-commerce-backend-key']          
         }
       }
     });
@@ -36,8 +50,9 @@ let startServer = async () => {
     
     server.applyMiddleware({ app })
   
+    await config.init()
     await app.listen({ port })
-    logger.info(`🚀 Server ready at http://localhost:${port}${server.graphqlPath}`);
+    logger.info(`🚀 Server [ v${config.packageJson.version}/${config.cli.git} ] is ready at http://localhost:${port}${server.graphqlPath}`);
     return { server, app };
   } catch (error) {
     logger.error(error.stack)
@@ -45,4 +60,5 @@ let startServer = async () => {
   }
 }
 
-module.exports = startServer()
+startServer()
+export * from './schemas/types'

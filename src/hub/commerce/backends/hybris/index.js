@@ -5,10 +5,10 @@ const { productOperation, categoryOperation } = require('./operations')
 const { findCategory } = require('../../../../util/helpers')
 
 class HybrisBackend extends CommerceBackend {
-    constructor(cred, context) {
-        super(cred, context)
-        this.productOperation = productOperation(cred)
-        this.categoryOperation = categoryOperation(cred)
+    constructor(config) {
+        super(config)
+        this.productOperation = productOperation(config)
+        this.categoryOperation = categoryOperation(config)
     }
 
     async getCategory(args) {

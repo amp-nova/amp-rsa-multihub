@@ -1,7 +1,6 @@
 .DS_Store
 
 node_modules
-dist
 config/settings.yaml
 config/google_creds.json
 .vercel

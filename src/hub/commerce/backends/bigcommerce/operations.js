@@ -11,7 +11,7 @@ require('../../../../util/helpers')
 
 class BigCommerceOperation extends Operation {
     getBaseURL() {
-        return `${this.cred.apiUrl}/stores/${this.cred.storeHash}/v3/catalog`
+        return `${this.config.cred.apiUrl}/stores/${this.config.cred.storeHash}/v3/catalog`
     }
 
     getRequest(args) {
@@ -56,7 +56,7 @@ class BigCommerceOperation extends Operation {
 
     async getHeaders() {
         return {
-            'X-Auth-Token': this.cred.apiToken,
+            'X-Auth-Token': this.config.cred.apiToken,
             'Content-Type': `application/json` 
         }
     }
@@ -169,7 +169,7 @@ class BigCommerceProductOperation extends BigCommerceOperation {
 
     postProcessor(args) {
         return async products => {
-            let operation = new BigCommerceCategoryOperation(this.cred)
+            let operation = new BigCommerceCategoryOperation(this.config.cred)
             let categories = (await operation.get({})).getResults()
             return _.map(products, prod => ({
                 ...prod,

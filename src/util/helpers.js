@@ -28,4 +28,23 @@ const findCategory = (categories, args) => {
     }
 }
 
-module.exports = { findCategory }
+function sleep(ms) {
+    return new Promise(resolve => setTimeout(resolve, ms));
+}
+
+const { exec } = require('child_process');
+const execAsync = async command => {
+    let result = null
+
+    exec(command, (err, stdout, stderr) => {
+        result = { err, stdout, stderr }
+    })
+
+    while (!result) {
+        await sleep(10)
+    }
+
+    return result
+}
+
+module.exports = { findCategory, execAsync }

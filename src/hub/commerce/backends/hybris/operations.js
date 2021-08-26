@@ -1,41 +1,44 @@
 const URI = require('urijs')
 const _ = require('lodash')
+const atob = require('atob')
 
 const Operation = require('../../../operations/operation')
 const slugify = require('slugify')
 
 class HybrisOperation extends Operation {
-    constructor(cred) {
-        super(cred)
-        this.accessToken = null
-    }
+    // constructor(cred) {
+    //     super(cred)
+    //     this.accessToken = null
+    // }
 
     getRequest(args) {
         let uri = new URI(this.getURL(args))
+        args.pageSize = args.limit
+        args.currentPage = args.offset
         uri.addQuery(args)
         return uri.toString()
     }
 
     getBaseURL() {
-        return `${this.cred.server}/occ/v2/${this.cred.baseSiteId}`
+        return `${this.config.cred.server}/occ/v2/${this.config.cred.baseSiteId}`
     }
 
     // as far as i can tell, there's no authentication required for the endpoints we need
-    async authenticate() {
-        if (!this.accessToken) {
-            let response = await axios.post(this.getOauthURL())
-            this.accessToken = `${response.data.token_type} ${response.data.access_token}`
-        }
-        return this.accessToken
-    }
+    // async authenticate() {
+    //     if (!this.accessToken) {
+    //         let response = await axios.post(this.getOauthURL())
+    //         this.accessToken = `${response.data.token_type} ${response.data.access_token}`
+    //     }
+    //     return this.accessToken
+    // }
 
     getOauthURL() {
-        return `${this.cred.server}/authorizationserver/oauth/token?
-            client_id=${this.cred.clientId}&
-            client_secret=${this.cred.clientSecret}&
+        return `${this.config.cred.server}/authorizationserver/oauth/token?
+            client_id=${this.config.cred.clientId}&
+            client_secret=${this.config.cred.clientSecret}&
             grant_type=password&
-            username=${this.cred.username}&
-            password=${this.cred.password}`
+            username=${this.config.cred.username}&
+            password=${this.config.cred.password}`
     }
 
     async translateResponse(response, mapper = x => x) {
@@ -55,11 +58,11 @@ class HybrisOperation extends Operation {
 // category operation
 class HybrisCategoryOperation extends HybrisOperation {
     getRequestPath(args) {
-        return `catalogs/${this.cred.catalogId}/${this.cred.catalogVersion}/categories/${(args.id || "1")}`        
+        return `catalogs/${this.config.cred.catalogId}/${this.config.cred.catalogVersion}/categories/${(args.id || "1")}`
     }
 
     export(args) {
-        return category => { 
+        return category => {
             return {
                 id: category.id || category.code,
                 name: category.name || category.code,
@@ -70,7 +73,7 @@ class HybrisCategoryOperation extends HybrisOperation {
     }
 
     async post(args) {
-        args = { 
+        args = {
             ...args,
             body: args.category && this.import(args.category)
         }
@@ -78,6 +81,24 @@ class HybrisCategoryOperation extends HybrisOperation {
     }
 }
 // end category operations
+
+const imageContainer = (cred) => {
+    let images = []
+    return {
+        addImage: image => {
+            let [__, blob] = image.url.split('=')
+            let decoded = atob(blob)
+            let [sysdir, ___, size, imageType, imagePath, ____] = decoded.split('|')
+            image.size = parseInt(size)
+            images.push(image)
+        },
+        toUrl: () => ({ 
+            url: `${cred.server}${_.first(_.reverse(_.sortBy(images, 'size'))).url}`,
+            large: `${cred.server}${_.first(_.reverse(_.sortBy(images, 'size'))).url}`,
+            thumb: `${cred.server}${_.first(_.sortBy(images, 'size')).url}`
+        })
+    }
+}
 
 // product operation
 class HybrisProductOperation extends HybrisOperation {
@@ -98,23 +119,46 @@ class HybrisProductOperation extends HybrisOperation {
 
     // export: native format to common format
     export(args) {
-        let categoryOperation = new HybrisCategoryOperation(this.cred)
-        return prod => ({
-            ...prod,
-            name: prod.name.stripHTML(),
-            id: prod.code,
-            slug: slugify(prod.name.stripHTML(), { lower: true }),
-            shortDescription: prod.summary && prod.summary.stripHTML(),
-            longDescription: prod.description && prod.description.stripHTML(),
-            categories: _.map(prod.categories, cat => { return categoryOperation.export(args)(cat) }),
-            variants: [{
-                sku: prod.code,
-                prices: { list: prod.price && prod.price.formattedValue },
-                images: [{ url: `${this.cred.imageUrlFormat.replace("{{id}}", prod.code)}` }],
-                defaultImage: { url: `${this.cred.imageUrlFormat.replace("{{id}}", prod.code)}` }
-            }],
-            productType: 'product'
-        })
+        let categoryOperation = new HybrisCategoryOperation(this.config.cred)
+        return prod => {
+            let primaryImage = null
+            let gallery = {}
+
+            if (!_.isEmpty(prod.images)) {
+                primaryImage = imageContainer(this.config.cred)
+
+                _.each(prod.images, image => {
+                    let galleryImage = gallery[image.galleryIndex] || imageContainer(this.config.cred)
+                    let source = image.imageType === 'PRIMARY' ? primaryImage : galleryImage
+                    source.addImage(image)
+
+                    if (image.imageType === 'GALLERY') {
+                        gallery[image.galleryIndex] = source
+                    }
+                })
+            }
+
+            if (_.isEmpty(gallery) && primaryImage) {
+                gallery.primary = primaryImage
+            }
+
+            return {
+                ...prod,
+                name: prod.name.stripHTML(),
+                id: prod.code,
+                slug: slugify(prod.name.stripHTML(), { lower: true }),
+                shortDescription: prod.summary && prod.summary.stripHTML(),
+                longDescription: prod.description && prod.description.stripHTML(),
+                categories: _.map(prod.categories, cat => { return categoryOperation.export(args)(cat) }),
+                variants: [{
+                    sku: prod.code,
+                    prices: { list: prod.price && prod.price.formattedValue, sale: prod.price && prod.price.formattedValue },
+                    images: _.map(_.values(gallery), g => g.toUrl()),
+                    defaultImage: primaryImage && primaryImage.toUrl()
+                }],
+                productType: 'product'
+            }
+        }
     }
 
     async get(args) {
@@ -136,6 +180,6 @@ class HybrisProductOperation extends HybrisOperation {
 // end product operations
 
 module.exports = {
-    productOperation: cred => new HybrisProductOperation(cred),
-    categoryOperation: cred => new HybrisCategoryOperation(cred),
+    productOperation: config => new HybrisProductOperation(config),
+    categoryOperation: config => new HybrisCategoryOperation(config),
 }

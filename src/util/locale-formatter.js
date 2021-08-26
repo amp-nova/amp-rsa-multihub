@@ -1,3 +1,5 @@
+// hi mom   
+
 const formatMoneyString = (money, locale = 'en-US', currency = 'USD') => new Intl.NumberFormat(locale, {
     style: 'currency',
     currency

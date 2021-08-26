@@ -13,6 +13,12 @@ export class Prices {
 export class ProductImage {
     @Field()
     url: string
+
+    @Field()
+    large?: string
+
+    @Field()
+    thumb?: string
 }
 
 @ObjectType()
@@ -130,47 +136,21 @@ export class SearchResult {
     products: Product[]
 }  
 
-export type CmsContext = {
-    contentApi: string;
-    stagingApi?: string;
-    locale?: string;
-    currency?: string;
-    timestamp?: number;
-}
-
-export type UserContext = {
-    userId?: string;
-    sessionId?: string;
-
-    language: string;
-    country: string;
-    currency: string;
-    
-    segment?: string;
-    targetingTags: string[];
-    targetingBehaviors: string[];
-
-    dyApiPreview: string | null;
-};
-
 export type GraphqlConfig = {
     graphqlUrl: string;
     backendKey: string;
 }
 
-export type GraphQLQueryConfig = {
-    cmsContext?: CmsContext
-    userContext?: UserContext
-    args?: any
-}
-
 @ArgsType()
 export class CommonArgs {
-    @Field({ nullable: true })
-    locale?: string
+    // @Field({ nullable: true })
+    // locale?: string
 
-    @Field({ nullable: true })
-    currency?: string
+    // @Field({ nullable: true })
+    // currency?: string
+
+    // @Field({ nullable: true })
+    // segment?: string;
 }
 
 @ArgsType()
@@ -202,7 +182,7 @@ export class GetCategoryProductArgs extends CommonArgs {
     full?: boolean
 
     @Field({ nullable: true })
-    customerSegment?: string
+    segment?: string
 }
 
 @ArgsType()
@@ -211,7 +191,7 @@ export class GetProductsArgs extends ListArgs {
     keyword?: string
 
     @Field({ nullable: true })
-    customerSegment?: string
+    segment?: string
 }
 
 @ArgsType()
@@ -226,7 +206,7 @@ export class GetProductArgs extends CommonArgs {
     slug?: string
 
     @Field({ nullable: true })
-    customerSegment?: string
+    segment?: string
 }
 
 @ArgsType()
