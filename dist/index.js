@@ -23,6 +23,7 @@ const bodyParser = require('body-parser');
 const logger = require("./util/logger");
 const commercehub = require('./hub/commerce');
 require('./util/helpers');
+const config = require('./util/config');
 const port = process.env.PORT || 6393;
 const headersForTag = tag => (val, key) => {
     return key.indexOf(`-${tag}-`) > -1;
@@ -53,8 +54,9 @@ let startServer = async () => {
         app.use(bodyParser.json());
         app.use(require('./routes'));
         server.applyMiddleware({ app });
+        await config.init();
         await app.listen({ port });
-        logger.info(`🚀 Server is ready at http://localhost:${port}${server.graphqlPath}`);
+        logger.info(`🚀 Server [ v${config.packageJson.version}/${config.cli.git} ] is ready at http://localhost:${port}${server.graphqlPath}`);
         return { server, app };
     }
     catch (error) {
