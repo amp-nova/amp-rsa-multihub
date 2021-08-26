@@ -11,6 +11,8 @@ const logger = require("./util/logger")
 const commercehub = require('./hub/commerce')
 require('./util/helpers')
 
+const config = require('./util/config')
+
 const port = process.env.PORT || 6393
 
 const headersForTag = tag => (val, key) => {
@@ -48,8 +50,9 @@ let startServer = async () => {
     
     server.applyMiddleware({ app })
   
+    await config.init()
     await app.listen({ port })
-    logger.info(`🚀 Server is ready at http://localhost:${port}${server.graphqlPath}`);
+    logger.info(`🚀 Server [ v${config.packageJson.version}/${config.cli.git} ] is ready at http://localhost:${port}${server.graphqlPath}`);
     return { server, app };
   } catch (error) {
     logger.error(error.stack)
