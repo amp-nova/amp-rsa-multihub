@@ -20,7 +20,8 @@ router.get('/meta', (req, res, next) => {
         branch: config.git.branch,
         build_date: process.env.arm_build_date || new Date(),
         commit_hash: fs.existsSync('/etc/arm_commit_hash') && fs.readFileSync('/etc/arm_commit_hash', 'utf8').trim(),
-        version: config.packageJson.version
+        version: config.packageJson.version,
+        app_mode: config.app.mode
     })
 })
 
@@ -33,27 +34,31 @@ router.post('/update', async (req, res, next) => {
         console.log(`git update [ ${req.body.ref} ]`)
     }
 
-    if (process.env.NODE_ENV === `production`) {
-        
-    }
-    // check if we are on the same branch as the update
-    if (req.body.ref === `refs/heads/${config.git.branch}`) {
-        console.log(`Received git update for this branch`)
+    if (config.app.mode === `production`) {
+        console.log(`production /update called`)
 
-        // do the git checkout
-        let gitOutput = await execAsync('git checkout -- . && git pull --ff-only')
-        console.log(`git output`)
-        console.log(JSON.stringify(gitOutput))
+        // check if we are on the same branch as the update
+        if (req.body.ref === `refs/heads/${config.git.branch}`) {
+            console.log(`Received git update for this branch`)
 
-        // do the npm install
-        let npmOutput = await execAsync('npm i')
-        console.log(`npm output`)
-        console.log(JSON.stringify(npmOutput))
+            // do the git checkout
+            let gitOutput = await execAsync('git checkout -- . && git pull --ff-only')
+            console.log(`git output`)
+            console.log(JSON.stringify(gitOutput))
 
-        return res.status(200).send({ npmOutput, gitOutput })
+            // do the npm install
+            let npmOutput = await execAsync('npm i')
+            console.log(`npm output`)
+            console.log(JSON.stringify(npmOutput))
+
+            return res.status(200).send({ npmOutput, gitOutput })
+        }
+        else {
+            return res.status(200).send({ message: `Received git update but not for this branch` })
+        }
     }
     else {
-        return res.status(200).send({ message: `Received git update but not for this branch` })
+        return res.status(200).send({ message: `/update called on non-production instance` })
     }
 })
 

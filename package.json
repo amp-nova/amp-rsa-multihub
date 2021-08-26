@@ -3,13 +3,10 @@
   "types": "dist/schemas/types.d.ts",
   "main": "dist/index.js",
   "scripts": {
-    "dev": "nodemon src/index.ts --watch src --ext ts,json,js",
+    "dev": "nodemon src/index.ts --watch src --ext ts,json,js --app_mode=dev",
     "clean": "rimraf dist",
     "build": "npm run clean && tsc",
-    "start": "nodemon src/index.ts --watch src,dist --ext ts,json,js",
-    "startOld": "ts-node src/index.ts",
-    "updateSecretBranch": "rm -f /tmp/settings.yaml && mv config/settings.yaml /tmp && git co secret-branch && git merge master -m \"merge\" && git co master && mv /tmp/settings.yaml ./config",
-    "deploy": "npm run updateSecretBranch && npm run build && git push heroku secret-branch:master"
+    "start": "nodemon src/index.ts --watch src --watch dist --ext ts,json,js --app_mode production"
   },
   "dependencies": {
     "@aws-sdk/client-secrets-manager": "^3.13.1",
@@ -28,6 +25,7 @@
     "graphql": "^15.5.1",
     "js-yaml": "^4.0.0",
     "lodash": "^4.17.21",
+    "nconf": "^0.11.3",
     "nodemon": "^2.0.12",
     "reflect-metadata": "^0.1.13",
     "rimraf": "^3.0.2",
