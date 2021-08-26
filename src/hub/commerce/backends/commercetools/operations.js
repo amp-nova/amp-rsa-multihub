@@ -108,7 +108,7 @@ class CommerceToolsCategoryOperation extends CommerceToolsOperation {
             ...args,
             limit: 500,
             where:
-                args.slug && [`slug(${this.config.context.userContext.language}="${args.slug}") or slug(en="${args.slug}")`] ||
+                args.slug && [`slug(${this.config.context.userContext.language || 'en'}="${args.slug}") or slug(en="${args.slug}")`] ||
                 args.id && [`id="${args.id}"`]
         }
         return await super.get(args)
