@@ -14,10 +14,10 @@ export class ProductImage {
     @Field()
     url: string
 
-    @Field()
+    @Field({ nullable: true })
     large?: string
 
-    @Field()
+    @Field({ nullable: true })
     thumb?: string
 }
 
