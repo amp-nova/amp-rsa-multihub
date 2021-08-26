@@ -35,23 +35,11 @@ router.post('/update', async (req, res, next) => {
     }
 
     if (config.app.mode === `production`) {
-        console.log(`production /update called`)
-
         // check if we are on the same branch as the update
         if (req.body.ref === `refs/heads/${config.git.branch}`) {
-            console.log(`Received git update for this branch`)
-
-            // do the git checkout
-            let gitOutput = await execAsync('git checkout -- . && git pull --ff-only')
-            console.log(`git output`)
-            console.log(JSON.stringify(gitOutput))
-
-            // do the npm install
-            let npmOutput = await execAsync('npm i')
-            console.log(`npm output`)
-            console.log(JSON.stringify(npmOutput))
-
-            return res.status(200).send({ npmOutput, gitOutput })
+            console.log(`received git update for this branch, restarting`)
+            res.status(200).send({ message: `restarting container...` })
+            process.exit(0)
         }
         else {
             return res.status(200).send({ message: `Received git update but not for this branch` })
@@ -59,7 +47,7 @@ router.post('/update', async (req, res, next) => {
     }
     else {
         return res.status(200).send({ message: `/update called on non-production instance` })
-    }
+    } 
 })
 
 router.get('/keys', async (req, res, next) => {

@@ -33,7 +33,7 @@ function sleep(ms) {
 }
 
 const { exec } = require('child_process');
-const execAsync = async command => {
+const execAsync = async (command, opts = {}) => {
     let result = null
 
     exec(command, (err, stdout, stderr) => {
@@ -42,6 +42,15 @@ const execAsync = async command => {
 
     while (!result) {
         await sleep(10)
+    }
+
+    if (result.err) {
+        console.error(result.err)
+    }
+    else {
+        if (!opts.quiet) {
+            console.log(`[ ${command} ]\n\n${result.stdout}`)
+        }
     }
 
     return result
