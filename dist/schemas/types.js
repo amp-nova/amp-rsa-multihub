@@ -33,11 +33,11 @@ __decorate([
     __metadata("design:type", String)
 ], ProductImage.prototype, "url", void 0);
 __decorate([
-    type_graphql_1.Field(),
+    type_graphql_1.Field({ nullable: true }),
     __metadata("design:type", String)
 ], ProductImage.prototype, "large", void 0);
 __decorate([
-    type_graphql_1.Field(),
+    type_graphql_1.Field({ nullable: true }),
     __metadata("design:type", String)
 ], ProductImage.prototype, "thumb", void 0);
 ProductImage = __decorate([
