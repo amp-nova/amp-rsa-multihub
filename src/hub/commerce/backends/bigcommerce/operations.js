@@ -169,7 +169,7 @@ class BigCommerceProductOperation extends BigCommerceOperation {
 
     postProcessor(args) {
         return async products => {
-            let operation = new BigCommerceCategoryOperation(this.config.cred)
+            let operation = new BigCommerceCategoryOperation(this.config)
             let categories = (await operation.get({})).getResults()
             return _.map(products, prod => ({
                 ...prod,
