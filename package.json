@@ -41,7 +41,7 @@
     "urijs": "^1.19.6",
     "winston": "^3.3.3"
   },
-  "version": "0.0.50",
+  "version": "0.0.51",
   "devDependencies": {
     "@types/node": "^16.7.2"
   }
