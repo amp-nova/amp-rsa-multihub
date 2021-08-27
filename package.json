@@ -7,7 +7,7 @@
     "clean": "rimraf dist",
     "build": "npm run clean && tsc",
     "startPm2": "./node_modules/.bin/pm2 start src/index.ts --name multihub -- --app_mode production",
-    "start": "ts-node ./start-server.ts --app_mode production"
+    "start": "ts-node src/index.ts --app_mode production"
   },
   "dependencies": {
     "@aws-sdk/client-secrets-manager": "^3.13.1",
