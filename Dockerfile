@@ -20,6 +20,7 @@ RUN git rev-parse --short HEAD >> /etc/arm_commit_hash
 
 COPY ./config/settings.yaml /usr/src/app/config
 
+RUN npm install -g ts-node
 RUN npm install
  
 EXPOSE 6393
