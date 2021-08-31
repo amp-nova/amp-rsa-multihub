@@ -6,11 +6,6 @@ const Operation = require('../../../operations/operation')
 const slugify = require('slugify')
 
 class HybrisOperation extends Operation {
-    // constructor(cred) {
-    //     super(cred)
-    //     this.accessToken = null
-    // }
-
     getRequest(args) {
         let uri = new URI(this.getURL(args))
         args.pageSize = args.limit
@@ -20,25 +15,16 @@ class HybrisOperation extends Operation {
     }
 
     getBaseURL() {
-        return `${this.config.cred.server}/occ/v2/${this.config.cred.baseSiteId}`
+        return `${this.backend.config.cred.server}/occ/v2/${this.backend.config.cred.baseSiteId}`
     }
 
-    // as far as i can tell, there's no authentication required for the endpoints we need
-    // async authenticate() {
-    //     if (!this.accessToken) {
-    //         let response = await axios.post(this.getOauthURL())
-    //         this.accessToken = `${response.data.token_type} ${response.data.access_token}`
-    //     }
-    //     return this.accessToken
-    // }
-
     getOauthURL() {
-        return `${this.config.cred.server}/authorizationserver/oauth/token?
-            client_id=${this.config.cred.clientId}&
-            client_secret=${this.config.cred.clientSecret}&
+        return `${this.backend.config.cred.server}/authorizationserver/oauth/token?
+            client_id=${this.backend.config.cred.clientId}&
+            client_secret=${this.backend.config.cred.clientSecret}&
             grant_type=password&
-            username=${this.config.cred.username}&
-            password=${this.config.cred.password}`
+            username=${this.backend.config.cred.username}&
+            password=${this.backend.config.cred.password}`
     }
 
     async translateResponse(response, mapper = x => x) {
@@ -58,7 +44,7 @@ class HybrisOperation extends Operation {
 // category operation
 class HybrisCategoryOperation extends HybrisOperation {
     getRequestPath(args) {
-        return `catalogs/${this.config.cred.catalogId}/${this.config.cred.catalogVersion}/categories/${(args.id || "1")}`
+        return `catalogs/${this.backend.config.cred.catalogId}/${this.backend.config.cred.catalogVersion}/categories/${(args.id || "1")}`
     }
 
     export(args) {
@@ -119,16 +105,16 @@ class HybrisProductOperation extends HybrisOperation {
 
     // export: native format to common format
     export(args) {
-        let categoryOperation = new HybrisCategoryOperation(this.config.cred)
+        let categoryOperation = new HybrisCategoryOperation(this.backend.config.cred)
         return prod => {
             let primaryImage = null
             let gallery = {}
 
             if (!_.isEmpty(prod.images)) {
-                primaryImage = imageContainer(this.config.cred)
+                primaryImage = imageContainer(this.backend.config.cred)
 
                 _.each(prod.images, image => {
-                    let galleryImage = gallery[image.galleryIndex] || imageContainer(this.config.cred)
+                    let galleryImage = gallery[image.galleryIndex] || imageContainer(this.backend.config.cred)
                     let source = image.imageType === 'PRIMARY' ? primaryImage : galleryImage
                     source.addImage(image)
 

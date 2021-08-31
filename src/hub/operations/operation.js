@@ -11,7 +11,6 @@ const { nanoid } = require('nanoid')
 class Operation {
     constructor(backend) {
         this.backend = backend
-        this.config = backend.config
     }
 
     import(native) {
@@ -67,15 +66,8 @@ class Operation {
             const httpsAgent = new https.Agent({ rejectUnauthorized: false });
             let requestParams = { url, method: args.method, headers: await this.getHeaders(), data: args.body }
 
-            // if (this.args.body) {
-            //     console.log(JSON.stringify(this.args.body))
-            // }
-
             let backendRequestId = `${this.backend.getSource()}.${nanoid(10)}`
-
-            // log the request
-            logger.info(`[ ${chalk.yellow(this.config.context.requestId)} ][ ${args.method.padStart(6, ' ')} ] ${url}`)
-            // end logging the request
+            logger.info(`[ ${chalk.yellow(this.backend.config.context.requestId)} ][ ${args.method.padStart(6, ' ')} ] ${url}`)
 
             // next, execute the request with headers gotten from the backend
             let response = await request({ ...requestParams, httpsAgent })
