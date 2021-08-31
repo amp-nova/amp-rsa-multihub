@@ -181,6 +181,6 @@ class BigCommerceProductOperation extends BigCommerceOperation {
 // end product operations
 
 module.exports = {
-    productOperation: cred => new BigCommerceProductOperation(cred),
-    categoryOperation: cred => new BigCommerceCategoryOperation(cred),
+    productOperation: backend => new BigCommerceProductOperation(backend),
+    categoryOperation: backend => new BigCommerceCategoryOperation(backend),
 }

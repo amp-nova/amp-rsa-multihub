@@ -9,8 +9,8 @@ const { findCategory } = require('../../../../util/helpers')
 class BigCommerceBackend extends CommerceBackend {
     constructor(config) {
         super(config)
-        this.productOperation = productOperation(config)
-        this.categoryOperation = categoryOperation(config)
+        this.productOperation = productOperation(this)
+        this.categoryOperation = categoryOperation(this)
     }
 
     // override

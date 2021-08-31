@@ -1,16 +1,15 @@
 const fs = require('fs-extra')
-const express = require('express')
-const router = express.Router()
+const router = require('express').Router()
 const _ = require('lodash')
-
-const config = require('../util/config')
 const { SecretsManager } = require("@aws-sdk/client-secrets-manager");
 
-const { execAsync } = require('../util/helpers')
+// local config
+const config = require('../util/config')
 
 // note: if config.hub is undefined, credentials need to be available elsewhere.
 let secretManager = new SecretsManager(config.hub)
 
+// health check end point
 router.get('/check', (req, res, next) => {
     res.status(200).send({ status: 'ok' })
 })
@@ -25,10 +24,12 @@ router.get('/meta', (req, res, next) => {
     })
 })
 
+// placeholder
 router.get('/import', (req, res, next) => {
     return res.status(200).send({ status: 'ok' })
 })
 
+// git update webhook
 router.post('/update', async (req, res, next) => {
     if (req.body.ref) {
         console.log(`git update [ ${req.body.ref} ]`)
@@ -50,15 +51,7 @@ router.post('/update', async (req, res, next) => {
     } 
 })
 
-router.get('/keys', async (req, res, next) => {
-    try {
-        let secretsList = await secretManager.listSecrets({})
-        res.status(200).send({
-            keys: _.map(secretsList.SecretList, 'Name')
-        })
-    } catch (error) {
-        console.error(error)
-    }
-})
+// get the list of keys to test
+router.get('/keys', async (req, res) => res.status(200).send(_.map((await secretManager.listSecrets({})).SecretList, 'Name')))
 
 module.exports = router

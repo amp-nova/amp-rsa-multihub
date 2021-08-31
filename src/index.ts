@@ -7,19 +7,21 @@ const { ApolloServer } = require('apollo-server-express');
 const { buildSchema } = require('type-graphql')
 const bodyParser = require('body-parser')
 const path = require('path')
+const fs = require('fs-extra')
+const { nanoid } = require('nanoid')
 
 const logger = require("./util/logger")
 const commercehub = require('./hub/commerce')
 require('./util/helpers')
 
+const stringify = require('json-stringify-safe')
+const differenceInMilliseconds = require('date-fns/differenceInMilliseconds')
+
 const config = require('./util/config')
 
 const port = process.env.PORT || 6393
 
-const headersForTag = tag => (val, key) => {
-  return key.indexOf(`-${tag}-`) > -1
-}
-
+const headersForTag = tag => (val, key) => key.indexOf(`-${tag}-`) > -1
 const getAmplienceConfigFromHeaders = headers => {
   return {
     cmsContext: _.mapKeys(_.pickBy(headers, headersForTag('cms')), (val, key) => camelcase(key.replace('x-amplience-cms-', ''))),
@@ -39,7 +41,12 @@ let startServer = async () => {
       introspection: true,
       context: async ({ req }) => {
         return {
-          commercehub: await commercehub({ backendKey: req.headers['x-commerce-backend-key'], ...getAmplienceConfigFromHeaders(req.headers) }),
+          commercehub: await commercehub({ 
+            requestId: req.headers['x-multihub-correlation-id'],
+            backendKey: req.headers['x-commerce-backend-key'], 
+            ...getAmplienceConfigFromHeaders(req.headers),
+            logger: req.body.operationName !== 'IntrospectionQuery' && await logger.getObjectLogger(req.headers['x-multihub-correlation-id'])
+          }),
           backendKey: req.headers['x-commerce-backend-key']          
         }
       }
@@ -49,8 +56,41 @@ let startServer = async () => {
     app.use(bodyParser.json())
     app.use(require('./routes'))
 
-    app.get('/logs', (req, res, next) => {
-      res.sendFile(path.resolve(`${__dirname}/../logs/combined.log`))
+    app.post('/graphql', async (req, res, next) => {
+      if (req.body.operationName !== 'IntrospectionQuery') {
+        req.correlationId = nanoid(10)
+        req.headers['x-multihub-correlation-id'] = req.correlationId
+        const objectLogger = await logger.getObjectLogger(req.correlationId)
+
+        const requestStart = new Date()
+        const xsend = res.send.bind(res);
+        res.send = body => {
+          let requestDuration = differenceInMilliseconds(new Date(), requestStart)
+
+          let payload = JSON.parse(body)
+          res.status(payload.errors ? 400 : 200)
+
+          objectLogger.logGraphqlCall({
+            duration: requestDuration,
+            request: _.pick(req, ['method', 'statusMessage', 'statusCode', 'originalUrl', 'params', 'body', 'headers', 'url', 'query', 'length']),
+            response: {
+              statusCode: res.statusCode,
+              data: payload
+            }
+          })
+          xsend(body)
+        }
+      }
+      next()
+    })
+
+    app.get('/logs/:requestId?', async (req, res, next) => {
+      if (!req.params.requestId) {
+        res.status(200).send(logger.getAppLogs())
+      }
+      else {
+        res.status(200).send(await logger.readRequestObject(req.params.requestId))
+      }
     })
     
     server.applyMiddleware({ app })

@@ -11,8 +11,8 @@ const { formatMoneyString } = require('../../../../util/locale-formatter')
 const mapImage = image => image && ({ url: image.url })
 
 class CommerceToolsOperation extends Operation {
-    constructor(config) {
-        super(config)
+    constructor(backend) {
+        super(backend)
         this.accessToken = null
     }
 
@@ -225,6 +225,6 @@ class CommerceToolsProductOperation extends CommerceToolsOperation {
 }
 
 module.exports = {
-    productOperation: config => new CommerceToolsProductOperation(config),
-    categoryOperation: config => new CommerceToolsCategoryOperation(config),
+    productOperation: backend => new CommerceToolsProductOperation(backend),
+    categoryOperation: backend => new CommerceToolsCategoryOperation(backend),
 }

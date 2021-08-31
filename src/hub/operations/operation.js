@@ -2,10 +2,16 @@ const _ = require('lodash')
 const https = require('https')
 // const request = require('../../util/http/short-term-rolling-cache')(30)
 const request = require('../../util/http/no-cache')
+const logger = require('../../util/logger')
+const chalk = require('chalk')
+const fs = require('fs-extra')
+const path = require('path')
+const { nanoid } = require('nanoid')
 
 class Operation {
-    constructor(config) {
-        this.config = config
+    constructor(backend) {
+        this.backend = backend
+        this.config = backend.config
     }
 
     import(native) {
@@ -17,19 +23,19 @@ class Operation {
     }
 
     async get(args) {
-        return await this.request({ method: 'get', ...args })
+        return await this.doRequest({ method: 'get', ...args })
     }
 
     async post(args) {
-        return await this.request({ method: 'post', ...args })
+        return await this.doRequest({ method: 'post', ...args })
     }
 
     async put(args) {
-        return await this.request({ method: 'put', ...args })
+        return await this.doRequest({ method: 'put', ...args })
     }
 
     async delete(args) {
-        return await this.request({ method: 'delete', ...args })
+        return await this.doRequest({ method: 'delete', ...args })
     }
 
     getURL(args) {
@@ -53,19 +59,34 @@ class Operation {
         return native => native
     }
 
-    async request(args) {
+    async doRequest(args) {
         // get the URL from the backend
         let url = this.getRequest(args)
 
         try {
             const httpsAgent = new https.Agent({ rejectUnauthorized: false });
+            let requestParams = { url, method: args.method, headers: await this.getHeaders(), data: args.body }
 
             // if (this.args.body) {
             //     console.log(JSON.stringify(this.args.body))
             // }
 
+            let backendRequestId = `${this.backend.getSource()}.${nanoid(10)}`
+
+            // log the request
+            logger.info(`[ ${chalk.yellow(this.config.context.requestId)} ][ ${args.method.padStart(6, ' ')} ] ${url}`)
+            // end logging the request
+
             // next, execute the request with headers gotten from the backend
-            let response = await request({ url, method: args.method, headers: await this.getHeaders(), httpsAgent, data: args.body })
+            let response = await request({ ...requestParams, httpsAgent })
+
+            // log the response object
+            this.backend.config.context.logger.logBackendCall({ 
+                id: backendRequestId,
+                request: requestParams,
+                response: response.data
+            })
+            // end logging the response object
 
             let x = await this.translateResponse(response.data, _.bind(this.export(args), this))
             x.getResults = () => x.results

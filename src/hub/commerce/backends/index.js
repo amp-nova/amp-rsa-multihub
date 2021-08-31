@@ -1,5 +1,6 @@
 const _ = require('lodash')
 const Operation = require('../../operations/operation')
+const logger = require('../../../util/logger')
 
 let defaultArgs = {
     currency: 'USD',
@@ -11,8 +12,8 @@ let defaultArgs = {
 class CommerceBackend {
     constructor(config) {
         this.config = config
-        this.productOperation = new Operation(this.config)
-        this.categoryOperation = new Operation(this.config)
+        this.productOperation = new Operation(this)
+        this.categoryOperation = new Operation(this)
     }
 
     async getCategory(args) {
