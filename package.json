@@ -44,7 +44,7 @@
     "urijs": "^1.19.6",
     "winston": "^3.3.3"
   },
-  "version": "0.0.51",
+  "version": "0.0.52",
   "devDependencies": {
     "@types/node": "^16.7.2",
     "json-stringify-safe": "^5.0.1",
