@@ -47,7 +47,8 @@ export class RsaMultihubStack extends Stack {
         buildArgs: { 
           arm_branch,
           arm_build_date: new Date().toISOString(),
-          arm_version: pkg.version
+          arm_version: pkg.version,
+          arm_host: hostName
         },
         exclude: [
           'node_modules',

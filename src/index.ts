@@ -63,11 +63,10 @@ let startServer = async () => {
 
         const appUrl = url.parseURL(appContext.url)
         const bareHost = _.first(appUrl.host.split('.'))
+        const graphqlOrigin = url.serializeURLOrigin(url.parseURL(config.app.host))
 
         req.correlationId = `${bareHost}-${req.headers['x-arm-backend-key'].replace('/', '-')}-${req.body.operationName || `anonymousQuery`}-${nanoid(4)}`
         req.headers['x-arm-correlation-id'] = req.correlationId
-
-        const graphqlOrigin = url.serializeURLOrigin(url.parseURL(req.headers['x-arm-host']))
 
         logger.info(`${graphqlOrigin}/logs/${req.correlationId}`)
 
@@ -107,7 +106,7 @@ let startServer = async () => {
     server.applyMiddleware({ app })
   
     await app.listen({ port })
-    logger.info(`🚀 Server [ v${config.packageJson.version}/${config.git.branch} mode: ${config.app.mode || 'debug'} ] is ready at http://localhost:${port}${server.graphqlPath}`);
+    logger.info(`🚀 Server [ v${config.packageJson.version}/${config.git.branch} mode: ${config.app.mode} ] is ready at ${config.app.host}${server.graphqlPath}`);
     return { server, app };
   } catch (error) {
     logger.error(error.stack)

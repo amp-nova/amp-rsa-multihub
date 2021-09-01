@@ -5,10 +5,10 @@ const run = async () => {
     console.info(`[ amp-rsa-multihub ] wrapper service starting...`)
 
     // stash any local changes, we won't need them
-    await execAsync('git stash save -u')
+    // await execAsync('git stash save -u')
 
-    // do the git checkout
-    await execAsync('git pull --ff-only')
+    // // do the git checkout
+    // await execAsync('git pull --ff-only')
 
     // do the npm install
     await execAsync('npm i')

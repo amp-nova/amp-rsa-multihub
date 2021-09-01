@@ -4,7 +4,7 @@ const fs = require('fs-extra')
 const branchName = require('current-git-branch')
 const nconf = require('nconf')
 
-let args = nconf.argv()
+let args = nconf.argv().env()
 
 // Reading global settings
 const settingsYAML = readFileSync(`${__dirname}/../../config/settings.yaml`).toString();
@@ -13,11 +13,14 @@ const settingsYAML = readFileSync(`${__dirname}/../../config/settings.yaml`).toS
 let settings = yaml.load(settingsYAML)
 let packageJson = fs.readJSONSync('./package.json')
 
+const isProduction = args.get('app_mode') === 'production'
+
 module.exports = {
     ...settings,
     packageJson,
     app: {
-        mode: args.get('app_mode')
+        mode: isProduction ? 'production' : 'debug',
+        host: isProduction ? `https://${args.get('arm_host')}` : 'http://localhost:6393'
     },
     git: {
         branch: branchName()
