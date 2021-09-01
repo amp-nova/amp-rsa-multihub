@@ -73,6 +73,11 @@ class Operation {
             let response = await request({ ...requestParams, httpsAgent })
 
             // log the response object
+            // mask the auth token first if there is one
+            if (requestParams.headers.authorization) {
+                requestParams.headers.authorization = requestParams.headers.authorization.substring(0, requestParams.headers.authorization.length - 8) + `********`
+            }
+
             this.backend.config.context.logger.logBackendCall({ 
                 id: backendRequestId,
                 request: requestParams,
