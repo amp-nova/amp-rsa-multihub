@@ -67,7 +67,9 @@ let startServer = async () => {
         req.correlationId = `${bareHost}-${req.headers['x-arm-backend-key'].replace('/', '-')}-${req.body.operationName || `anonymousQuery`}-${nanoid(4)}`
         req.headers['x-arm-correlation-id'] = req.correlationId
 
-        logger.info(`${req.headers['x-arm-host']}/logs/${req.correlationId}`)
+        const graphqlOrigin = url.serializeURLOrigin(url.parseURL(req.headers['x-arm-host']))
+
+        logger.info(`${graphqlOrigin}/logs/${req.correlationId}`)
 
         const objectLogger = await logger.getObjectLogger(req.correlationId)
 
