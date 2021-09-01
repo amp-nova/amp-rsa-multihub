@@ -1,7 +1,7 @@
 const _ = require('lodash')
 const https = require('https')
-// const request = require('../../util/http/short-term-rolling-cache')(30)
-const request = require('../../util/http/no-cache')
+const request = require('../../util/http/short-term-rolling-cache')(30)
+// const request = require('../../util/http/no-cache')
 const logger = require('../../util/logger')
 const chalk = require('chalk')
 const fs = require('fs-extra')
@@ -67,7 +67,7 @@ class Operation {
             let requestParams = { url, method: args.method, headers: await this.getHeaders(), data: args.body }
 
             let backendRequestId = `${this.backend.getSource()}.${nanoid(10)}`
-            logger.info(`[ ${chalk.yellow(this.backend.config.context.requestId)} ][ ${args.method.padStart(6, ' ')} ] ${url}`)
+            // logger.info(`[ ${chalk.yellow(this.backend.config.context.requestId)} ][ ${args.method.padStart(6, ' ')} ] ${url}`)
 
             // next, execute the request with headers gotten from the backend
             let response = await request({ ...requestParams, httpsAgent })

@@ -23,13 +23,11 @@ let getClient = async context => {
       return backend
     }
     else {
-      throw new Error(`No commerce backend matches key [ ${key} ]. Please make sure you have set the 'x-commerce-backend-key' header.`)
+      throw new Error(`No commerce backend matches key [ ${key} ]. Please make sure you have set the 'x-arm-backend-key' header.`)
     }
   } catch (error) {
     console.error(chalk.red(`Error retrieving secret: ${error}`))
   }
 }
 
-module.exports = async context => {
-  return await getClient(context)
-}
+module.exports = getClient

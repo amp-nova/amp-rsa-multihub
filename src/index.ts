@@ -1,6 +1,7 @@
 import "reflect-metadata";
 import _ from 'lodash'
 import camelcase from 'camelcase'
+import url from 'whatwg-url'
 
 const express = require('express')
 const { ApolloServer } = require('apollo-server-express');
@@ -23,31 +24,31 @@ const port = process.env.PORT || 6393
 
 const headersForTag = tag => (val, key) => key.indexOf(`-${tag}-`) > -1
 const getAmplienceConfigFromHeaders = headers => {
+  const mapHeaders = tag => _.mapKeys(_.pickBy(headers, headersForTag(tag)), (val, key) => camelcase(key.replace(`x-arm-${tag}-`, '')))
   return {
-    cmsContext: _.mapKeys(_.pickBy(headers, headersForTag('cms')), (val, key) => camelcase(key.replace('x-amplience-cms-', ''))),
-    userContext: _.mapKeys(_.pickBy(headers, headersForTag('user')), (val, key) => camelcase(key.replace('x-amplience-user-', '')))
+    cmsContext: mapHeaders('cms'),
+    userContext: mapHeaders('user'),
+    appContext: {
+      url: `http://localhost:3000`,
+      ...mapHeaders('app')
+    }
   }
 }
 
 let startServer = async () => {
   try {
-    const schema = await buildSchema({
-      resolvers: require('./resolvers')
-    })
-  
     const server = new ApolloServer({
-      schema,
+      schema: await buildSchema({ resolvers: require('./resolvers') }),
       playground: true,
       introspection: true,
       context: async ({ req }) => {
         return {
           commercehub: await commercehub({ 
-            requestId: req.headers['x-multihub-correlation-id'],
-            backendKey: req.headers['x-commerce-backend-key'], 
-            ...getAmplienceConfigFromHeaders(req.headers),
-            logger: req.body.operationName !== 'IntrospectionQuery' && await logger.getObjectLogger(req.headers['x-multihub-correlation-id'])
-          }),
-          backendKey: req.headers['x-commerce-backend-key']          
+            requestId: req.correlationId,
+            backendKey: req.headers['x-arm-backend-key'], 
+            logger: req.body.operationName !== 'IntrospectionQuery' && await logger.getObjectLogger(req.correlationId),
+            ...getAmplienceConfigFromHeaders(req.headers)
+          })          
         }
       }
     });
@@ -58,8 +59,16 @@ let startServer = async () => {
 
     app.post('/graphql', async (req, res, next) => {
       if (req.body.operationName !== 'IntrospectionQuery') {
-        req.correlationId = nanoid(10)
-        req.headers['x-multihub-correlation-id'] = req.correlationId
+        let { appContext } = getAmplienceConfigFromHeaders(req.headers)
+
+        const appUrl = url.parseURL(appContext.url)
+        const bareHost = _.first(appUrl.host.split('.'))
+
+        req.correlationId = `${bareHost}-${req.headers['x-arm-backend-key'].replace('/', '-')}-${req.body.operationName || `anonymousQuery`}-${nanoid(4)}`
+        req.headers['x-arm-correlation-id'] = req.correlationId
+
+        logger.info(`${req.headers['x-arm-host']}/logs/${req.correlationId}`)
+
         const objectLogger = await logger.getObjectLogger(req.correlationId)
 
         const requestStart = new Date()

@@ -41,7 +41,8 @@
     "ts-node": "^10.2.1",
     "type-graphql": "^1.1.1",
     "typescript": "^4.2.3",
-    "urijs": "^1.19.6",
+    "urijs": "^1.19.7",
+    "whatwg-url": "^9.1.0",
     "winston": "^3.3.3"
   },
   "version": "0.0.52",
