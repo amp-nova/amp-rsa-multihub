@@ -1,6 +1,4 @@
-const _ = require('lodash')
-const Operation = require('../../operations/operation')
-const logger = require('../../../util/logger')
+import { Operation } from '../../operations/operation'
 
 let defaultArgs = {
     currency: 'USD',
@@ -9,7 +7,11 @@ let defaultArgs = {
     country: 'US'
 }
 
-class CommerceBackend {
+export class CommerceBackend {
+    config: any
+    productOperation: Operation
+    categoryOperation: Operation
+
     constructor(config) {
         this.config = config
         this.productOperation = new Operation(this)
@@ -49,4 +51,11 @@ class CommerceBackend {
     }
 }
 
-module.exports = CommerceBackend
+module.exports = { 
+    CommerceBackend, 
+    backends: {
+        bigcommerce: require('./bigcommerce'),
+        commercetools: require('./commercetools'),
+        hybris: require('./hybris'),
+    }
+}

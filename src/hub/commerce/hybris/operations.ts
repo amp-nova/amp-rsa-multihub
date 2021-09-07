@@ -1,11 +1,15 @@
-const URI = require('urijs')
-const _ = require('lodash')
-const atob = require('atob')
+import URI from 'urijs'
+import _ from 'lodash'
+import atob from 'atob'
 
-const Operation = require('../../../operations/operation')
+const { Operation } = require('../../../operations/operation')
 const slugify = require('slugify')
 
 class HybrisOperation extends Operation {
+    constructor(config) {
+        super(config)
+    }
+
     getRequest(args) {
         let uri = new URI(this.getURL(args))
         args.pageSize = args.limit
@@ -29,6 +33,7 @@ class HybrisOperation extends Operation {
 
     async translateResponse(response, mapper = x => x) {
         let results = (response.code || response.id) ? [response] : (response.categories || response.products)
+        results = Array.isArray(results) ? results : [results]
         return {
             meta: response.pagination && {
                 total: response.pagination.totalResults,
@@ -36,13 +41,17 @@ class HybrisOperation extends Operation {
                 limit: response.pagination.pageSize,
                 offset: (response.pagination.currentPage - 1) * response.pagination.pageSize
             },
-            results: await Promise.all(Array.ensureArray(results).map(await mapper))
+            results: await Promise.all(results.map(await mapper))
         }
     }
 }
 
 // category operation
 class HybrisCategoryOperation extends HybrisOperation {
+    constructor(config) {
+        super(config)
+    }
+
     getRequestPath(args) {
         return `catalogs/${this.backend.config.cred.catalogId}/${this.backend.config.cred.catalogVersion}/categories/${(args.id || "1")}`
     }
@@ -88,6 +97,10 @@ const imageContainer = (cred) => {
 
 // product operation
 class HybrisProductOperation extends HybrisOperation {
+    constructor(config) {
+        super(config)
+    }
+
     getRequestPath(args) {
         if (args.id || args.sku) {
             return `products/${(args.id || args.sku)}`
@@ -108,7 +121,7 @@ class HybrisProductOperation extends HybrisOperation {
         let categoryOperation = new HybrisCategoryOperation(this.backend.config.cred)
         return prod => {
             let primaryImage = null
-            let gallery = {}
+            let gallery: any = {}
 
             if (!_.isEmpty(prod.images)) {
                 primaryImage = imageContainer(this.backend.config.cred)

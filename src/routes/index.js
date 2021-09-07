@@ -5,9 +5,10 @@ const { SecretsManager } = require("@aws-sdk/client-secrets-manager");
 
 // local config
 const config = require('../util/config')
+const logger = require('../util/logger')
 
 // note: if config.hub is undefined, credentials need to be available elsewhere.
-let secretManager = new SecretsManager(config.hub)
+let secretManager = new SecretsManager()
 
 // health check end point
 router.get('/check', (req, res, next) => {
@@ -32,13 +33,13 @@ router.get('/import', (req, res, next) => {
 // git update webhook
 router.post('/update', async (req, res, next) => {
     if (req.body.ref) {
-        console.log(`git update [ ${req.body.ref} ]`)
+        logger.debug(`git update [ ${req.body.ref} ]`)
     }
 
     if (config.isProduction) {
         // check if we are on the same branch as the update
         if (req.body.ref === `refs/heads/${config.git.branch}`) {
-            console.log(`received git update for this branch, restarting`)
+            logger.info(`received git update for this branch, restarting`)
             res.status(200).send({ message: `restarting container...` })
             process.exit(0)
         }

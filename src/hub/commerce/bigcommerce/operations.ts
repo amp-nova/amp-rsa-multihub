@@ -1,15 +1,18 @@
+import _ from 'lodash'
 const URI = require('urijs')
-const _ = require('lodash')
 
-const Operation = require('../../../operations/operation')
-const { formatMoneyString } = require('../../../../util/locale-formatter')
-const { findCategory } = require('../../../../util/helpers')
+const { formatMoneyString } = require('../../../util/locale-formatter')
+const { findCategory } = require('../../../util/helpers')
+const { Operation } = require('../../../operations/operation')
 
 const mapImage = image => ({ url: image.url_standard })
 const slugify = require('slugify')
-require('../../../../util/helpers')
 
 class BigCommerceOperation extends Operation {
+    constructor(config) {
+        super(config)
+    }
+
     getBaseURL() {
         return `${this.backend.config.cred.apiUrl}/stores/${this.backend.config.cred.storeHash}/v3/catalog`
     }
@@ -43,6 +46,7 @@ class BigCommerceOperation extends Operation {
         // a bc response will always have 'meta' and 'data'
         // 'data' will sometimes be just an object, sometimes an array
 
+        response.data = Array.isArray(response.data) ? response.data : [response.data]
         return {
             meta: response.meta && response.meta.pagination && {
                 total: response.meta.pagination.total,
@@ -50,7 +54,7 @@ class BigCommerceOperation extends Operation {
                 limit: response.meta.pagination.per_page,
                 offset: (response.meta.pagination.current_page - 1) * response.meta.pagination.per_page
             },
-            results: await Promise.all(Array.ensureArray(response.data).map(await mapper))
+            results: await Promise.all(response.data.map(await mapper))
         }
     }
 
@@ -64,6 +68,10 @@ class BigCommerceOperation extends Operation {
 
 // category operation
 class BigCommerceCategoryOperation extends BigCommerceOperation {
+    constructor(config) {
+        super(config)
+    }
+
     getRequestPath(args) {
         return `categories/tree`
     }
@@ -83,7 +91,7 @@ class BigCommerceCategoryOperation extends BigCommerceOperation {
     }
 
     export(args) {
-        return this.mapCategory()
+        return this.mapCategory(null)
     }
 
     mapCategory(parentSlug) {
@@ -105,6 +113,10 @@ class BigCommerceCategoryOperation extends BigCommerceOperation {
 
 // product operation
 class BigCommerceProductOperation extends BigCommerceOperation {
+    constructor(config) {
+        super(config)
+    }
+
     getRequestPath(args) {
         return args.id ? `products/${args.id}` : `products`
     }

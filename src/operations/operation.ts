@@ -1,14 +1,12 @@
 const _ = require('lodash')
 const https = require('https')
-const request = require('../../util/http/short-term-rolling-cache')(30)
+const request = require('../util/http/short-term-rolling-cache')(30)
 // const request = require('../../util/http/no-cache')
-const logger = require('../../util/logger')
-const chalk = require('chalk')
-const fs = require('fs-extra')
-const path = require('path')
 const { nanoid } = require('nanoid')
 
-class Operation {
+export class Operation {
+    backend: any
+
     constructor(backend) {
         this.backend = backend
     }
@@ -74,8 +72,8 @@ class Operation {
 
             // log the response object
             // mask the auth token first if there is one
-            if (requestParams.headers.authorization) {
-                requestParams.headers.authorization = requestParams.headers.authorization.substring(0, requestParams.headers.authorization.length - 8) + `********`
+            if (requestParams.headers['authorization']) {
+                requestParams.headers['authorization'] = requestParams.headers['authorization'].substring(0, requestParams.headers['authorization'].length - 8) + `********`
             }
 
             this.backend.config.context.logger.logBackendCall({ 
@@ -85,10 +83,8 @@ class Operation {
             })
             // end logging the response object
 
-            let x = await this.translateResponse(response.data, _.bind(this.export(args), this))
+            let x: any = await this.translateResponse(response.data, _.bind(this.export(args), this))
             x.getResults = () => x.results
-
-            // console.log(JSON.stringify(x.results))
 
             if (x) {
                 let px = await this.postProcessor(args)
@@ -116,10 +112,13 @@ class Operation {
         return {}
     }
 
+    translateResponse(data: any, arg1: any) {
+        throw new Error("Method not implemented.")
+    }
+
     getHeaders() {
         return {}
     }
 }
 
-module.exports = Operation 
- 
+module.exports = { Operation }

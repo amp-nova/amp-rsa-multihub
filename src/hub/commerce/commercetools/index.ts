@@ -1,8 +1,6 @@
 // 3rd party libs
-const _ = require('lodash')
-
-const CommerceBackend = require('../index')
-
+import _ from 'lodash'
+const { CommerceBackend } = require('../index')
 const { productOperation, categoryOperation } = require('./operations')
 
 class CommerceToolsBackend extends CommerceBackend {

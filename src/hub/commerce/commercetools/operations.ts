@@ -5,9 +5,9 @@ const URI = require('urijs');
 const axios = require('axios')
 const currency = require('currency.js')
 
-const Operation = require('../../../operations/operation')
+const { Operation } = require('../../../operations/operation')
 
-const { formatMoneyString } = require('../../../../util/locale-formatter')
+const { formatMoneyString } = require('../../../util/locale-formatter')
 const mapImage = image => image && ({ url: image.url })
 
 class CommerceToolsOperation extends Operation {
@@ -60,7 +60,6 @@ class CommerceToolsOperation extends Operation {
                     }
                 }
             )
-            // console.log(`[ ct ] access token: ${response.data.access_token}`)
             this.accessToken = `${response.data.token_type} ${response.data.access_token}`
         }
         return this.accessToken
@@ -88,6 +87,10 @@ class CommerceToolsOperation extends Operation {
 
 // category operation
 class CommerceToolsCategoryOperation extends CommerceToolsOperation {
+    constructor(config) {
+        super(config)
+    }
+
     export(args) {
         let self = this
         return function (category) {
@@ -118,6 +121,10 @@ class CommerceToolsCategoryOperation extends CommerceToolsOperation {
 
 // cart discount operation
 class CommerceToolsCartDiscountOperation extends CommerceToolsOperation {
+    constructor(config) {
+        super(config)
+    }
+
     getRequestPath(args) {
         return `cart-discounts`
     }
@@ -126,6 +133,10 @@ class CommerceToolsCartDiscountOperation extends CommerceToolsOperation {
 
 // product operation
 class CommerceToolsProductOperation extends CommerceToolsOperation {
+    constructor(config) {
+        super(config)
+    }
+
     getRequestPath(args) {
         return (args.keyword || args.filter) ? `product-projections/search` : `product-projections`
     }

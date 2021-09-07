@@ -7,3 +7,5 @@ declare let args: any;
 declare const settingsYAML: any;
 declare let settings: any;
 declare let packageJson: any;
+declare const isProduction: boolean;
+declare const port: string | number;
