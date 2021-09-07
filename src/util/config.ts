@@ -19,6 +19,7 @@ const port = process.env.PORT || 6393
 module.exports = {
     ...settings,
     packageJson,
+    isProduction,
     app: {
         mode: isProduction ? 'production' : 'debug',
         host: isProduction ? `https://${args.get('arm_host')}` : `http://localhost:${port}`,
