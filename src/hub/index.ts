@@ -17,6 +17,10 @@ _.each(files, file => {
 })
 
 let getClient = async context => {
+  if (_.isEmpty(context.backendKey)) {
+    throw new Error(`x-arm-backend-key not set`)
+  }
+
   try {
     let secret = await secretManager.getSecretValue({ SecretId: context.backendKey })
     let cred = JSON.parse(secret.SecretString)
