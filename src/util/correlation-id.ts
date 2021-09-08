@@ -39,6 +39,7 @@ router.use(async (req, res, next) => {
         
             req.hub = await hub({
                 backendKey,
+                requestId: req.correlationId,
                 logger: tag !== 'IntrospectionQuery' && await logger.getObjectLogger(req.correlationId),
                 ...getAmplienceConfigFromHeaders(req.headers)
             })
