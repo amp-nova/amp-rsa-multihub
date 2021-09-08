@@ -31,4 +31,5 @@ RUN npm install
 EXPOSE 6393
 
 # ENTRYPOINT [ "npm", "run", "dev" ]
-ENTRYPOINT [ "ts-node", "./start-server.ts" ]
+# ENTRYPOINT [ "ts-node", "./start-server.ts" ]
+ENTRYPOINT [ "npm", "run", "start" ]
