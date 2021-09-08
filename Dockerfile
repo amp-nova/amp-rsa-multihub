@@ -7,7 +7,7 @@ ARG arm_host
 ARG build_mode
 
 ENV arm_branch=${arm_branch}
-ENV arm_build_date=${arm_build_date}
+ENV arm_build_date=cachebust11
 ENV arm_version=${arm_version}
 ENV arm_host=${arm_host}
 
