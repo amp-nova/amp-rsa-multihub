@@ -36,7 +36,7 @@ let getClient = async context => {
       throw new Error(`No hub backend matches key [ ${context.backendKey} ]. Please make sure you have set the 'x-arm-backend-key' header.`)
     }
   } catch (error) {
-    console.error(chalk.red(`Error retrieving secret: ${error}`))
+    throw new Error(`Error retrieving secret: ${error}`)
   }
 }
 
