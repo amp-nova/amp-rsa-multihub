@@ -28,16 +28,17 @@ router.use(async (req, res, next) => {
         const appUrl = url.parseURL(appContext.url)
         const bareHost = _.first(appUrl.host.split('.'))
         const graphqlOrigin = url.serializeURLOrigin(url.parseURL(config.app.host))
-    
+        const backendKey = req.headers['x-arm-backend-key'] || req.headers['x-commerce-backend-key']
+        
         const tag = req.path.indexOf('graphql') > -1 ? req.body.operationName || `anonymousQuery` : req.path.split('/').pop()
-        req.correlationId = `${bareHost}-${(req.headers['x-arm-backend-key'] || req.headers['x-commerce-backend-key']).replace('/', '-')}-${tag}-${nanoid(4)}`
+        req.correlationId = `${bareHost}-${backendKey.replace('/', '-')}-${tag}-${nanoid(4)}`
         req.headers['x-arm-correlation-id'] = req.correlationId
     
         logger.info(`${graphqlOrigin}/logs/${req.correlationId}`)
     
         req.hub = await hub({
-            backendKey: req.headers['x-arm-backend-key'] || req.headers['x-commerce-backend-key'],
-            logger: req.body.operationName !== 'IntrospectionQuery' && await logger.getObjectLogger(req.correlationId),
+            backendKey,
+            logger: tag !== 'IntrospectionQuery' && await logger.getObjectLogger(req.correlationId),
             ...getAmplienceConfigFromHeaders(req.headers)
         })
     }

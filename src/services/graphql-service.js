@@ -14,7 +14,7 @@ module.exports = async app => {
     });
 
     app.post('/graphql', async (req, res, next) => {
-        if (req.body.operationName !== 'IntrospectionQuery') {
+        if (req.body && req.body.operationName !== 'IntrospectionQuery') {
             const objectLogger = await logger.getObjectLogger(req.correlationId)
 
             const requestStart = new Date()
