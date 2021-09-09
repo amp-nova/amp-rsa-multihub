@@ -1,4 +1,5 @@
 const _ = require('lodash')
+const logger = require('./logger')
 
 String.prototype.stripHTML = function() {
     return this.replace(/(<([^>]+)>)/gi, "")
@@ -33,8 +34,10 @@ function sleep(ms) {
 }
 
 const { exec } = require('child_process');
-const execAsync = async command => {
+const execAsync = async (command, opts = {}) => {
     let result = null
+
+    logger.debug(`[ ${command} ] exec`)
 
     exec(command, (err, stdout, stderr) => {
         result = { err, stdout, stderr }
@@ -44,6 +47,16 @@ const execAsync = async command => {
         await sleep(10)
     }
 
+    if (!opts.quiet) {
+        if (result.err) {
+            logger.error(`[ ${command} ] [ err ] ${result.err.message}`)
+        }
+        else {
+            logger.debug(`[ ${command} ] ${result.stdout}`)
+        }
+    }
+
+    logger.debug(`[ ${command} ] finished`)
     return result
 }
 

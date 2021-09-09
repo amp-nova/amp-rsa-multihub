@@ -1,8 +1,10 @@
 const { readFileSync } = require('fs')
 const yaml = require('js-yaml');
 const fs = require('fs-extra')
+const branchName = require('current-git-branch')
+const nconf = require('nconf')
 
-const { execAsync } = require('./helpers')
+let args = nconf.argv().env()
 
 // Reading global settings
 // const settingsYAML = readFileSync(`${__dirname}/../../config/settings.yaml`).toString();
@@ -10,14 +12,20 @@ const { execAsync } = require('./helpers')
 // Converting from YAML to JSON
 // let settings = yaml.load(settingsYAML)
 let packageJson = fs.readJSONSync('./package.json')
-let cli = {}
+
+const isProduction = args.get('app_mode') === 'production'
+const port = process.env.PORT || 6393
 
 module.exports = {
     // ...settings,
     packageJson,
-    cli,
-    init: async () => {
-        let result = await execAsync('git rev-parse --abbrev-ref HEAD')
-        cli['git'] = result.stdout.trim()
+    isProduction,
+    app: {
+        mode: isProduction ? 'production' : 'debug',
+        host: isProduction ? `https://${process.env.COPILOT_SERVICE_NAME}.${process.env.COPILOT_ENVIRONMENT_NAME}.${process.env.COPILOT_APPLICATION_NAME}.${process.env.pbx_domain}` : `http://localhost:${port}`,
+        port
+    },
+    git: {
+        branch: branchName()
     }
 }

@@ -13,7 +13,7 @@ module.exports = seconds => async (request) => {
     switch (request.method) {
         case 'get':
             if (cache[request.url]) {
-                logger.debug(`[  cache ] ${request.url}`)
+                // logger.info(`[  cache ] ${request.url}`)
                 clearTimeout(cache[request.url].timeout)
                 cache[request.url].timeout = timer(request.url)
                 return { 
@@ -21,7 +21,7 @@ module.exports = seconds => async (request) => {
                 }
             }
             else {
-                logger.info(`[ ${request.method.padStart(6, ' ')} ] ${request.url}`)
+                // logger.info(`[ ${request.method.padStart(6, ' ')} ] ${request.url}`)
                 let x = await axios(request)
                 cache[request.url] = {
                     response: x.data,
@@ -30,7 +30,7 @@ module.exports = seconds => async (request) => {
                 return x
             }
         default:
-            logger.info(`[ ${request.method.padStart(6, ' ')} ] ${request.url}`)
+            // logger.info(`[ ${request.method.padStart(6, ' ')} ] ${request.url}`)
             return await axios(request)
     }
 }
