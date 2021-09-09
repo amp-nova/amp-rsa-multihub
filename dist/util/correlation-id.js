@@ -24,20 +24,25 @@ const getAmplienceConfigFromHeaders = headers => {
     };
 };
 router.use(async (req, res, next) => {
-    if (req.path.indexOf('graphql') > -1 || req.path.indexOf('api/') > -1) {
-        let { appContext } = getAmplienceConfigFromHeaders(req.headers);
-        const appUrl = whatwg_url_1.default.parseURL(appContext.url);
-        const bareHost = lodash_1.default.first(appUrl.host.split('.'));
-        const graphqlOrigin = whatwg_url_1.default.serializeURLOrigin(whatwg_url_1.default.parseURL(config.app.host));
-        const tag = req.path.indexOf('graphql') > -1 ? req.body.operationName || `anonymousQuery` : req.path.split('/').pop();
-        req.correlationId = `${bareHost}-${(req.headers['x-arm-backend-key'] || req.headers['x-commerce-backend-key']).replace('/', '-')}-${tag}-${nanoid(4)}`;
-        req.headers['x-arm-correlation-id'] = req.correlationId;
-        logger.info(`${graphqlOrigin}/logs/${req.correlationId}`);
-        req.hub = await hub({
-            backendKey: req.headers['x-arm-backend-key'] || req.headers['x-commerce-backend-key'],
-            logger: req.body.operationName !== 'IntrospectionQuery' && await logger.getObjectLogger(req.correlationId),
-            ...getAmplienceConfigFromHeaders(req.headers)
-        });
+    var _a;
+    if ((req.path.indexOf('graphql') > -1 && ((_a = req.body) === null || _a === void 0 ? void 0 : _a.operationName) !== 'IntrospectionQuery') || req.path.indexOf('api/') > -1) {
+        const backendKey = req.headers['x-arm-backend-key'] || req.headers['x-commerce-backend-key'];
+        if (backendKey) {
+            let { appContext } = getAmplienceConfigFromHeaders(req.headers);
+            const appUrl = whatwg_url_1.default.parseURL(appContext.url);
+            const bareHost = lodash_1.default.first(appUrl.host.split('.'));
+            const graphqlOrigin = whatwg_url_1.default.serializeURLOrigin(whatwg_url_1.default.parseURL(config.app.host));
+            const tag = req.path.indexOf('graphql') > -1 ? req.body.operationName || `anonymousQuery` : req.path.split('/').pop();
+            req.correlationId = `${bareHost}-${backendKey.replace('/', '-')}-${tag}-${nanoid(4)}`;
+            req.headers['x-arm-correlation-id'] = req.correlationId;
+            logger.info(`${graphqlOrigin}/logs/${req.correlationId}`);
+            req.hub = await hub({
+                backendKey,
+                requestId: req.correlationId,
+                logger: await logger.getObjectLogger(req.correlationId),
+                ...getAmplienceConfigFromHeaders(req.headers)
+            });
+        }
     }
     next();
 });

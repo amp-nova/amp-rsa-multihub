@@ -22,7 +22,7 @@ module.exports = {
     isProduction,
     app: {
         mode: isProduction ? 'production' : 'debug',
-        host: isProduction ? `https://${args.get('arm_host')}` : `http://localhost:${port}`,
+        host: isProduction ? `https://${process.env.COPILOT_SERVICE_NAME}.${process.env.COPILOT_ENVIRONMENT_NAME}.${process.env.COPILOT_APPLICATION_NAME}.${process.env.pbx_domain}` : `http://localhost:${port}`,
         port
     },
     git: {

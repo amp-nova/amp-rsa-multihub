@@ -16,6 +16,9 @@ _.each(files, file => {
     }
 });
 let getClient = async (context) => {
+    if (_.isEmpty(context.backendKey)) {
+        throw new Error(`x-arm-backend-key not set`);
+    }
     try {
         let secret = await secretManager.getSecretValue({ SecretId: context.backendKey });
         let cred = JSON.parse(secret.SecretString);
@@ -35,7 +38,7 @@ let getClient = async (context) => {
         }
     }
     catch (error) {
-        console.error(chalk.red(`Error retrieving secret: ${error}`));
+        throw new Error(`Error retrieving secret: ${error}`);
     }
 };
 class Backend {

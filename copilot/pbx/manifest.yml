@@ -1,18 +1,21 @@
-# The manifest for the "switch-lb" service.
+# The manifest for the "switchboard" service.
 # Read the full specification for the "Load Balanced Web Service" type at:
 #  https://aws.github.io/copilot-cli/docs/manifest/lb-web-service/
 
 # Your service name will be used in naming your resources like log groups, ECS services, etc.
-name: switch-lb
+name: pbx
 type: Load Balanced Web Service
 
 # Distribute traffic to your service.
 http:
-  # Requests to this path will be forwarded to your service.
-  # To match all requests you can use the "/" path.
   path: '/'
-  # You can specify a custom health check path. The default is "/".
-  healthcheck: '/check'
+  healthcheck:
+    path: /check
+    healthy_threshold: 3
+    unhealthy_threshold: 5
+    interval: 10s
+    timeout: 5s
+  # alias: amprsa.net
 
 # Configuration for your containers and service.
 image:
@@ -29,7 +32,7 @@ exec: true     # Enable running commands in your container.
 # Optional fields for more advanced use-cases.
 #
 variables:                    # Pass environment variables as key value pairs.
- arm_host: 'graphql.amprsa-dev.net'
+ pbx_domain: amprsa.net
 
 #secrets:                      # Pass secrets from AWS Systems Manager (SSM) Parameter Store.
 #  GITHUB_TOKEN: GITHUB_TOKEN  # The key is the name of the environment variable, the value is the name of the SSM parameter.

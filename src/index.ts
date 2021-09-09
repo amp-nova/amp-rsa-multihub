@@ -21,7 +21,7 @@ let startServer = async () => {
     const graphqlService = await require('./services/graphql-service')(app)
 
     await app.listen({ port: config.app.port })
-    logger.info(`🚀 Server [ v${config.packageJson.version}/${config.git.branch} mode: ${config.app.mode} ] is ready at ${config.app.host}${graphqlService.graphqlPath}`);
+    logger.info(`🚀 Server [ v${config.packageJson.version}/${process.env.COPILOT_ENVIRONMENT_NAME} mode: ${config.app.mode} ] is ready at ${config.app.host}${graphqlService.graphqlPath}`);
     return { app };
   } catch (error) {
     logger.error(error.stack)

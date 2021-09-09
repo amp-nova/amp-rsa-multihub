@@ -5,18 +5,19 @@ const branchName = require('current-git-branch');
 const nconf = require('nconf');
 let args = nconf.argv().env();
 // Reading global settings
-const settingsYAML = readFileSync(`${__dirname}/../../config/settings.yaml`).toString();
+// const settingsYAML = readFileSync(`${__dirname}/../../config/settings.yaml`).toString();
 // Converting from YAML to JSON
-let settings = yaml.load(settingsYAML);
+// let settings = yaml.load(settingsYAML)
 let packageJson = fs.readJSONSync('./package.json');
 const isProduction = args.get('app_mode') === 'production';
 const port = process.env.PORT || 6393;
 module.exports = {
-    ...settings,
+    // ...settings,
     packageJson,
+    isProduction,
     app: {
         mode: isProduction ? 'production' : 'debug',
-        host: isProduction ? `https://${args.get('arm_host')}` : `http://localhost:${port}`,
+        host: isProduction ? `https://${process.env.COPILOT_SERVICE_NAME}.${process.env.COPILOT_ENVIRONMENT_NAME}.${process.env.COPILOT_APPLICATION_NAME}.${process.env.pbx_domain}` : `http://localhost:${port}`,
         port
     },
     git: {
