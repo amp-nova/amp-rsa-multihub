@@ -5,15 +5,15 @@ const fs = require('fs-extra')
 const { execAsync } = require('./helpers')
 
 // Reading global settings
-const settingsYAML = readFileSync(`${__dirname}/../../config/settings.yaml`).toString();
+// const settingsYAML = readFileSync(`${__dirname}/../../config/settings.yaml`).toString();
 
 // Converting from YAML to JSON
-let settings = yaml.load(settingsYAML)
+// let settings = yaml.load(settingsYAML)
 let packageJson = fs.readJSONSync('./package.json')
 let cli = {}
 
 module.exports = {
-    ...settings,
+    // ...settings,
     packageJson,
     cli,
     init: async () => {
