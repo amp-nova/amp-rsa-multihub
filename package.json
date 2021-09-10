@@ -1,5 +1,5 @@
 {
-  "name": "amp-rsa-multihub",
+  "name": "pbx",
   "types": "dist/schemas/types.d.ts",
   "main": "dist/index.js",
   "scripts": {
