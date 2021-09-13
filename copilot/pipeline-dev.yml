@@ -3,7 +3,7 @@
 # For more info: https://aws.github.io/copilot-cli/docs/manifest/pipeline/
 
 # The name of the pipeline.
-name: pipeline-nova-amp-rsa-multihub
+name: pipeline-nova-pbx-dev
 
 # The version of the schema used in this template.
 version: 1
@@ -16,7 +16,7 @@ source:
   # Additional properties that further specify the location of the artifacts.
   properties:
     branch: dev
-    repository: https://github.com/amp-nova/amp-rsa-multihub
+    repository: https://github.com/amp-nova/pbx
     # Optional: specify the name of an existing CodeStar Connections connection.
     # connection_name: a-connection
 
