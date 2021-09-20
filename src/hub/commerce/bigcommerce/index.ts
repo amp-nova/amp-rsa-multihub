@@ -2,7 +2,7 @@
 import _ from 'lodash'
 
 const { productOperation, categoryOperation } = require('./operations')
-const { findCategory } = require('../../../util/helpers')
+const { findCategory } = require('@/util/helpers')
 const { CommerceBackend } = require('../index')
 
 class BigCommerceBackend extends CommerceBackend {

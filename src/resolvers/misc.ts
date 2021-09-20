@@ -1,5 +1,6 @@
 import { Ctx, Query, Resolver } from 'type-graphql'
-import { Context } from '../../schemas/types'
+import { Context } from '../schemas/types'
+const config = require('../util/config')
 
 @Resolver()
 export class MiscResolver {
@@ -10,7 +11,7 @@ export class MiscResolver {
 
     @Query(returns => String)
     logUrl(@Ctx() ctx: Context) {
-        return `http://localhost:6393/logs/${ctx.commercehub.config.context.requestId}`
+        return `${config.app.host}/logs/${ctx.commercehub.config.context.requestId}`
     }
 }
 

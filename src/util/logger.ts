@@ -84,3 +84,4 @@ logger.readRequestObject = async requestId => cachedLogs[requestId] || await log
 logger.getAppLogs = () => appLogs
 
 module.exports = logger
+export default logger

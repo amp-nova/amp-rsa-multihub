@@ -15,7 +15,6 @@ http:
     unhealthy_threshold: 5
     interval: 10s
     timeout: 5s
-  # alias: amprsa.net
 
 # Configuration for your containers and service.
 image:

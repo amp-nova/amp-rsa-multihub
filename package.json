@@ -3,11 +3,26 @@
   "types": "dist/schemas/types.d.ts",
   "main": "dist/index.js",
   "scripts": {
-    "dev": "nodemon src/index.ts --watch src --watch package.json --ext ts,js --ignore logs --app_mode dev",
+    "devx": "nodemon src/index.ts --watch src --watch package.json --ext ts,js --ignore logs --app_mode dev -r tsconfig-paths/register",
+    "dev": "nodemon",
     "clean": "rimraf dist",
     "build": "npm run clean && tsc",
     "startPm2": "./node_modules/.bin/pm2 start src/index.ts --name multihub -- --app_mode production",
     "start": "ts-node src/index.ts --app_mode production"
+  },
+  "nodemonConfig": {
+    "ignore":
+      [
+        "logs",
+        "node_modules"
+      ],
+    "watch": [
+      "src",
+      "package.json",
+      "tsconfig.json"
+    ],
+    "exec": "node -r tsconfig-paths/register -r ts-node/register ./src/index.ts",
+    "ext": "ts, js"
   },
   "dependencies": {
     "@aws-sdk/client-secrets-manager": "^3.13.1",
@@ -53,6 +68,7 @@
   "devDependencies": {
     "@types/node": "^16.7.2",
     "json-stringify-safe": "^5.0.1",
-    "proxy-method-missing": "^1.0.1"
+    "proxy-method-missing": "^1.0.1",
+    "tsconfig-paths": "^3.11.0"
   }
 }

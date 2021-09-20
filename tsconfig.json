@@ -12,7 +12,10 @@
     "module": "commonjs",
     "resolveJsonModule": true,
     "lib": ["es2019", "esnext.asynciterable"],
-    "preserveSymlinks": true
+    "preserveSymlinks": true,
+    "paths": {
+      "@/*": ["./*"]
+    }
   },
   "include": [
     "src/**/*",

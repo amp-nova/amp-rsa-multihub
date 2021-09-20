@@ -2,7 +2,7 @@ const _ = require('lodash')
 
 const { CommerceBackend } = require('../index')
 const { productOperation, categoryOperation } = require('./operations')
-const { findCategory } = require('../../../util/helpers')
+const { findCategory } = require('@/util/helpers')
 
 class HybrisBackend extends CommerceBackend {
     constructor(config) {

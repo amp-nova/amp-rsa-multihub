@@ -5,9 +5,9 @@ const URI = require('urijs');
 const axios = require('axios')
 const currency = require('currency.js')
 
-const { Operation } = require('../../../operations/operation')
+const { Operation } = require('@/operations/operation')
 
-const { formatMoneyString } = require('../../../util/locale-formatter')
+const { formatMoneyString } = require('@/util/locale-formatter')
 const mapImage = image => image && ({ url: image.url })
 
 class CommerceToolsOperation extends Operation {

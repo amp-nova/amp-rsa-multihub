@@ -2,7 +2,7 @@ import URI from 'urijs'
 import _ from 'lodash'
 import atob from 'atob'
 
-const { Operation } = require('../../../operations/operation')
+const { Operation } = require('@/operations/operation')
 const slugify = require('slugify')
 
 class HybrisOperation extends Operation {

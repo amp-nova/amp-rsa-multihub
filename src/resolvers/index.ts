@@ -1,6 +1,6 @@
-import { ProductResolver } from './resolvers/product';
-import { CategoryResolver } from './resolvers/category';
-import { VariantResolver } from './resolvers/variant';
-import { MiscResolver } from './resolvers/misc';
+import { ProductResolver } from './product';
+import { CategoryResolver } from './category';
+import { VariantResolver } from './variant';
+import { MiscResolver } from './misc';
 
 module.exports = [ProductResolver, CategoryResolver, VariantResolver, MiscResolver]
