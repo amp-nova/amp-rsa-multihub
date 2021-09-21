@@ -4,6 +4,7 @@ export declare type AmplienceTranslationConfig = {
     workflowStates: {
         inProgress: string;
         complete: string;
+        sentForTranslation: string;
     };
     contentTypes: {
         schema: string;
@@ -12,9 +13,10 @@ export declare type AmplienceTranslationConfig = {
 };
 export declare class AmplienceBackend extends CMSBackend {
     dc: DynamicContent;
+    hubName: string;
     constructor(backend: any);
-    getContentItems(id: any): Promise<ContentItem>;
+    getContentItem(payload: any): Promise<ContentItem>;
     getTranslationConfig(): Promise<AmplienceTranslationConfig>;
-    translateContentItem(id: string, locale: string): Promise<ContentItem>;
+    translateContentItem(payload: ContentItem): Promise<ContentItem>;
     getSource(): string;
 }

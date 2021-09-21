@@ -26,7 +26,7 @@ const getAmplienceConfigFromHeaders = headers => {
 router.use(async (req, res, next) => {
     var _a;
     if ((req.path.indexOf('graphql') > -1 && ((_a = req.body) === null || _a === void 0 ? void 0 : _a.operationName) !== 'IntrospectionQuery') || req.path.indexOf('api/') > -1) {
-        const backendKey = req.headers['x-arm-backend-key'] || req.headers['x-commerce-backend-key'];
+        const backendKey = req.headers['x-pbx-backend-key'] || req.headers['x-arm-backend-key'];
         if (backendKey) {
             let { appContext } = getAmplienceConfigFromHeaders(req.headers);
             const appUrl = whatwg_url_1.default.parseURL(appContext.url);

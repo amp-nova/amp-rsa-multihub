@@ -1,4 +1,4 @@
-const _ = require('lodash')
+import _ from 'lodash'
 
 const { CommerceBackend } = require('../index')
 const { productOperation, categoryOperation } = require('./operations')

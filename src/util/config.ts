@@ -11,7 +11,7 @@ let args = nconf.argv().env()
 
 // Converting from YAML to JSON
 // let settings = yaml.load(settingsYAML)
-let packageJson = fs.readJSONSync('./package.json')
+// let packageJson = fs.readJSONSync('./package.json')
 
 const port = process.env.PORT || 6393
 const appMode = process.env.COPILOT_ENVIRONMENT_NAME || 'local'
@@ -20,7 +20,7 @@ const serviceName = process.env.COPILOT_SERVICE_NAME || 'pbx'
 const serviceHost = appMode === 'local' ? `http://localhost:${port}` : `https://${serviceName}.${appMode}.${appName}.${process.env.pbx_domain}`
 
 module.exports = {
-    packageJson,
+    // packageJson,
     app: {
         name: serviceName,
         mode: appMode,

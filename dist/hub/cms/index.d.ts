@@ -3,6 +3,6 @@ export declare class CMSBackend {
     config: any;
     constructor(config: any);
     getContentItems(id: any): Promise<ContentItem>;
-    translateContentItem(id: string, locale: string): Promise<any>;
+    translateContentItem(payload: ContentItem): Promise<any>;
     getSource(): string;
 }

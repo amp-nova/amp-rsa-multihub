@@ -8,13 +8,13 @@ const { SecretsManager } = require("@aws-sdk/client-secrets-manager");
 let secretManager = new SecretsManager()
 
 let backends = {}
-let files = fs.readdirSync('src/hub')
-_.each(files, file => {
-  let stat = fs.statSync(`src/hub/${file}`)
-  if (stat.isDirectory()) {
-    backends = _.assign(backends, require(`./${file}`).backends)
-  }
-})
+// let files = fs.readdirSync('src/hub')
+// _.each(files, file => {
+//   let stat = fs.statSync(`src/hub/${file}`)
+//   if (stat.isDirectory()) {
+//     backends = _.assign(backends, require(`./${file}`).backends)
+//   }
+// })
 
 let getClient = async context => {
   if (_.isEmpty(context.backendKey)) {

@@ -1,12 +1,10 @@
 "use strict";
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
 Object.defineProperty(exports, "__esModule", { value: true });
 const winston = require('winston');
 const path = require('path');
 const Transport = require('winston-transport');
-const fs_extra_1 = __importDefault(require("fs-extra"));
+// import fs from 'fs-extra';
+const fs = require('fs-extra');
 const appLogs = [];
 class AppTransport extends Transport {
     constructor(opts) {
@@ -70,8 +68,8 @@ logger.getObjectLogger = async (requestId) => {
         }
     };
 };
-logger.readLogFile = async (requestId) => fs_extra_1.default.existsSync(logger.getLogPath(requestId)) && await fs_extra_1.default.readJson(logger.getLogPath(requestId), { encoding: 'utf8' });
-logger.writeLogFile = async (requestId, obj) => await fs_extra_1.default.writeJson(logger.getLogPath(requestId), obj);
+logger.readLogFile = async (requestId) => fs.existsSync(logger.getLogPath(requestId)) && await fs.readJson(logger.getLogPath(requestId), { encoding: 'utf8' });
+logger.writeLogFile = async (requestId, obj) => await fs.writeJson(logger.getLogPath(requestId), obj);
 logger.readRequestObject = async (requestId) => cachedLogs[requestId] || await logger.readLogFile(requestId);
 logger.getAppLogs = () => appLogs;
 module.exports = logger;

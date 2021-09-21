@@ -8,6 +8,9 @@ const lodash_1 = __importDefault(require("lodash"));
 const atob_1 = __importDefault(require("atob"));
 const { Operation } = require('@/operations/operation');
 const slugify = require('slugify');
+const stripHTML = function (text) {
+    return text.replace(/(<([^>]+)>)/gi, "");
+};
 class HybrisOperation extends Operation {
     constructor(config) {
         super(config);
@@ -129,11 +132,11 @@ class HybrisProductOperation extends HybrisOperation {
             }
             return {
                 ...prod,
-                name: prod.name.stripHTML(),
+                name: stripHTML(prod.name),
                 id: prod.code,
-                slug: slugify(prod.name.stripHTML(), { lower: true }),
-                shortDescription: prod.summary && prod.summary.stripHTML(),
-                longDescription: prod.description && prod.description.stripHTML(),
+                slug: slugify(stripHTML(prod.name), { lower: true }),
+                shortDescription: prod.summary && stripHTML(prod.summary),
+                longDescription: prod.description && stripHTML(prod.description),
                 categories: lodash_1.default.map(prod.categories, cat => { return categoryOperation.export(args)(cat); }),
                 variants: [{
                         sku: prod.code,

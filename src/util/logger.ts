@@ -3,8 +3,9 @@ const path = require('path')
 const Transport = require('winston-transport');
 
 import _ from 'lodash'
-import fs from 'fs-extra';
+// import fs from 'fs-extra';
 
+const fs = require('fs-extra')
 const appLogs = []
 
 class AppTransport extends Transport {

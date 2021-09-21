@@ -4,7 +4,6 @@ declare const fs: any;
 declare const branchName: any;
 declare const nconf: any;
 declare let args: any;
-declare let packageJson: any;
 declare const port: string | number;
 declare const appMode: string;
 declare const appName: string;

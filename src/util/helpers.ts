@@ -1,13 +1,5 @@
-const _ = require('lodash')
+import _ from 'lodash'
 const logger = require('./logger')
-
-String.prototype.stripHTML = function() {
-    return this.replace(/(<([^>]+)>)/gi, "")
-}
-
-Array.ensureArray = function(data) {
-    return Array.isArray(data) ? data : [data]
-}
 
 const findCategory = (categories, args) => {
     let mapped = {}
@@ -34,7 +26,7 @@ function sleep(ms) {
 }
 
 const { exec } = require('child_process');
-const execAsync = async (command, opts = {}) => {
+const execAsync = async (command, opts: any = {}) => {
     let result = null
 
     logger.debug(`[ ${command} ] exec`)

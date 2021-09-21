@@ -8,6 +8,7 @@ const __1 = require("..");
 const dc_management_sdk_js_1 = require("dc-management-sdk-js");
 const translation_client_1 = __importDefault(require("./translation-client"));
 const logger_1 = __importDefault(require("@/util/logger"));
+const axios = require('axios');
 const fetch = require('node-fetch');
 const jsonpath = require('jsonpath');
 const updateStatus = async (contentItem, state) => {
@@ -30,22 +31,33 @@ const doTranslateContentItem = async (contentItem, locale, config) => {
 };
 class AmplienceBackend extends __1.CMSBackend {
     constructor(backend) {
+        console.log(backend);
         super(backend);
-        this.dc = new dc_management_sdk_js_1.DynamicContent(backend.cred);
+        this.dc = new dc_management_sdk_js_1.DynamicContent({ client_id: this.config.cred.client_id, client_secret: this.config.cred.client_secret });
     }
-    async getContentItems(id) {
-        return await this.dc.contentItems.get(id);
+    async getContentItem(payload) {
+        console.log(`getContentItems`);
+        let item = await this.dc.contentItems.get(payload.payload.id);
+        console.log(`content items: ${JSON.stringify(item)}`);
+        return item;
+        // let contentItem = await axios.get(`https://${this.config.cred.id}.cdn.content.amplience.net/content/id/${payload.payload.id}`, {
+        //     headers: { 'Authorization': await this.authenticate() }
+        // })
+        // console.log(`contentItem!`)
+        // console.log(contentItem)
+        // return payload
     }
     async getTranslationConfig() {
+        console.log(`getTranslationConfig`);
         let response = await fetch(`https://${this.config.cred.id}.cdn.content.amplience.net/content/key/config/translation?depth=all&format=inlined`);
         return (await response.json()).content;
     }
-    async translateContentItem(id, locale) {
+    async translateContentItem(payload) {
         let translationConfig = await this.getTranslationConfig();
-        let contentItem = await this.getContentItems(id);
+        let contentItem = await this.getContentItem(payload);
         if (contentItem.workflow.state !== translationConfig.workflowStates.inProgress) {
             contentItem = await updateStatus(contentItem, translationConfig.workflowStates.inProgress);
-            contentItem = await doTranslateContentItem(contentItem, locale, translationConfig);
+            contentItem = await doTranslateContentItem(contentItem, contentItem.locale, translationConfig);
             contentItem = await updateStatus(contentItem, translationConfig.workflowStates.complete);
         }
         return contentItem;

@@ -9,31 +9,10 @@ var __createBinding = (this && this.__createBinding) || (Object.create ? (functi
 var __exportStar = (this && this.__exportStar) || function(m, exports) {
     for (var p in m) if (p !== "default" && !Object.prototype.hasOwnProperty.call(exports, p)) __createBinding(exports, m, p);
 };
-Object.defineProperty(exports, "__esModule", { value: true });
-require("reflect-metadata");
-const express = require('express');
-const bodyParser = require('body-parser');
-const config = require('./util/config');
-const logger = require("./util/logger");
-require('./util/helpers');
-let startServer = async () => {
-    try {
-        const app = express();
-        app.use(bodyParser.json());
-        app.use(require('./routes'));
-        app.use(require('./util/correlation-id'));
-        app.use(require('./services/translation-service'));
-        app.use(require('./services/log-service'));
-        // configure graphql
-        const graphqlService = await require('./services/graphql-service')(app);
-        await app.listen({ port: config.app.port });
-        logger.info(`🚀 server [ v${config.packageJson.version}/${config.app.name} mode: ${config.app.mode} ] is ready at ${config.app.host}`);
-        return { app };
-    }
-    catch (error) {
-        logger.error(error.stack);
-        logger.error(JSON.stringify(error));
-    }
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
 };
-startServer();
+Object.defineProperty(exports, "__esModule", { value: true });
+const server_1 = __importDefault(require("./server"));
+server_1.default();
 __exportStar(require("./schemas/types"), exports);

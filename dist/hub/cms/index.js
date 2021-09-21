@@ -8,7 +8,7 @@ class CMSBackend {
     async getContentItems(id) {
         return null;
     }
-    async translateContentItem(id, locale) {
+    async translateContentItem(payload) {
         return null;
     }
     getSource() {
