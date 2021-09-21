@@ -23,7 +23,7 @@ const getAmplienceConfigFromHeaders = headers => {
 
 router.use(async (req, res, next) => {
     if ((req.path.indexOf('graphql') > -1 && req.body?.operationName !== 'IntrospectionQuery') || req.path.indexOf('api/') > -1) {
-        const backendKey = req.headers['x-pbx-backend-key']
+        const backendKey = req.headers['x-pbx-backend-key'] || req.headers['x-arm-backend-key']
 
         if (backendKey) {
             let { appContext } = getAmplienceConfigFromHeaders(req.headers)
