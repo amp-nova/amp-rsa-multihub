@@ -75,3 +75,4 @@ logger.writeLogFile = async (requestId, obj) => await fs_extra_1.default.writeJs
 logger.readRequestObject = async (requestId) => cachedLogs[requestId] || await logger.readLogFile(requestId);
 logger.getAppLogs = () => appLogs;
 module.exports = logger;
+exports.default = logger;

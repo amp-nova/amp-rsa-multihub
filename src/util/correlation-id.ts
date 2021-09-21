@@ -45,6 +45,9 @@ router.use(async (req, res, next) => {
                 ...getAmplienceConfigFromHeaders(req.headers)
             })
         }
+        else {
+            next(`backend key not found!`)
+        }
     }
 
     next()

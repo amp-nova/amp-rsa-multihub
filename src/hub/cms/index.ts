@@ -11,7 +11,7 @@ export class CMSBackend {
         return null
     }
 
-    async translateContentItem(id: string, locale: string) {
+    async translateContentItem(payload: ContentItem) {
         return null
     }
 

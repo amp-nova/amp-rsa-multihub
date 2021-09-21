@@ -24,9 +24,9 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const lodash_1 = __importDefault(require("lodash"));
 const URI = require('urijs');
-const { formatMoneyString } = require('../../../util/locale-formatter');
-const { findCategory } = require('../../../util/helpers');
-const { Operation } = require('../../../operations/operation');
+const { formatMoneyString } = require('@/util/locale-formatter');
+const { findCategory } = require('@/util/helpers');
+const { Operation } = require('@/operations/operation');
 const mapImage = image => ({ url: image.url_standard });
 const slugify = require('slugify');
 class BigCommerceOperation extends Operation {

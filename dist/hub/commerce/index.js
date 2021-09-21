@@ -1,7 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.CommerceBackend = void 0;
-const operation_1 = require("../../operations/operation");
+const operation_1 = require("@/operations/operation");
 let defaultArgs = {
     currency: 'USD',
     locale: 'en-US',

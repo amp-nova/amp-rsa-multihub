@@ -27,7 +27,7 @@ let startServer = async () => {
         // configure graphql
         const graphqlService = await require('./services/graphql-service')(app);
         await app.listen({ port: config.app.port });
-        logger.info(`🚀 Server [ v${config.packageJson.version}/${config.serviceName} mode: ${config.appMode} ] is ready at ${config.app.host}`);
+        logger.info(`🚀 server [ v${config.packageJson.version}/${config.app.name} mode: ${config.app.mode} ] is ready at ${config.app.host}`);
         return { app };
     }
     catch (error) {

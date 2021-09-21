@@ -6,7 +6,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const urijs_1 = __importDefault(require("urijs"));
 const lodash_1 = __importDefault(require("lodash"));
 const atob_1 = __importDefault(require("atob"));
-const { Operation } = require('../../../operations/operation');
+const { Operation } = require('@/operations/operation');
 const slugify = require('slugify');
 class HybrisOperation extends Operation {
     constructor(config) {

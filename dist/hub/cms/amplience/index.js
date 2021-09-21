@@ -7,16 +7,17 @@ exports.AmplienceBackend = void 0;
 const __1 = require("..");
 const dc_management_sdk_js_1 = require("dc-management-sdk-js");
 const translation_client_1 = __importDefault(require("./translation-client"));
-const logger = require('../../../util/logger');
+const logger_1 = __importDefault(require("@/util/logger"));
 const fetch = require('node-fetch');
 const jsonpath = require('jsonpath');
 const updateStatus = async (contentItem, state) => {
+    logger_1.default.info(`[ cms ] updateStatus on content item [ ${contentItem.id} ] to [ ${state} ]`);
     return contentItem.updateLinkedResource('edit-workflow', {}, { state, version: contentItem.version }, dc_management_sdk_js_1.ContentItem);
 };
 const doTranslateContentItem = async (contentItem, locale, config) => {
     const contentTypeConfig = config.contentTypes.find(x => x.schema === contentItem.body._meta.schema);
     if (!contentTypeConfig) {
-        logger.info(`skipping ${contentItem.id}, content type not configured for translation`);
+        logger_1.default.info(`skipping ${contentItem.id}, content type not configured for translation`);
         return contentItem;
     }
     let [language, __] = locale.split('-');

@@ -6,7 +6,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 // 3rd party libs
 const lodash_1 = __importDefault(require("lodash"));
 const { productOperation, categoryOperation } = require('./operations');
-const { findCategory } = require('../../../util/helpers');
+const { findCategory } = require('@/util/helpers');
 const { CommerceBackend } = require('../index');
 class BigCommerceBackend extends CommerceBackend {
     constructor(config) {

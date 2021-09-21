@@ -1,4 +1,4 @@
-import { Operation } from '../../operations/operation';
+import { Operation } from '@/operations/operation';
 export declare class CommerceBackend {
     config: any;
     productOperation: Operation;
