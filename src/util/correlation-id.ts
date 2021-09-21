@@ -22,7 +22,7 @@ const getAmplienceConfigFromHeaders = headers => {
 }
 
 router.use(async (req, res, next) => {
-    if (req.method !== 'OPTIONS' && (req.path.indexOf('graphql') > -1 && req.body?.operationName !== 'IntrospectionQuery') || req.path.indexOf('api/') > -1) {
+    if ((req.path.indexOf('graphql') > -1 && req.body?.operationName !== 'IntrospectionQuery') || req.path.indexOf('api/') > -1) {
         const backendKey = req.headers['x-pbx-backend-key']
 
         if (backendKey) {
@@ -44,9 +44,6 @@ router.use(async (req, res, next) => {
                 logger: await logger.getObjectLogger(req.correlationId),
                 ...getAmplienceConfigFromHeaders(req.headers)
             })
-        }
-        else {
-            next(`backend key not found!`)
         }
     }
 
