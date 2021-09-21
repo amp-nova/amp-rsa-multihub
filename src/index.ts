@@ -2,6 +2,7 @@ import "reflect-metadata";
 
 const express = require('express')
 const bodyParser = require('body-parser')
+const cors = require('cors')
 
 const config = require('./util/config')
 const logger = require("./util/logger")
@@ -10,6 +11,7 @@ require('./util/helpers')
 let startServer = async () => {
   try {
     const app = express()
+    app.use(cors({ origin: true }));
     app.use(bodyParser.json())
     app.use(require('./routes'))
 
