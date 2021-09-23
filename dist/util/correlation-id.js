@@ -8,9 +8,9 @@ const whatwg_url_1 = __importDefault(require("whatwg-url"));
 const router = require('express').Router();
 const camelcase = require('camelcase');
 const { nanoid } = require('nanoid');
-const config = require('./config');
-const logger = require('./logger');
-const hub = require('../hub');
+const hub_1 = require("@/hub");
+const config_1 = require("@/util/config");
+const logger_1 = __importDefault(require("@/util/logger"));
 const headersForTag = tag => (val, key) => key.indexOf(`-${tag}-`) > -1;
 const getAmplienceConfigFromHeaders = headers => {
     const mapHeaders = tag => lodash_1.default.mapKeys(lodash_1.default.pickBy(headers, headersForTag(tag)), (val, key) => camelcase(key.replace(`x-arm-${tag}-`, '')));
@@ -31,15 +31,15 @@ router.use(async (req, res, next) => {
             let { appContext } = getAmplienceConfigFromHeaders(req.headers);
             const appUrl = whatwg_url_1.default.parseURL(appContext.url);
             const bareHost = lodash_1.default.first(appUrl.host.split('.'));
-            const graphqlOrigin = whatwg_url_1.default.serializeURLOrigin(whatwg_url_1.default.parseURL(config.app.host));
+            const graphqlOrigin = whatwg_url_1.default.serializeURLOrigin(whatwg_url_1.default.parseURL(config_1.config.host));
             const tag = req.path.indexOf('graphql') > -1 ? req.body.operationName || `anonymousQuery` : req.path.split('/').pop();
             req.correlationId = `${bareHost}-${backendKey.replace('/', '-')}-${tag}-${nanoid(4)}`;
             req.headers['x-arm-correlation-id'] = req.correlationId;
-            logger.info(`${graphqlOrigin}/logs/${req.correlationId}`);
-            req.hub = await hub({
+            logger_1.default.info(`${graphqlOrigin}/logs/${req.correlationId}`);
+            req.hub = await hub_1.getClient({
                 backendKey,
                 requestId: req.correlationId,
-                logger: await logger.getObjectLogger(req.correlationId),
+                logger: await logger_1.default.getObjectLogger(req.correlationId),
                 ...getAmplienceConfigFromHeaders(req.headers)
             });
         }

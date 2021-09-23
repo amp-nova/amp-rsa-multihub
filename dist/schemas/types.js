@@ -10,7 +10,7 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 };
 var Category_1;
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.GetAttributeArgs = exports.GetProductArgs = exports.GetProductsArgs = exports.GetCategoryProductArgs = exports.GetCategoryArgs = exports.Context = exports.ListArgs = exports.CommonArgs = exports.SearchResult = exports.Category = exports.Variant = exports.Attribute = exports.Product = exports.CommerceObject = exports.Identifiable = exports.CategoryResults = exports.ProductResults = exports.ResultsMeta = exports.ProductImage = exports.Prices = void 0;
+exports.PbxClient = exports.PbxQueryContext = exports.GetAttributeArgs = exports.GetProductArgs = exports.GetProductsArgs = exports.GetCategoryProductArgs = exports.GetCategoryArgs = exports.Context = exports.ListArgs = exports.CommonArgs = exports.SearchResult = exports.Category = exports.Variant = exports.Attribute = exports.Product = exports.CommerceObject = exports.Identifiable = exports.CategoryResults = exports.ProductResults = exports.ResultsMeta = exports.ProductImage = exports.Prices = void 0;
 const type_graphql_1 = require("type-graphql");
 let Prices = class Prices {
 };
@@ -273,6 +273,10 @@ __decorate([
     type_graphql_1.Field({ nullable: true }),
     __metadata("design:type", String)
 ], GetProductsArgs.prototype, "segment", void 0);
+__decorate([
+    type_graphql_1.Field({ nullable: true }),
+    __metadata("design:type", String)
+], GetProductsArgs.prototype, "productIds", void 0);
 GetProductsArgs = __decorate([
     type_graphql_1.ArgsType()
 ], GetProductsArgs);
@@ -309,3 +313,23 @@ GetAttributeArgs = __decorate([
     type_graphql_1.ArgsType()
 ], GetAttributeArgs);
 exports.GetAttributeArgs = GetAttributeArgs;
+class PbxQueryContext {
+}
+exports.PbxQueryContext = PbxQueryContext;
+class PbxClient {
+    constructor(url, key) {
+        this.url = url;
+        this.key = key;
+    }
+    sayHello() {
+        console.log(`say hello! my url is [ ${this.url} ] and my key is [ ${this.key} ]`);
+    }
+    async getProducts(context) {
+        throw new Error('Subclasses of PbxClient must implement getProducts(context: PbxQueryContext)');
+    }
+    async getProduct(context) {
+        throw new Error('Subclasses of PbxClient must implement getProduct(context: PbxQueryContext)');
+    }
+}
+exports.PbxClient = PbxClient;
+exports.default = { PbxClient, PbxQueryContext };

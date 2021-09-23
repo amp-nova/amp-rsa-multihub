@@ -1,23 +1,23 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.Backend = void 0;
+exports.getClient = void 0;
 const _ = require('lodash');
-const chalk = require('chalk');
 const fs = require('fs-extra');
 const { SecretsManager } = require("@aws-sdk/client-secrets-manager");
 // note: if config.hub is undefined, credentials need to be available elsewhere.
 let secretManager = new SecretsManager();
 let backends = {};
-// let files = fs.readdirSync('src/hub')
-// _.each(files, file => {
-//   let stat = fs.statSync(`src/hub/${file}`)
-//   if (stat.isDirectory()) {
-//     backends = _.assign(backends, require(`./${file}`).backends)
-//   }
-// })
-let getClient = async (context) => {
+// let x = fs.readdirSync('src/hub')
+let files = fs.readdirSync('src/hub');
+_.each(files, file => {
+    let stat = fs.statSync(`src/hub/${file}`);
+    if (stat.isDirectory()) {
+        backends = _.assign(backends, require(`./${file}`).backends);
+    }
+});
+const getClient = async (context) => {
     if (_.isEmpty(context.backendKey)) {
-        throw new Error(`x-arm-backend-key not set`);
+        throw new Error(`x-pbx-backend-key not set`);
     }
     try {
         let secret = await secretManager.getSecretValue({ SecretId: context.backendKey });
@@ -34,14 +34,11 @@ let getClient = async (context) => {
             return backend;
         }
         else {
-            throw new Error(`No hub backend matches key [ ${context.backendKey} ]. Please make sure you have set the 'x-arm-backend-key' header.`);
+            throw new Error(`No pbx backend matches key [ ${context.backendKey} ]. Please make sure you have set the 'x-pbx-backend-key' header.`);
         }
     }
     catch (error) {
         throw new Error(`Error retrieving secret: ${error}`);
     }
 };
-class Backend {
-}
-exports.Backend = Backend;
-module.exports = getClient;
+exports.getClient = getClient;

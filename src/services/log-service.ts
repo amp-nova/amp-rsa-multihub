@@ -1,6 +1,6 @@
 const router = require('express').Router()
-const logger = require('../util/logger')
 
+import { default as logger } from '@/util/logger'
 router.get('/logs/:requestId?', async (req, res, next) => {
     if (!req.params.requestId) {
         res.status(200).send(logger.getAppLogs())
@@ -10,4 +10,4 @@ router.get('/logs/:requestId?', async (req, res, next) => {
     }
 })
 
-module.exports = router
+export default router

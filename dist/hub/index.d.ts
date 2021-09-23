@@ -1,2 +1,1 @@
-export declare class Backend {
-}
+export declare const getClient: (context: any) => Promise<any>;

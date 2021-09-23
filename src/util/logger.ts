@@ -22,7 +22,7 @@ class AppTransport extends Transport {
   }
 }
 
-const logger = winston.createLogger({
+export const logger = winston.createLogger({
   level: 'info',
   format: winston.format.json(),
   transports: [
@@ -84,5 +84,13 @@ logger.writeLogFile = async (requestId, obj) => await fs.writeJson(logger.getLog
 logger.readRequestObject = async requestId => cachedLogs[requestId] || await logger.readLogFile(requestId)
 logger.getAppLogs = () => appLogs
 
-module.exports = logger
-export default logger
+export class PbxLogger {
+  info(text) {}
+  debug(text) {}
+  error(text) {}
+  getObjectLogger(x) {}
+  readRequestObject(x) {}
+  getAppLogs() {}
+}
+
+export default logger as PbxLogger

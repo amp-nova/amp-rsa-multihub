@@ -4,25 +4,32 @@ const express = require('express')
 const bodyParser = require('body-parser')
 const cors = require('cors')
 
-const config = require('@/util/config')
-const logger = require("@/util/logger")
+import { logger } from '@/util/logger'
+import logService from '@/services/log-service'
+import translationService from '@/services/translation-service'
+import { startGraphqlService } from '@/services/graphql-service'
+
+import { config } from "@/util/config";
+import routes from '@/routes'
 
 let startServer = async () => {
+  logger.info(`🚀 server [ v${process.env.npm_package_version}/${config.serviceName} mode: ${config.mode} ] is starting...`);
   try {
     const app = express()
     app.use(cors({ origin: true }));
     app.use(bodyParser.json())
-    app.use(require('@/routes'))
-
+    app.use(routes)
+    
     app.use(require('@/util/correlation-id'))
-    app.use(require('@/services/translation-service'))
-    app.use(require('@/services/log-service'))
-
+    
+    app.use(translationService)
+    app.use(logService)
+    
     // configure graphql
-    const graphqlService = await require('@/services/graphql-service')(app)
+    await startGraphqlService(app)
 
-    await app.listen({ port: config.app.port })
-    logger.info(`🚀 server [ v${config.packageJson.version}/${config.app.name} mode: ${config.app.mode} ] is ready at ${config.app.host}`);
+    await app.listen({ port: config.port })
+    logger.info(`🚀 server [ v${process.env.npm_package_version}/${config.serviceName} mode: ${config.mode} ] is ready at ${config.host}`);
     return { app };
   } catch (error) {
     logger.error(error.stack)
@@ -30,4 +37,4 @@ let startServer = async () => {
   }
 }
 
-export default startServer
+startServer()

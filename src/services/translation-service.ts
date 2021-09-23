@@ -12,4 +12,4 @@ router.post('/api/cms/translate-content-item', async (req, res, next) => {
     res.status(200).send(await (req.hub as CMSBackend).translateContentItem(req.body))
 })
 
-module.exports = router
+export default router

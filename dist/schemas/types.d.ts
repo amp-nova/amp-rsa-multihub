@@ -82,6 +82,7 @@ export declare class GetCategoryProductArgs extends CommonArgs {
 export declare class GetProductsArgs extends ListArgs {
     keyword?: string;
     segment?: string;
+    productIds?: string;
 }
 export declare class GetProductArgs extends CommonArgs {
     id?: string;
@@ -92,3 +93,24 @@ export declare class GetProductArgs extends CommonArgs {
 export declare class GetAttributeArgs {
     name: string;
 }
+export declare class PbxQueryContext {
+    args: CommonArgs;
+    locale: string;
+    country: string;
+    currency: string;
+    segment?: string;
+    appUrl: string;
+}
+export declare class PbxClient {
+    url: string;
+    key: string;
+    constructor(url: any, key: any);
+    sayHello(): void;
+    getProducts(context: PbxQueryContext): Promise<Product[]>;
+    getProduct(context: PbxQueryContext): Promise<Product>;
+}
+declare const _default: {
+    PbxClient: typeof PbxClient;
+    PbxQueryContext: typeof PbxQueryContext;
+};
+export default _default;

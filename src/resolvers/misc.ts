@@ -11,7 +11,7 @@ export class MiscResolver {
 
     @Query(returns => String)
     logUrl(@Ctx() ctx: Context) {
-        return `${config.app.host}/logs/${ctx.commercehub.config.context.requestId}`
+        return `${config.host}/logs/${ctx.commercehub.config.context.requestId}`
     }
 }
 

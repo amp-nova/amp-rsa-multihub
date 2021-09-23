@@ -4,6 +4,7 @@ const _ = require('lodash')
 const URI = require('urijs');
 const axios = require('axios')
 const currency = require('currency.js')
+const stringify = require('json-stringify-safe')
 
 const { Operation } = require('@/operations/operation')
 
@@ -37,7 +38,7 @@ class CommerceToolsOperation extends Operation {
         return uri.toString()
     }
 
-    localize(text) {
+    localize(text, args) {
         if (text.label) {
             text = text.label
         }
@@ -46,7 +47,7 @@ class CommerceToolsOperation extends Operation {
             return text
         }
 
-        return text[this.backend.config.context.cmsContext.locale] || text[this.backend.config.context.userContext.language] || text['en'] || text[Object.keys(text)[0]]
+        return text[args.language] || text['en'] || text[Object.keys(text)[0]]
     }
 
     async authenticate() {
@@ -96,8 +97,8 @@ class CommerceToolsCategoryOperation extends CommerceToolsOperation {
         return function (category) {
             return {
                 ...category,
-                name: self.localize(category.name),
-                slug: self.localize(category.slug)
+                name: self.localize(category.name, args),
+                slug: self.localize(category.slug, args)
             }
         }
     }
@@ -107,14 +108,13 @@ class CommerceToolsCategoryOperation extends CommerceToolsOperation {
     }
 
     async get(args) {
-        args = {
+        return await super.get({
             ...args,
             limit: 500,
             where:
-                args.slug && [`slug(${this.backend.config.context.userContext.language || 'en'}="${args.slug}") or slug(en="${args.slug}")`] ||
+                args.slug && [`slug(${args.language || 'en'}="${args.slug}") or slug(en="${args.slug}")`] ||
                 args.id && [`id="${args.id}"`]
-        }
-        return await super.get(args)
+        })
     }
 }
 // end category operations
@@ -142,18 +142,19 @@ class CommerceToolsProductOperation extends CommerceToolsOperation {
     }
 
     async get(args) {
-        args = {
+        return await super.get({
             ...args,
             expand: ['categories[*]'],
-            priceCountry: this.backend.config.context.cmsContext.country || 'US',
-            priceCurrency: this.backend.config.context.userContext.currency || this.backend.config.context.cmsContext.currency || 'USD',
-            [`text.${this.backend.config.context.userContext.language || 'en'}`]: args.keyword,
+            priceCountry: args.country,
+            priceCurrency: args.currency,
+            [`text.${args.language}`]: args.keyword,
+            filter:
+                args.productIds && [`id:${_.map(args.productIds.split(','), x => `"${x}"`).join(',')}`],
             where:
                 args.id && [`id="${args.id}"`] ||
-                args.slug && [`slug(${this.backend.config.context.userContext.language || 'en'}="${args.slug}") or slug(en="${args.slug}")`] ||
+                args.slug && [`slug(${args.language}="${args.slug}") or slug(en="${args.slug}")`] ||
                 args.sku && [`variants(sku="${args.sku}")`]
-        }
-        return await super.get(args)
+        })
     }
 
     async post(args) {
@@ -169,27 +170,27 @@ class CommerceToolsProductOperation extends CommerceToolsOperation {
         return function(product) {
             return {
                 ...product,
-                name: self.localize(product.name),
-                slug: self.localize(product.slug),
-                longDescription: product.metaDescription && self.localize(product.metaDescription),
+                name: this.localize(product.name, args),
+                slug: this.localize(product.slug, args),
+                longDescription: product.metaDescription && this.localize(product.metaDescription, args),
                 variants: _.map(_.concat(product.variants, [product.masterVariant]), variant => {
                     return {
                         ...variant,
                         sku: variant.sku || product.key,
                         prices: {
-                            list: formatMoneyString(_.get(variant.scopedPrice || _.first(variant.prices), 'value.centAmount') / 100, self.backend.config.context.cmsContext.locale, self.backend.config.context.cmsContext.currency),
-                            sale: formatMoneyString(_.get(variant.scopedPrice || _.first(variant.prices), 'value.centAmount') / 100, self.backend.config.context.cmsContext.locale, self.backend.config.context.cmsContext.currency)
+                            list: formatMoneyString(_.get(variant.scopedPrice || _.first(variant.prices), 'value.centAmount') / 100, args.locale, args.currency),
+                            sale: formatMoneyString(_.get(variant.scopedPrice || _.first(variant.prices), 'value.centAmount') / 100, args.locale, args.currency)
                         },
                         images: _.map(variant.images, mapImage),
-                        attributes: _.map(variant.attributes, att => ({ name: att.name, value: self.localize(att.value) }))
+                        attributes: _.map(variant.attributes, att => ({ name: att.name, value: self.localize(att.value, args) }))
                     }
                 }),
                 categories: _.map(product.categories, function(cat) {
                     let category = cat.obj || cat
                     return {
                         ...category,
-                        name: self.localize(category.name),
-                        slug: self.localize(category.slug)
+                        name: this.localize(category.name, args),
+                        slug: this.localize(category.slug, args)
                     }
                 }),
                 productType: product.productType.id
@@ -203,7 +204,7 @@ class CommerceToolsProductOperation extends CommerceToolsOperation {
             if (self.backend.config.context.userContext.segment) {
                 let discountOperation = new CommerceToolsCartDiscountOperation(self.backend)
                 let cartDiscounts = (await discountOperation.get({})).getResults()
-                let applicableDiscounts = _.filter(cartDiscounts, cd => self.backend.config.context.userContext.segment && cd.cartPredicate === `customer.customerGroup.key = "${self.backend.config.context.userContext.segment.toUpperCase()}"`)
+                let applicableDiscounts = _.filter(cartDiscounts, cd => args.segment && cd.cartPredicate === `customer.customerGroup.key = "${args.segment.toUpperCase()}"`)
 
                 return _.map(products, product => {
                     return {

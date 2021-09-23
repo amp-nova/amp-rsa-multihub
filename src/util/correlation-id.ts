@@ -4,9 +4,10 @@ const router = require('express').Router()
 const camelcase = require('camelcase')
 const { nanoid } = require('nanoid')
 
-const config = require('./config')
-const logger = require('./logger')
-const hub = require('../hub')
+import { getClient } from '@/hub'
+
+import { config } from "@/util/config";
+import { default as logger } from '@/util/logger'
 
 const headersForTag = tag => (val, key) => key.indexOf(`-${tag}-`) > -1
 const getAmplienceConfigFromHeaders = headers => {
@@ -30,7 +31,7 @@ router.use(async (req, res, next) => {
 
             const appUrl = url.parseURL(appContext.url)
             const bareHost = _.first(appUrl.host.split('.'))
-            const graphqlOrigin = url.serializeURLOrigin(url.parseURL(config.app.host))
+            const graphqlOrigin = url.serializeURLOrigin(url.parseURL(config.host))
     
             const tag = req.path.indexOf('graphql') > -1 ? req.body.operationName || `anonymousQuery` : req.path.split('/').pop()
             req.correlationId = `${bareHost}-${backendKey.replace('/', '-')}-${tag}-${nanoid(4)}`
@@ -38,7 +39,7 @@ router.use(async (req, res, next) => {
     
             logger.info(`${graphqlOrigin}/logs/${req.correlationId}`)
     
-            req.hub = await hub({
+            req.hub = await getClient({
                 backendKey,
                 requestId: req.correlationId,
                 logger: await logger.getObjectLogger(req.correlationId),

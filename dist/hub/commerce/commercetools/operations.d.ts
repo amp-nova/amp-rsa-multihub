@@ -2,6 +2,7 @@ declare const _: any;
 declare const URI: any;
 declare const axios: any;
 declare const currency: any;
+declare const stringify: any;
 declare const Operation: any;
 declare const formatMoneyString: any;
 declare const mapImage: (image: any) => {
@@ -11,7 +12,7 @@ declare class CommerceToolsOperation extends Operation {
     constructor(backend: any);
     getBaseURL(): string;
     getRequest(args: any): any;
-    localize(text: any): any;
+    localize(text: any, args: any): any;
     authenticate(): Promise<any>;
     translateResponse(data: any, mapper?: (x: any) => any): Promise<{
         meta: {

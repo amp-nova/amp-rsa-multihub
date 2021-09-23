@@ -8,9 +8,7 @@ const lodash_1 = __importDefault(require("lodash"));
 const atob_1 = __importDefault(require("atob"));
 const { Operation } = require('@/operations/operation');
 const slugify = require('slugify');
-const stripHTML = function (text) {
-    return text.replace(/(<([^>]+)>)/gi, "");
-};
+const stripHTML = text => text.replace(/(<([^>]+)>)/gi, "");
 class HybrisOperation extends Operation {
     constructor(config) {
         super(config);
@@ -153,7 +151,21 @@ class HybrisProductOperation extends HybrisOperation {
             ...args,
             fields: 'FULL'
         };
-        return await super.get(args);
+        if (args.productIds) {
+            let results = await Promise.all(args.productIds.split(',').map(async (id) => await super.get({ ...args, id })));
+            return {
+                meta: {
+                    total: results.length,
+                    count: results.length,
+                    limit: 0,
+                    offset: 0
+                },
+                results
+            };
+        }
+        else {
+            return await super.get(args);
+        }
     }
     async post(args) {
         args = {

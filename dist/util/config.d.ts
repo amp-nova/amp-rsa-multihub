@@ -1,11 +1,8 @@
-declare const readFileSync: any;
-declare const yaml: any;
-declare const fs: any;
-declare const branchName: any;
-declare const nconf: any;
-declare let args: any;
-declare const port: string | number;
-declare const appMode: string;
-declare const appName: string;
-declare const serviceName: string;
-declare const serviceHost: string;
+export declare type PbxConfig = {
+    serviceName: string;
+    mode: string;
+    host: string;
+    port: string;
+};
+export declare const config: PbxConfig;
+export default config;

@@ -69,7 +69,7 @@ export class CommerceObject extends Identifiable {
     name: string
 
     @Field()
-    raw: string  
+    raw: string
 }
 
 @ObjectType()
@@ -87,7 +87,7 @@ export class Product extends CommerceObject {
     variants: Variant[]
 
     @Field()
-    productType: string    
+    productType: string
 }
 
 @ObjectType()
@@ -98,7 +98,7 @@ export class Attribute {
     @Field()
     value: string
 }
-  
+
 @ObjectType()
 export class Variant extends Identifiable {
     @Field()
@@ -120,7 +120,7 @@ export class Variant extends Identifiable {
     size?: string
     articleNumberMax?: string
 }
-    
+
 @ObjectType()
 export class Category extends CommerceObject {
     @Field(type => [Category])
@@ -129,12 +129,12 @@ export class Category extends CommerceObject {
     @Field(type => [Product])
     products: Product[]
 }
-  
+
 @ObjectType()
 export class SearchResult {
     @Field(type => [Product])
     products: Product[]
-}  
+}
 
 export type GraphqlConfig = {
     graphqlUrl: string;
@@ -192,6 +192,9 @@ export class GetProductsArgs extends ListArgs {
 
     @Field({ nullable: true })
     segment?: string
+
+    @Field({ nullable: true })
+    productIds?: string
 }
 
 @ArgsType()
@@ -214,3 +217,57 @@ export class GetAttributeArgs {
     @Field()
     name: string
 }
+
+export class PbxQueryContext {
+    args: CommonArgs
+    locale: string
+    country: string
+    currency: string
+    segment?: string
+    appUrl: string
+}
+
+export class PbxClient {
+    url: string
+    key: string
+
+    constructor(url, key) {
+        this.url = url
+        this.key = key
+    }
+
+    sayHello() {
+        console.log(`say hello! my url is [ ${this.url} ] and my key is [ ${this.key} ]`)
+    }
+
+    async getProducts(context: PbxQueryContext): Promise<Product[]> {
+        throw new Error('Subclasses of PbxClient must implement getProducts(context: PbxQueryContext)')
+    }
+
+    async getProduct(context: PbxQueryContext): Promise<Product> {
+        throw new Error('Subclasses of PbxClient must implement getProduct(context: PbxQueryContext)')
+    }
+
+    // export async function searchProducts(args: any, cmsContext?: CmsContext, userContext?: UserContext): Promise<ProductResults> {
+    //     return graphqlClient(cmsContext, userContext).query(productsQuery, args).then(x => x.data.products)
+    // }
+
+    // export async function fetchProduct(args: any, cmsContext?: CmsContext, userContext?: UserContext): Promise<Product> {
+    //     return (await graphqlClient(cmsContext, userContext).query(productQuery, args)).data.product
+    // }
+
+    // export async function fetchProducts(ids: String[], cmsContext?: CmsContext, userContext?: UserContext): Promise<Product[]> {
+    //     return await Promise.all(ids.map(async prodId => await fetchProduct({ id: prodId }, cmsContext, userContext)))
+    // }
+
+    // export async function queryProducts(args: any, cmsContext?: CmsContext, userContext?: UserContext): Promise<Category> {
+    //     args.full = args.full || false
+    //     return graphqlClient(cmsContext, userContext).query(categoryQuery, args).then(x => x.data.category)
+    // }
+
+    // export async function fetchCategories(args?: any, cmsContext?: CmsContext, userContext?: UserContext): Promise<Category[]> {
+    //     return graphqlClient(cmsContext, userContext).query(categoryHierarchyQuery, {}).then(x => x.data.categoryHierarchy)
+    // }
+}
+
+export default { PbxClient, PbxQueryContext }

@@ -21,7 +21,7 @@ let MiscResolver = class MiscResolver {
         return ctx.commercehub.config.context.requestId;
     }
     logUrl(ctx) {
-        return `${config.app.host}/logs/${ctx.commercehub.config.context.requestId}`;
+        return `${config.host}/logs/${ctx.commercehub.config.context.requestId}`;
     }
 };
 __decorate([

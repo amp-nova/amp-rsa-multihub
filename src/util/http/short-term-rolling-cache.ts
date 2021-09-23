@@ -1,6 +1,6 @@
-const axios = require('axios')
-const _ = require('lodash')
-const logger = require('../logger')
+import { logger } from '@/util/logger'
+import axios from 'axios'
+import _ from 'lodash'
 
 let cache = {}
 

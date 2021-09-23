@@ -35,7 +35,8 @@ class BigCommerceOperation extends Operation {
             'product',
             'body',
             'slug',
-            'method'
+            'method',
+            'productIds'
         ])
 
         uri.addQuery(queryArgs)
@@ -124,6 +125,7 @@ class BigCommerceProductOperation extends BigCommerceOperation {
     async get(args) {
         return await super.get({
             ...args,
+            'id:in': args.productIds,
             include: 'images,variants'
         })
     }

@@ -1,5 +1,4 @@
 const _ = require('lodash')
-const chalk = require('chalk')
 const fs = require('fs-extra')
 
 const { SecretsManager } = require("@aws-sdk/client-secrets-manager");
@@ -8,17 +7,19 @@ const { SecretsManager } = require("@aws-sdk/client-secrets-manager");
 let secretManager = new SecretsManager()
 
 let backends = {}
-// let files = fs.readdirSync('src/hub')
-// _.each(files, file => {
-//   let stat = fs.statSync(`src/hub/${file}`)
-//   if (stat.isDirectory()) {
-//     backends = _.assign(backends, require(`./${file}`).backends)
-//   }
-// })
+// let x = fs.readdirSync('src/hub')
 
-let getClient = async context => {
+let files = fs.readdirSync('src/hub')
+_.each(files, file => {
+  let stat = fs.statSync(`src/hub/${file}`)
+  if (stat.isDirectory()) {
+    backends = _.assign(backends, require(`./${file}`).backends)
+  }
+})
+
+export const getClient = async context => {
   if (_.isEmpty(context.backendKey)) {
-    throw new Error(`x-arm-backend-key not set`)
+    throw new Error(`x-pbx-backend-key not set`)
   }
 
   try {
@@ -37,14 +38,9 @@ let getClient = async context => {
       return backend
     }
     else {
-      throw new Error(`No hub backend matches key [ ${context.backendKey} ]. Please make sure you have set the 'x-arm-backend-key' header.`)
+      throw new Error(`No pbx backend matches key [ ${context.backendKey} ]. Please make sure you have set the 'x-pbx-backend-key' header.`)
     }
   } catch (error) {
     throw new Error(`Error retrieving secret: ${error}`)
   }
 }
-
-export class Backend {
-}
-
-module.exports = getClient
