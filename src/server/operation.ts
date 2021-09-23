@@ -1,6 +1,6 @@
 const _ = require('lodash')
 const https = require('https')
-const request = require('../util/http/short-term-rolling-cache')(30)
+const request = require('./util/http/short-term-rolling-cache')(30)
 // const request = require('../../util/http/no-cache')
 const { nanoid } = require('nanoid')
 

@@ -1,4 +1,4 @@
-import { logger } from '@/util/logger'
+import { logger } from '@/server/util/logger'
 import axios from 'axios'
 import _ from 'lodash'
 

@@ -18,7 +18,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.VariantResolver = void 0;
 const lodash_1 = __importDefault(require("lodash"));
 const type_graphql_1 = require("type-graphql");
-const types_1 = require("@/schemas/types");
+const types_1 = require("@/types");
 let VariantResolver = class VariantResolver {
     async attribute(variant, args) {
         return lodash_1.default.get(lodash_1.default.find(variant.attributes, att => att.name.toLowerCase() === args.name.toLowerCase()), 'value');

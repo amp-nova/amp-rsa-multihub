@@ -1,6 +1,6 @@
 import _ from 'lodash'
-import logger from '@/util/logger';
-import resolvers from '@/resolvers'
+import logger from '@/server/util/logger';
+import resolvers from '@/server/resolvers'
 
 const { ApolloServer } = require('apollo-server-express');
 const { buildSchema } = require('type-graphql')

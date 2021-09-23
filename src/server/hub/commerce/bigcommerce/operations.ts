@@ -1,9 +1,9 @@
 import _ from 'lodash'
 const URI = require('urijs')
 
-const { formatMoneyString } = require('@/util/locale-formatter')
-const { findCategory } = require('@/util/helpers')
-const { Operation } = require('@/operations/operation')
+const { formatMoneyString } = require('@/server/util/locale-formatter')
+const { findCategory } = require('@/server/util/helpers')
+const { Operation } = require('@/server/operation')
 
 const mapImage = image => ({ url: image.url_standard })
 const slugify = require('slugify')

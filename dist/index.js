@@ -30,4 +30,4 @@ Object.defineProperty(exports, "__esModule", { value: true });
 //     let pbx = new PbxClient(url, key)
 //     return pbx
 // }
-__exportStar(require("./schemas/types"), exports);
+__exportStar(require("./types"), exports);

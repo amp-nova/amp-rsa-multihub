@@ -1,4 +1,4 @@
-import { Operation } from '@/operations/operation'
+import { Operation } from '@/server/operation'
 
 let defaultArgs = {
     currency: 'USD',

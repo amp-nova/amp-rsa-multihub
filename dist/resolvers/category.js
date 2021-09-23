@@ -14,7 +14,7 @@ var __param = (this && this.__param) || function (paramIndex, decorator) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.CategoryResolver = void 0;
 const type_graphql_1 = require("type-graphql");
-const types_1 = require("../schemas/types");
+const types_1 = require("../types");
 let CategoryResolver = class CategoryResolver {
     async category(args, ctx) {
         return await ctx.commercehub.getCategory(args);

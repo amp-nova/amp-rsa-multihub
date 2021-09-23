@@ -9,9 +9,9 @@ let secretManager = new SecretsManager()
 let backends = {}
 // let x = fs.readdirSync('src/hub')
 
-let files = fs.readdirSync('src/hub')
+let files = fs.readdirSync('src/server/hub')
 _.each(files, file => {
-  let stat = fs.statSync(`src/hub/${file}`)
+  let stat = fs.statSync(`src/server/hub/${file}`)
   if (stat.isDirectory()) {
     backends = _.assign(backends, require(`./${file}`).backends)
   }

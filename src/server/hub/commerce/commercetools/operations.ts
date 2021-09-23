@@ -6,9 +6,9 @@ const axios = require('axios')
 const currency = require('currency.js')
 const stringify = require('json-stringify-safe')
 
-const { Operation } = require('@/operations/operation')
+const { Operation } = require('@/server/operation')
 
-const { formatMoneyString } = require('@/util/locale-formatter')
+const { formatMoneyString } = require('@/server/util/locale-formatter')
 const mapImage = image => image && ({ url: image.url })
 
 class CommerceToolsOperation extends Operation {

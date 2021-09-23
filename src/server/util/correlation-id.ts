@@ -4,10 +4,10 @@ const router = require('express').Router()
 const camelcase = require('camelcase')
 const { nanoid } = require('nanoid')
 
-import { getClient } from '@/hub'
+import { getClient } from '@/server/hub'
 
-import { config } from "@/util/config";
-import { default as logger } from '@/util/logger'
+import { config } from "@/server/util/config";
+import { default as logger } from '@/server/util/logger'
 
 const headersForTag = tag => (val, key) => key.indexOf(`-${tag}-`) > -1
 const getAmplienceConfigFromHeaders = headers => {

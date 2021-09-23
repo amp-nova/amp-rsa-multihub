@@ -1,5 +1,5 @@
 import { Ctx, Query, Resolver } from 'type-graphql'
-import { Context } from '../schemas/types'
+import { Context } from '../../types'
 const config = require('../util/config')
 
 @Resolver()
