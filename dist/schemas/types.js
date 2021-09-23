@@ -314,11 +314,12 @@ GetAttributeArgs = __decorate([
 ], GetAttributeArgs);
 exports.GetAttributeArgs = GetAttributeArgs;
 class PbxQueryContext {
-    constructor() {
+    constructor(args) {
         this.args = {};
         this.locale = 'en';
         this.country = 'US';
         this.currency = 'USD';
+        this.args = args;
     }
 }
 exports.PbxQueryContext = PbxQueryContext;

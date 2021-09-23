@@ -225,6 +225,10 @@ export class PbxQueryContext {
     currency: string = 'USD'
     segment?: string
     appUrl?: string
+
+    constructor(args) {
+        this.args = args
+    }
 }
 
 export class PbxClient {
