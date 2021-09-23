@@ -1,6 +1,6 @@
 {
   "name": "pbx",
-  "types": "dist/schemas/types.d.ts",
+  "types": "dist/index.d.ts",
   "main": "dist/index.js",
   "scripts": {
     "devx": "nodemon src/server/index.ts --watch src --watch package.json --ext ts,js --ignore logs --app_mode dev -r tsconfig-paths/register",
