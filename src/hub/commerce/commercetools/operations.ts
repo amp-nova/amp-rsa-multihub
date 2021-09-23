@@ -53,8 +53,7 @@ class CommerceToolsOperation extends Operation {
     async authenticate() {
         if (!this.accessToken) {
             let response = await axios.post(
-                `${this.backend.config.cred.oauth_url}/oauth/token?grant_type=client_credentials&scope=${_.first(_.split(this.backend.config.cred.scope, ' '))}`, {},
-                {
+                `${this.backend.config.cred.oauth_url}/oauth/token?grant_type=client_credentials&scope=${_.first(_.split(this.backend.config.cred.scope, ' '))}`, {}, {
                     auth: {
                         username: this.backend.config.cred.client_id,
                         password: this.backend.config.cred.client_secret

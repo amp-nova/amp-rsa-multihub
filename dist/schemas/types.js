@@ -314,6 +314,12 @@ GetAttributeArgs = __decorate([
 ], GetAttributeArgs);
 exports.GetAttributeArgs = GetAttributeArgs;
 class PbxQueryContext {
+    constructor() {
+        this.args = {};
+        this.locale = 'en';
+        this.country = 'US';
+        this.currency = 'USD';
+    }
 }
 exports.PbxQueryContext = PbxQueryContext;
 class PbxClient {
@@ -321,14 +327,17 @@ class PbxClient {
         this.url = url;
         this.key = key;
     }
-    sayHello() {
-        console.log(`say hello! my url is [ ${this.url} ] and my key is [ ${this.key} ]`);
-    }
     async getProducts(context) {
         throw new Error('Subclasses of PbxClient must implement getProducts(context: PbxQueryContext)');
     }
     async getProduct(context) {
         throw new Error('Subclasses of PbxClient must implement getProduct(context: PbxQueryContext)');
+    }
+    async getCategories(context) {
+        throw new Error('Subclasses of PbxClient must implement getCategories(context: PbxQueryContext)');
+    }
+    async getCategory(context) {
+        throw new Error('Subclasses of PbxClient must implement getCategory(context: PbxQueryContext)');
     }
 }
 exports.PbxClient = PbxClient;

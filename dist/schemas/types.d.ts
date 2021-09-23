@@ -99,15 +99,16 @@ export declare class PbxQueryContext {
     country: string;
     currency: string;
     segment?: string;
-    appUrl: string;
+    appUrl?: string;
 }
 export declare class PbxClient {
     url: string;
     key: string;
     constructor(url: any, key: any);
-    sayHello(): void;
     getProducts(context: PbxQueryContext): Promise<Product[]>;
     getProduct(context: PbxQueryContext): Promise<Product>;
+    getCategories(context: PbxQueryContext): Promise<Category[]>;
+    getCategory(context: PbxQueryContext): Promise<Category>;
 }
 declare const _default: {
     PbxClient: typeof PbxClient;

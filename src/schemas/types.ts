@@ -219,12 +219,12 @@ export class GetAttributeArgs {
 }
 
 export class PbxQueryContext {
-    args: CommonArgs
-    locale: string
-    country: string
-    currency: string
+    args: CommonArgs = {}
+    locale: string = 'en'
+    country: string = 'US'
+    currency: string = 'USD'
     segment?: string
-    appUrl: string
+    appUrl?: string
 }
 
 export class PbxClient {
@@ -236,16 +236,20 @@ export class PbxClient {
         this.key = key
     }
 
-    sayHello() {
-        console.log(`say hello! my url is [ ${this.url} ] and my key is [ ${this.key} ]`)
-    }
-
     async getProducts(context: PbxQueryContext): Promise<Product[]> {
         throw new Error('Subclasses of PbxClient must implement getProducts(context: PbxQueryContext)')
     }
 
     async getProduct(context: PbxQueryContext): Promise<Product> {
         throw new Error('Subclasses of PbxClient must implement getProduct(context: PbxQueryContext)')
+    }
+
+    async getCategories(context: PbxQueryContext): Promise<Category[]> {
+        throw new Error('Subclasses of PbxClient must implement getCategories(context: PbxQueryContext)')
+    }
+
+    async getCategory(context: PbxQueryContext): Promise<Category> {
+        throw new Error('Subclasses of PbxClient must implement getCategory(context: PbxQueryContext)')
     }
 
     // export async function searchProducts(args: any, cmsContext?: CmsContext, userContext?: UserContext): Promise<ProductResults> {
