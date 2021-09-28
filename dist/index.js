@@ -96,19 +96,10 @@ var PbxGraphqlClient = /** @class */ (function (_super) {
         _this.getGraphqlClient = function (context) {
             var self = _this;
             var httpLink = core_1.createHttpLink({ uri: _this.url, fetch: cross_fetch_1.default });
-            var x = {
-                'x-pbx-backend-key': self.key,
-                'x-pbx-locale': context.locale,
-                'x-pbx-language': context.language,
-                'x-pbx-country': context.country,
-                'x-pbx-currency': context.currency,
-                'x-pbx-app-url': context.appUrl,
-                'x-pbx-segment': context.segment
-            };
             var authLink = context_1.setContext(function (_, _a) {
                 var headers = _a.headers;
                 return ({
-                    headers: __assign(__assign({}, headers), x)
+                    headers: __assign(__assign({}, headers), { 'x-pbx-backend-key': self.key, 'x-pbx-locale': context.locale, 'x-pbx-language': context.language, 'x-pbx-country': context.country, 'x-pbx-currency': context.currency, 'x-pbx-app-url': context.appUrl, 'x-pbx-segment': context.segment })
                 });
             });
             var client = new core_1.ApolloClient({

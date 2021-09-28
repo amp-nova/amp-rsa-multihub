@@ -21,20 +21,16 @@ export class PbxGraphqlClient extends PbxClient {
         let self = this
         const httpLink = createHttpLink({ uri: this.url, fetch })
 
-        let x = {
-            'x-pbx-backend-key':    self.key,
-            'x-pbx-locale':         context.locale,
-            'x-pbx-language':       context.language,
-            'x-pbx-country':        context.country,
-            'x-pbx-currency':       context.currency,
-            'x-pbx-app-url':        context.appUrl,
-            'x-pbx-segment':        context.segment
-        }
-
         const authLink = setContext((_, { headers }) => ({
             headers: {
                 ...headers,
-                ...x
+                'x-pbx-backend-key':    self.key,
+                'x-pbx-locale':         context.locale,
+                'x-pbx-language':       context.language,
+                'x-pbx-country':        context.country,
+                'x-pbx-currency':       context.currency,
+                'x-pbx-app-url':        context.appUrl,
+                'x-pbx-segment':        context.segment
             }
         }))
 
