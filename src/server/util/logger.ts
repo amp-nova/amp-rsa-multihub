@@ -5,7 +5,6 @@ const Transport = require('winston-transport');
 import _ from 'lodash'
 // import fs from 'fs-extra';
 
-const fs = require('fs-extra')
 const appLogs = []
 
 class AppTransport extends Transport {
@@ -46,7 +45,7 @@ if (process.env.NODE_ENV !== 'production') {
   }));
 }
 
-logger.getLogDir = () => path.resolve(`${__dirname}/../../logs`)
+logger.getLogDir = () => path.resolve(`${__dirname}/../../../logs`)
 logger.getLogPath = requestId => path.resolve(`${logger.getLogDir()}/${requestId}.json`)
 
 const cachedLogs = {}
@@ -75,22 +74,25 @@ logger.getObjectLogger = async requestId => {
     logGraphqlCall: object => {
       obj.graphql = object
       persistLogObject(requestId, obj)
-    }    
+    }
   }
 }
 
-logger.readLogFile = async requestId => fs.existsSync(logger.getLogPath(requestId)) && await fs.readJson(logger.getLogPath(requestId), { encoding: 'utf8' })
-logger.writeLogFile = async (requestId, obj) => await fs.writeJson(logger.getLogPath(requestId), obj)
-logger.readRequestObject = async requestId => cachedLogs[requestId] || await logger.readLogFile(requestId)
-logger.getAppLogs = () => appLogs
+if (typeof window === 'undefined') {
+  const fs = require('fs-extra')
+  logger.readLogFile = async requestId => fs.existsSync(logger.getLogPath(requestId)) && await fs.readJson(logger.getLogPath(requestId), { encoding: 'utf8' })
+  logger.writeLogFile = async (requestId, obj) => await fs.writeJson(logger.getLogPath(requestId), obj)
+  logger.readRequestObject = async requestId => cachedLogs[requestId] || await logger.readLogFile(requestId)
+  logger.getAppLogs = () => appLogs
+}
 
 export class PbxLogger {
-  info(text) {}
-  debug(text) {}
-  error(text) {}
-  getObjectLogger(x) {}
-  readRequestObject(x) {}
-  getAppLogs() {}
+  info(text) { }
+  debug(text) { }
+  error(text) { }
+  getObjectLogger(x) { }
+  readRequestObject(x) { }
+  getAppLogs() { }
 }
 
 export default logger as PbxLogger

@@ -1,6 +1,5 @@
 import _ from 'lodash'
 
-const fs = require('fs-extra')
 const router = require('express').Router()
 const { SecretsManager } = require("@aws-sdk/client-secrets-manager");
 
@@ -10,14 +9,6 @@ let secretManager = new SecretsManager()
 // health check end point
 router.get('/check', (req, res, next) => {
     res.status(200).send({ status: 'ok' })
-})
-
-router.get('/meta', (req, res, next) => {
-    res.status(200).send({
-        build_date: process.env.arm_build_date || new Date(),
-        commit_hash: fs.existsSync('/etc/arm_commit_hash') && fs.readFileSync('/etc/arm_commit_hash', 'utf8').trim(),
-        version: process.env.npm_package_version
-    })
 })
 
 // placeholder

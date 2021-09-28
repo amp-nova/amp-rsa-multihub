@@ -1,4 +1,5 @@
 import { ArgsType, Field, ObjectType } from "type-graphql";
+import { logger } from "./server/util/logger";
 
 @ObjectType()
 export class Prices {
@@ -226,8 +227,13 @@ export class PbxQueryContext {
     segment?: string
     appUrl?: string
 
-    constructor(args) {
-        this.args = args
+    constructor(context: PbxQueryContext) {
+        this.args = context.args
+        this.locale = context.locale || 'en'
+        this.country = context.country || 'US'
+        this.currency = context.currency || 'USD'
+        this.segment = context.segment
+        this.appUrl = context.appUrl
     }
 }
 
@@ -255,27 +261,8 @@ export class PbxClient {
     async getCategory(context: PbxQueryContext): Promise<Category> {
         throw new Error('Subclasses of PbxClient must implement getCategory(context: PbxQueryContext)')
     }
-
-    // export async function searchProducts(args: any, cmsContext?: CmsContext, userContext?: UserContext): Promise<ProductResults> {
-    //     return graphqlClient(cmsContext, userContext).query(productsQuery, args).then(x => x.data.products)
-    // }
-
-    // export async function fetchProduct(args: any, cmsContext?: CmsContext, userContext?: UserContext): Promise<Product> {
-    //     return (await graphqlClient(cmsContext, userContext).query(productQuery, args)).data.product
-    // }
-
-    // export async function fetchProducts(ids: String[], cmsContext?: CmsContext, userContext?: UserContext): Promise<Product[]> {
-    //     return await Promise.all(ids.map(async prodId => await fetchProduct({ id: prodId }, cmsContext, userContext)))
-    // }
-
-    // export async function queryProducts(args: any, cmsContext?: CmsContext, userContext?: UserContext): Promise<Category> {
-    //     args.full = args.full || false
-    //     return graphqlClient(cmsContext, userContext).query(categoryQuery, args).then(x => x.data.category)
-    // }
-
-    // export async function fetchCategories(args?: any, cmsContext?: CmsContext, userContext?: UserContext): Promise<Category[]> {
-    //     return graphqlClient(cmsContext, userContext).query(categoryHierarchyQuery, {}).then(x => x.data.categoryHierarchy)
-    // }
 }
 
+// import { getClient } from './client'
+// export default { PbxClient, PbxQueryContext, getClient }
 export default { PbxClient, PbxQueryContext }

@@ -13,33 +13,36 @@ var __param = (this && this.__param) || function (paramIndex, decorator) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.MiscResolver = void 0;
-const type_graphql_1 = require("type-graphql");
-const types_1 = require("../../types");
-const config = require('../util/config');
-let MiscResolver = class MiscResolver {
-    correlationId(ctx) {
+var type_graphql_1 = require("type-graphql");
+var types_1 = require("../../types");
+var config = require('../util/config');
+var MiscResolver = /** @class */ (function () {
+    function MiscResolver() {
+    }
+    MiscResolver.prototype.correlationId = function (ctx) {
         return ctx.commercehub.config.context.requestId;
-    }
-    logUrl(ctx) {
-        return `${config.host}/logs/${ctx.commercehub.config.context.requestId}`;
-    }
-};
-__decorate([
-    type_graphql_1.Query(returns => String),
-    __param(0, type_graphql_1.Ctx()),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", [types_1.Context]),
-    __metadata("design:returntype", void 0)
-], MiscResolver.prototype, "correlationId", null);
-__decorate([
-    type_graphql_1.Query(returns => String),
-    __param(0, type_graphql_1.Ctx()),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", [types_1.Context]),
-    __metadata("design:returntype", void 0)
-], MiscResolver.prototype, "logUrl", null);
-MiscResolver = __decorate([
-    type_graphql_1.Resolver()
-], MiscResolver);
+    };
+    MiscResolver.prototype.logUrl = function (ctx) {
+        return config.host + "/logs/" + ctx.commercehub.config.context.requestId;
+    };
+    __decorate([
+        type_graphql_1.Query(function (returns) { return String; }),
+        __param(0, type_graphql_1.Ctx()),
+        __metadata("design:type", Function),
+        __metadata("design:paramtypes", [types_1.Context]),
+        __metadata("design:returntype", void 0)
+    ], MiscResolver.prototype, "correlationId", null);
+    __decorate([
+        type_graphql_1.Query(function (returns) { return String; }),
+        __param(0, type_graphql_1.Ctx()),
+        __metadata("design:type", Function),
+        __metadata("design:paramtypes", [types_1.Context]),
+        __metadata("design:returntype", void 0)
+    ], MiscResolver.prototype, "logUrl", null);
+    MiscResolver = __decorate([
+        type_graphql_1.Resolver()
+    ], MiscResolver);
+    return MiscResolver;
+}());
 exports.MiscResolver = MiscResolver;
-module.exports = { MiscResolver };
+module.exports = { MiscResolver: MiscResolver };

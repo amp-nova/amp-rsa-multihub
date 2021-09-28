@@ -8,6 +8,7 @@ import { logger } from '@/server/util/logger'
 import logService from '@/server/services/log-service'
 import translationService from '@/server/services/translation-service'
 import { startGraphqlService } from '@/server/services/graphql-service'
+const stringify = require('json-stringify-safe')
 
 import { config } from "@/server/util/config";
 import routes from '@/server/routes'
@@ -33,7 +34,7 @@ let startServer = async () => {
     return { app };
   } catch (error) {
     logger.error(error.stack)
-    logger.error(JSON.stringify(error))
+    logger.error(stringify(error))
   }
 }
 

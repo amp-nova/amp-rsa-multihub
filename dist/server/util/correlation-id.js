@@ -1,49 +1,102 @@
 "use strict";
+var __assign = (this && this.__assign) || function () {
+    __assign = Object.assign || function(t) {
+        for (var s, i = 1, n = arguments.length; i < n; i++) {
+            s = arguments[i];
+            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
+                t[p] = s[p];
+        }
+        return t;
+    };
+    return __assign.apply(this, arguments);
+};
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
+var __generator = (this && this.__generator) || function (thisArg, body) {
+    var _ = { label: 0, sent: function() { if (t[0] & 1) throw t[1]; return t[1]; }, trys: [], ops: [] }, f, y, t, g;
+    return g = { next: verb(0), "throw": verb(1), "return": verb(2) }, typeof Symbol === "function" && (g[Symbol.iterator] = function() { return this; }), g;
+    function verb(n) { return function (v) { return step([n, v]); }; }
+    function step(op) {
+        if (f) throw new TypeError("Generator is already executing.");
+        while (_) try {
+            if (f = 1, y && (t = op[0] & 2 ? y["return"] : op[0] ? y["throw"] || ((t = y["return"]) && t.call(y), 0) : y.next) && !(t = t.call(y, op[1])).done) return t;
+            if (y = 0, t) op = [op[0] & 2, t.value];
+            switch (op[0]) {
+                case 0: case 1: t = op; break;
+                case 4: _.label++; return { value: op[1], done: false };
+                case 5: _.label++; y = op[1]; op = [0]; continue;
+                case 7: op = _.ops.pop(); _.trys.pop(); continue;
+                default:
+                    if (!(t = _.trys, t = t.length > 0 && t[t.length - 1]) && (op[0] === 6 || op[0] === 2)) { _ = 0; continue; }
+                    if (op[0] === 3 && (!t || (op[1] > t[0] && op[1] < t[3]))) { _.label = op[1]; break; }
+                    if (op[0] === 6 && _.label < t[1]) { _.label = t[1]; t = op; break; }
+                    if (t && _.label < t[2]) { _.label = t[2]; _.ops.push(op); break; }
+                    if (t[2]) _.ops.pop();
+                    _.trys.pop(); continue;
+            }
+            op = body.call(thisArg, _);
+        } catch (e) { op = [6, e]; y = 0; } finally { f = t = 0; }
+        if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
+    }
+};
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const lodash_1 = __importDefault(require("lodash"));
-const whatwg_url_1 = __importDefault(require("whatwg-url"));
-const router = require('express').Router();
-const camelcase = require('camelcase');
-const { nanoid } = require('nanoid');
-const hub_1 = require("@/server/hub");
-const config_1 = require("@/server/util/config");
-const logger_1 = __importDefault(require("@/server/util/logger"));
-const headersForTag = tag => (val, key) => key.indexOf(`-${tag}-`) > -1;
-const getAmplienceConfigFromHeaders = headers => {
-    const mapHeaders = tag => lodash_1.default.mapKeys(lodash_1.default.pickBy(headers, headersForTag(tag)), (val, key) => camelcase(key.replace(`x-arm-${tag}-`, '')));
+var lodash_1 = __importDefault(require("lodash"));
+var whatwg_url_1 = __importDefault(require("whatwg-url"));
+var router = require('express').Router();
+var camelcase = require('camelcase');
+var nanoid = require('nanoid').nanoid;
+var hub_1 = require("@/server/hub");
+var config_1 = require("@/server/util/config");
+var logger_1 = __importDefault(require("@/server/util/logger"));
+var headersForTag = function (tag) { return function (val, key) { return key.indexOf("-" + tag + "-") > -1; }; };
+var getAmplienceConfigFromHeaders = function (headers) {
+    var mapHeaders = function (tag) { return lodash_1.default.mapKeys(lodash_1.default.pickBy(headers, headersForTag(tag)), function (val, key) { return camelcase(key.replace("x-arm-" + tag + "-", '')); }); };
     return {
         cmsContext: mapHeaders('cms'),
         userContext: mapHeaders('user'),
-        appContext: {
-            url: `http://localhost:3000`,
-            ...mapHeaders('app')
-        }
+        appContext: __assign({ url: "http://localhost:3000" }, mapHeaders('app'))
     };
 };
-router.use(async (req, res, next) => {
-    var _a;
-    if ((req.path.indexOf('graphql') > -1 && ((_a = req.body) === null || _a === void 0 ? void 0 : _a.operationName) !== 'IntrospectionQuery') || req.path.indexOf('api/') > -1) {
-        const backendKey = req.headers['x-pbx-backend-key'] || req.headers['x-arm-backend-key'];
-        if (backendKey) {
-            let { appContext } = getAmplienceConfigFromHeaders(req.headers);
-            const appUrl = whatwg_url_1.default.parseURL(appContext.url);
-            const bareHost = lodash_1.default.first(appUrl.host.split('.'));
-            const graphqlOrigin = whatwg_url_1.default.serializeURLOrigin(whatwg_url_1.default.parseURL(config_1.config.host));
-            const tag = req.path.indexOf('graphql') > -1 ? req.body.operationName || `anonymousQuery` : req.path.split('/').pop();
-            req.correlationId = `${bareHost}-${backendKey.replace('/', '-')}-${tag}-${nanoid(4)}`;
-            req.headers['x-arm-correlation-id'] = req.correlationId;
-            logger_1.default.info(`${graphqlOrigin}/logs/${req.correlationId}`);
-            req.hub = await hub_1.getClient({
-                backendKey,
-                requestId: req.correlationId,
-                logger: await logger_1.default.getObjectLogger(req.correlationId),
-                ...getAmplienceConfigFromHeaders(req.headers)
-            });
+router.use(function (req, res, next) { return __awaiter(void 0, void 0, void 0, function () {
+    var backendKey, appContext, appUrl, bareHost, graphqlOrigin, tag, _a, _b;
+    var _c;
+    var _d;
+    return __generator(this, function (_e) {
+        switch (_e.label) {
+            case 0:
+                if (!((req.path.indexOf('graphql') > -1 && ((_d = req.body) === null || _d === void 0 ? void 0 : _d.operationName) !== 'IntrospectionQuery') || req.path.indexOf('api/') > -1)) return [3 /*break*/, 3];
+                backendKey = req.headers['x-pbx-backend-key'] || req.headers['x-arm-backend-key'];
+                if (!backendKey) return [3 /*break*/, 3];
+                appContext = getAmplienceConfigFromHeaders(req.headers).appContext;
+                appUrl = whatwg_url_1.default.parseURL(appContext.url);
+                bareHost = lodash_1.default.first(appUrl.host.split('.'));
+                graphqlOrigin = whatwg_url_1.default.serializeURLOrigin(whatwg_url_1.default.parseURL(config_1.config.host));
+                tag = req.path.indexOf('graphql') > -1 ? req.body.operationName || "anonymousQuery" : req.path.split('/').pop();
+                req.correlationId = bareHost + "-" + backendKey.replace('/', '-') + "-" + tag + "-" + nanoid(4);
+                req.headers['x-arm-correlation-id'] = req.correlationId;
+                logger_1.default.info(graphqlOrigin + "/logs/" + req.correlationId);
+                _a = req;
+                _b = hub_1.getClient;
+                _c = { backendKey: backendKey, requestId: req.correlationId };
+                return [4 /*yield*/, logger_1.default.getObjectLogger(req.correlationId)];
+            case 1: return [4 /*yield*/, _b.apply(void 0, [__assign.apply(void 0, [(_c.logger = _e.sent(), _c), getAmplienceConfigFromHeaders(req.headers)])])];
+            case 2:
+                _a.hub = _e.sent();
+                _e.label = 3;
+            case 3:
+                next();
+                return [2 /*return*/];
         }
-    }
-    next();
-});
+    });
+}); });
 module.exports = router;

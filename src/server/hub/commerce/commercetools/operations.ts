@@ -188,8 +188,8 @@ class CommerceToolsProductOperation extends CommerceToolsOperation {
                     let category = cat.obj || cat
                     return {
                         ...category,
-                        name: this.localize(category.name, args),
-                        slug: this.localize(category.slug, args)
+                        name: self.localize(category.name, args),
+                        slug: self.localize(category.slug, args)
                     }
                 }),
                 productType: product.productType.id

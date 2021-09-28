@@ -25,16 +25,6 @@ var __assign = (this && this.__assign) || function () {
     };
     return __assign.apply(this, arguments);
 };
-var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
-    if (k2 === undefined) k2 = k;
-    Object.defineProperty(o, k2, { enumerable: true, get: function() { return m[k]; } });
-}) : (function(o, m, k, k2) {
-    if (k2 === undefined) k2 = k;
-    o[k2] = m[k];
-}));
-var __exportStar = (this && this.__exportStar) || function(m, exports) {
-    for (var p in m) if (p !== "default" && !Object.prototype.hasOwnProperty.call(exports, p)) __createBinding(exports, m, p);
-};
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -75,13 +65,12 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.PbxGraphqlClient = exports.defaultPbxQueryContext = void 0;
+exports.getClient = exports.PbxGraphqlClient = exports.defaultPbxQueryContext = void 0;
 var cross_fetch_1 = __importDefault(require("cross-fetch"));
 var core_1 = require("@apollo/client/core");
 var context_1 = require("@apollo/client/link/context");
 var queries_1 = require("./queries");
-var types_1 = require("./types");
-var stringify = require('json-stringify-safe');
+var index_1 = require("../index");
 exports.defaultPbxQueryContext = {
     args: {},
     locale: 'en',
@@ -94,19 +83,12 @@ var PbxGraphqlClient = /** @class */ (function (_super) {
     function PbxGraphqlClient() {
         var _this = _super !== null && _super.apply(this, arguments) || this;
         _this.getGraphqlClient = function (context) {
-            // console.log(`args ${stringify(context.args)}`)
             var self = _this;
             var httpLink = core_1.createHttpLink({ uri: _this.url, fetch: cross_fetch_1.default });
             var authLink = context_1.setContext(function (_, _a) {
                 var headers = _a.headers;
                 return {
-                    headers: {
-                        'x-pbx-backend-key': self.key,
-                        'x-pbx-locale': context.locale,
-                        'x-pbx-country': context.country,
-                        'x-pbx-currency': context.currency,
-                        'x-pbx-app-url': context.appUrl
-                    }
+                    headers: __assign(__assign(__assign({}, headers), { 'x-pbx-backend-key': self.key }), context)
                 };
             });
             var client = new core_1.ApolloClient({
@@ -114,74 +96,75 @@ var PbxGraphqlClient = /** @class */ (function (_super) {
                 cache: new core_1.InMemoryCache()
             });
             return {
-                query: function (query) {
-                    return client.query({ query: query, variables: context.args });
-                }
+                query: function (query) { return client.query({ query: query, variables: context.args }); }
             };
-        };
-        _this.getProduct = function (context) {
-            return __awaiter(this, void 0, void 0, function () {
-                var client, result;
-                return __generator(this, function (_a) {
-                    switch (_a.label) {
-                        case 0:
-                            client = this.getGraphqlClient(__assign(__assign({}, exports.defaultPbxQueryContext), context));
-                            return [4 /*yield*/, client.query(queries_1.productQuery)];
-                        case 1:
-                            result = _a.sent();
-                            return [2 /*return*/, result.data.product];
-                    }
-                });
-            });
-        };
-        _this.getProducts = function (context) {
-            return __awaiter(this, void 0, void 0, function () {
-                var client, result;
-                return __generator(this, function (_a) {
-                    switch (_a.label) {
-                        case 0:
-                            client = this.getGraphqlClient(__assign(__assign({}, exports.defaultPbxQueryContext), context));
-                            return [4 /*yield*/, client.query(queries_1.productsQuery)];
-                        case 1:
-                            result = _a.sent();
-                            return [2 /*return*/, result.data.products.results];
-                    }
-                });
-            });
-        };
-        _this.getCategories = function (context) {
-            return __awaiter(this, void 0, void 0, function () {
-                var client, result;
-                return __generator(this, function (_a) {
-                    switch (_a.label) {
-                        case 0:
-                            client = this.getGraphqlClient(__assign(__assign({}, exports.defaultPbxQueryContext), context));
-                            return [4 /*yield*/, client.query(queries_1.categoryHierarchyQuery)];
-                        case 1:
-                            result = _a.sent();
-                            return [2 /*return*/, result.data.categoryHierarchy];
-                    }
-                });
-            });
-        };
-        _this.getCategory = function (context) {
-            return __awaiter(this, void 0, void 0, function () {
-                var client, result;
-                return __generator(this, function (_a) {
-                    switch (_a.label) {
-                        case 0:
-                            client = this.getGraphqlClient(__assign(__assign({}, exports.defaultPbxQueryContext), context));
-                            return [4 /*yield*/, client.query(queries_1.categoryQuery)];
-                        case 1:
-                            result = _a.sent();
-                            return [2 /*return*/, result.data.category];
-                    }
-                });
-            });
         };
         return _this;
     }
+    PbxGraphqlClient.prototype.getProducts = function (context) {
+        return __awaiter(this, void 0, void 0, function () {
+            var client, result;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        client = this.getGraphqlClient(__assign(__assign({}, exports.defaultPbxQueryContext), context));
+                        return [4 /*yield*/, client.query(queries_1.productsQuery)];
+                    case 1:
+                        result = _a.sent();
+                        return [2 /*return*/, result.data.products.results];
+                }
+            });
+        });
+    };
+    PbxGraphqlClient.prototype.getProduct = function (context) {
+        return __awaiter(this, void 0, void 0, function () {
+            var client, result;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        client = this.getGraphqlClient(__assign(__assign({}, exports.defaultPbxQueryContext), context));
+                        return [4 /*yield*/, client.query(queries_1.productQuery)];
+                    case 1:
+                        result = _a.sent();
+                        return [2 /*return*/, result.data.product];
+                }
+            });
+        });
+    };
+    PbxGraphqlClient.prototype.getCategories = function (context) {
+        return __awaiter(this, void 0, void 0, function () {
+            var client, result;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        client = this.getGraphqlClient(__assign(__assign({}, exports.defaultPbxQueryContext), context));
+                        return [4 /*yield*/, client.query(queries_1.categoryHierarchyQuery)];
+                    case 1:
+                        result = _a.sent();
+                        return [2 /*return*/, result.data.categoryHierarchy];
+                }
+            });
+        });
+    };
+    PbxGraphqlClient.prototype.getCategory = function (context) {
+        return __awaiter(this, void 0, void 0, function () {
+            var client, result;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        client = this.getGraphqlClient(__assign(__assign({}, exports.defaultPbxQueryContext), context));
+                        return [4 /*yield*/, client.query(queries_1.categoryQuery)];
+                    case 1:
+                        result = _a.sent();
+                        return [2 /*return*/, result.data.category];
+                }
+            });
+        });
+    };
     return PbxGraphqlClient;
-}(types_1.PbxClient));
+}(index_1.PbxClient));
 exports.PbxGraphqlClient = PbxGraphqlClient;
-__exportStar(require("./types"), exports);
+var getClient = function (url, backendKey) {
+    return new PbxGraphqlClient(url, backendKey);
+};
+exports.getClient = getClient;

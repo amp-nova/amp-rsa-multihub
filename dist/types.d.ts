@@ -100,7 +100,7 @@ export declare class PbxQueryContext {
     currency: string;
     segment?: string;
     appUrl?: string;
-    constructor(args: any);
+    constructor(context: PbxQueryContext);
 }
 export declare class PbxClient {
     url: string;
