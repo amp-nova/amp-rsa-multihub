@@ -220,12 +220,13 @@ export class GetAttributeArgs {
 }
 
 export class PbxQueryContext {
-    args: CommonArgs = {}
-    locale: string = 'en'
-    country: string = 'US'
-    currency: string = 'USD'
-    segment?: string
-    appUrl?: string
+    args:       CommonArgs = {}
+    locale:     string = 'en-US'
+    language:   string = 'en'
+    country:    string = 'US'
+    currency:   string = 'USD'
+    segment:    string = ''
+    appUrl:     string = ''
 
     constructor(context: PbxQueryContext) {
         this.args = context.args

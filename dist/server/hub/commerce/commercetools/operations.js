@@ -86,7 +86,6 @@ var axios = require('axios');
 var currency = require('currency.js');
 var stringify = require('json-stringify-safe');
 var Operation = require('@/server/operation').Operation;
-var formatMoneyString = require('@/server/util/locale-formatter').formatMoneyString;
 var mapImage = function (image) { return image && ({ url: image.url }); };
 var CommerceToolsOperation = /** @class */ (function (_super) {
     __extends(CommerceToolsOperation, _super);
@@ -105,14 +104,14 @@ var CommerceToolsOperation = /** @class */ (function (_super) {
         uri.addQuery(query);
         return uri.toString();
     };
-    CommerceToolsOperation.prototype.localize = function (text, args) {
+    CommerceToolsOperation.prototype.localize = function (text) {
         if (text.label) {
             text = text.label;
         }
         if (typeof text === 'string') {
             return text;
         }
-        return text[args.language] || text['en'] || text[Object.keys(text)[0]];
+        return text[this.backend.config.context.language] || text['en'] || text[Object.keys(text)[0]];
     };
     CommerceToolsOperation.prototype.authenticate = function () {
         return __awaiter(this, void 0, void 0, function () {
@@ -189,7 +188,7 @@ var CommerceToolsCategoryOperation = /** @class */ (function (_super) {
     CommerceToolsCategoryOperation.prototype.export = function (args) {
         var self = this;
         return function (category) {
-            return __assign(__assign({}, category), { name: self.localize(category.name, args), slug: self.localize(category.slug, args) });
+            return __assign(__assign({}, category), { name: self.localize(category.name), slug: self.localize(category.slug) });
         };
     };
     CommerceToolsCategoryOperation.prototype.getRequestPath = function (args) {
@@ -199,7 +198,7 @@ var CommerceToolsCategoryOperation = /** @class */ (function (_super) {
         return __awaiter(this, void 0, void 0, function () {
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0: return [4 /*yield*/, _super.prototype.get.call(this, __assign(__assign({}, args), { limit: 500, where: args.slug && ["slug(" + (args.language || 'en') + "=\"" + args.slug + "\") or slug(en=\"" + args.slug + "\")"] ||
+                    case 0: return [4 /*yield*/, _super.prototype.get.call(this, __assign(__assign({}, args), { limit: 500, where: args.slug && ["slug(" + (this.backend.config.context.language || 'en') + "=\"" + args.slug + "\") or slug(en=\"" + args.slug + "\")"] ||
                                 args.id && ["id=\"" + args.id + "\""] }))];
                     case 1: return [2 /*return*/, _a.sent()];
                 }
@@ -235,8 +234,8 @@ var CommerceToolsProductOperation = /** @class */ (function (_super) {
             var _a;
             return __generator(this, function (_b) {
                 switch (_b.label) {
-                    case 0: return [4 /*yield*/, _super.prototype.get.call(this, __assign(__assign({}, args), (_a = { expand: ['categories[*]'], priceCountry: args.country, priceCurrency: args.currency }, _a["text." + args.language] = args.keyword, _a.filter = args.productIds && ["id:" + _.map(args.productIds.split(','), function (x) { return "\"" + x + "\""; }).join(',')], _a.where = args.id && ["id=\"" + args.id + "\""] ||
-                            args.slug && ["slug(" + args.language + "=\"" + args.slug + "\") or slug(en=\"" + args.slug + "\")"] ||
+                    case 0: return [4 /*yield*/, _super.prototype.get.call(this, __assign(__assign({}, args), (_a = { expand: ['categories[*]'], priceCountry: this.backend.config.context.country, priceCurrency: this.backend.config.context.currency }, _a["text." + this.backend.config.context.language] = args.keyword, _a.filter = args.productIds && ["id:" + _.map(args.productIds.split(','), function (x) { return "\"" + x + "\""; }).join(',')], _a.where = args.id && ["id=\"" + args.id + "\""] ||
+                            args.slug && ["slug(" + this.backend.config.context.language + "=\"" + args.slug + "\") or slug(en=\"" + args.slug + "\")"] ||
                             args.sku && ["variants(sku=\"" + args.sku + "\")"], _a)))];
                     case 1: return [2 /*return*/, _b.sent()];
                 }
@@ -258,14 +257,14 @@ var CommerceToolsProductOperation = /** @class */ (function (_super) {
     CommerceToolsProductOperation.prototype.export = function (args) {
         var self = this;
         return function (product) {
-            return __assign(__assign({}, product), { name: this.localize(product.name, args), slug: this.localize(product.slug, args), longDescription: product.metaDescription && this.localize(product.metaDescription, args), variants: _.map(_.concat(product.variants, [product.masterVariant]), function (variant) {
+            return __assign(__assign({}, product), { name: this.localize(product.name), slug: this.localize(product.slug), longDescription: product.metaDescription && this.localize(product.metaDescription), variants: _.map(_.concat(product.variants, [product.masterVariant]), function (variant) {
                     return __assign(__assign({}, variant), { sku: variant.sku || product.key, prices: {
-                            list: formatMoneyString(_.get(variant.scopedPrice || _.first(variant.prices), 'value.centAmount') / 100, args.locale, args.currency),
-                            sale: formatMoneyString(_.get(variant.scopedPrice || _.first(variant.prices), 'value.centAmount') / 100, args.locale, args.currency)
-                        }, images: _.map(variant.images, mapImage), attributes: _.map(variant.attributes, function (att) { return ({ name: att.name, value: self.localize(att.value, args) }); }) });
+                            list: self.formatMoneyString(_.get(variant.scopedPrice || _.first(variant.prices), 'value.centAmount') / 100),
+                            sale: self.formatMoneyString(_.get(variant.scopedPrice || _.first(variant.prices), 'value.centAmount') / 100)
+                        }, images: _.map(variant.images, mapImage), attributes: _.map(variant.attributes, function (att) { return ({ name: att.name, value: self.localize(att.value) }); }) });
                 }), categories: _.map(product.categories, function (cat) {
                     var category = cat.obj || cat;
-                    return __assign(__assign({}, category), { name: self.localize(category.name, args), slug: self.localize(category.slug, args) });
+                    return __assign(__assign({}, category), { name: self.localize(category.name), slug: self.localize(category.slug) });
                 }), productType: product.productType.id });
         };
     };
@@ -276,16 +275,17 @@ var CommerceToolsProductOperation = /** @class */ (function (_super) {
                 self = this;
                 return [2 /*return*/, function (products) {
                         return __awaiter(this, void 0, void 0, function () {
-                            var discountOperation, cartDiscounts, applicableDiscounts_1;
+                            var segment, discountOperation, cartDiscounts, applicableDiscounts_1;
                             return __generator(this, function (_a) {
                                 switch (_a.label) {
                                     case 0:
-                                        if (!self.backend.config.context.userContext.segment) return [3 /*break*/, 2];
+                                        segment = self.backend.config.context.segment;
+                                        if (!(!_.isEmpty(segment) && segment !== 'null' && segment !== 'undefined')) return [3 /*break*/, 2];
                                         discountOperation = new CommerceToolsCartDiscountOperation(self.backend);
                                         return [4 /*yield*/, discountOperation.get({})];
                                     case 1:
                                         cartDiscounts = (_a.sent()).getResults();
-                                        applicableDiscounts_1 = _.filter(cartDiscounts, function (cd) { return args.segment && cd.cartPredicate === "customer.customerGroup.key = \"" + args.segment.toUpperCase() + "\""; });
+                                        applicableDiscounts_1 = _.filter(cartDiscounts, function (cd) { return cd.cartPredicate === "customer.customerGroup.key = \"" + segment.toUpperCase() + "\""; });
                                         return [2 /*return*/, _.map(products, function (product) {
                                                 return __assign(__assign({}, product), { variants: _.map(product.variants, function (variant) {
                                                         var sale = currency(variant.prices.list).value;

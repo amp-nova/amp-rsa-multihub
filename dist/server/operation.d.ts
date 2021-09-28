@@ -15,4 +15,5 @@ export declare class Operation {
     doRequest(args: any): Promise<any>;
     translateResponse(data: any, arg1: any): void;
     getHeaders(): {};
+    formatMoneyString(money: any): string;
 }

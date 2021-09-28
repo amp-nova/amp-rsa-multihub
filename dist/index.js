@@ -75,39 +75,41 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.PbxGraphqlClient = exports.defaultPbxQueryContext = void 0;
+exports.PbxGraphqlClient = void 0;
 var cross_fetch_1 = __importDefault(require("cross-fetch"));
 var core_1 = require("@apollo/client/core");
 var context_1 = require("@apollo/client/link/context");
 var queries_1 = require("./queries");
 var types_1 = require("./types");
 var stringify = require('json-stringify-safe');
-exports.defaultPbxQueryContext = {
-    args: {},
-    locale: 'en',
-    country: 'US',
-    currency: 'USD',
-    appUrl: 'http://localhost:3000'
-};
+// export const defaultPbxQueryContext: PbxQueryContext = {
+//     args: {},
+//     locale: 'en',
+//     country: 'US',
+//     currency: 'USD',
+//     appUrl: 'http://localhost:3000'
+// }
 var PbxGraphqlClient = /** @class */ (function (_super) {
     __extends(PbxGraphqlClient, _super);
     function PbxGraphqlClient() {
         var _this = _super !== null && _super.apply(this, arguments) || this;
         _this.getGraphqlClient = function (context) {
-            // console.log(`args ${stringify(context.args)}`)
             var self = _this;
             var httpLink = core_1.createHttpLink({ uri: _this.url, fetch: cross_fetch_1.default });
+            var x = {
+                'x-pbx-backend-key': self.key,
+                'x-pbx-locale': context.locale,
+                'x-pbx-language': context.language,
+                'x-pbx-country': context.country,
+                'x-pbx-currency': context.currency,
+                'x-pbx-app-url': context.appUrl,
+                'x-pbx-segment': context.segment
+            };
             var authLink = context_1.setContext(function (_, _a) {
                 var headers = _a.headers;
-                return {
-                    headers: {
-                        'x-pbx-backend-key': self.key,
-                        'x-pbx-locale': context.locale,
-                        'x-pbx-country': context.country,
-                        'x-pbx-currency': context.currency,
-                        'x-pbx-app-url': context.appUrl
-                    }
-                };
+                return ({
+                    headers: __assign(__assign({}, headers), x)
+                });
             });
             var client = new core_1.ApolloClient({
                 link: authLink.concat(httpLink),
@@ -125,7 +127,7 @@ var PbxGraphqlClient = /** @class */ (function (_super) {
                 return __generator(this, function (_a) {
                     switch (_a.label) {
                         case 0:
-                            client = this.getGraphqlClient(__assign(__assign({}, exports.defaultPbxQueryContext), context));
+                            client = this.getGraphqlClient(context);
                             return [4 /*yield*/, client.query(queries_1.productQuery)];
                         case 1:
                             result = _a.sent();
@@ -140,7 +142,7 @@ var PbxGraphqlClient = /** @class */ (function (_super) {
                 return __generator(this, function (_a) {
                     switch (_a.label) {
                         case 0:
-                            client = this.getGraphqlClient(__assign(__assign({}, exports.defaultPbxQueryContext), context));
+                            client = this.getGraphqlClient(context);
                             return [4 /*yield*/, client.query(queries_1.productsQuery)];
                         case 1:
                             result = _a.sent();
@@ -155,7 +157,7 @@ var PbxGraphqlClient = /** @class */ (function (_super) {
                 return __generator(this, function (_a) {
                     switch (_a.label) {
                         case 0:
-                            client = this.getGraphqlClient(__assign(__assign({}, exports.defaultPbxQueryContext), context));
+                            client = this.getGraphqlClient(context);
                             return [4 /*yield*/, client.query(queries_1.categoryHierarchyQuery)];
                         case 1:
                             result = _a.sent();
@@ -170,7 +172,7 @@ var PbxGraphqlClient = /** @class */ (function (_super) {
                 return __generator(this, function (_a) {
                     switch (_a.label) {
                         case 0:
-                            client = this.getGraphqlClient(__assign(__assign({}, exports.defaultPbxQueryContext), context));
+                            client = this.getGraphqlClient(context);
                             return [4 /*yield*/, client.query(queries_1.categoryQuery)];
                         case 1:
                             result = _a.sent();

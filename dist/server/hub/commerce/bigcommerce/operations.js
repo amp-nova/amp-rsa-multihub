@@ -86,7 +86,6 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 var lodash_1 = __importDefault(require("lodash"));
 var URI = require('urijs');
-var formatMoneyString = require('@/server/util/locale-formatter').formatMoneyString;
 var findCategory = require('@/server/util/helpers').findCategory;
 var Operation = require('@/server/operation').Operation;
 var mapImage = function (image) { return ({ url: image.url_standard }); };
@@ -237,9 +236,10 @@ var BigCommerceProductOperation = /** @class */ (function (_super) {
         });
     };
     BigCommerceProductOperation.prototype.export = function (args) {
+        var self = this;
         return function (prod) { return (__assign(__assign({}, prod), { shortDescription: prod.description, longDescription: prod.description, slug: slugify(prod.name, { lower: true, remove: /\"/g }), variants: lodash_1.default.map(prod.variants, function (variant) { return (__assign(__assign({}, variant), { prices: {
-                    list: formatMoneyString(variant.price || prod.price),
-                    sale: formatMoneyString(variant.sale_price || prod.price)
+                    list: self.formatMoneyString(variant.price || prod.price),
+                    sale: self.formatMoneyString(variant.sale_price || prod.price)
                 }, attributes: variant.option_values.map(function (opt) { return ({
                     name: opt.option_display_name.toLowerCase(),
                     value: opt.label

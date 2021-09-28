@@ -195,6 +195,13 @@ var Operation = /** @class */ (function () {
     Operation.prototype.getHeaders = function () {
         return {};
     };
+    Operation.prototype.formatMoneyString = function (money) {
+        console.log(this.backend.config.context);
+        return new Intl.NumberFormat(this.backend.config.context.locale, {
+            style: 'currency',
+            currency: this.backend.config.context.currency
+        }).format(money);
+    };
     return Operation;
 }());
 exports.Operation = Operation;

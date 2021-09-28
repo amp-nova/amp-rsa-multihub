@@ -53,7 +53,6 @@ export const categoryHierarchyQuery = gql`
 export const productsQuery = gql`
     query productsQuery($keyword: String, $productIds: String) {
         products(keyword: $keyword, productIds: $productIds) {
-            ${meta}
             results {
                 ${productFields}
             }

@@ -446,9 +446,12 @@ exports.GetAttributeArgs = GetAttributeArgs;
 var PbxQueryContext = /** @class */ (function () {
     function PbxQueryContext(context) {
         this.args = {};
-        this.locale = 'en';
+        this.locale = 'en-US';
+        this.language = 'en';
         this.country = 'US';
         this.currency = 'USD';
+        this.segment = '';
+        this.appUrl = '';
         this.args = context.args;
         this.locale = context.locale || 'en';
         this.country = context.country || 'US';

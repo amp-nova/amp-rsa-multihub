@@ -1,7 +1,6 @@
 import _ from 'lodash'
 const URI = require('urijs')
 
-const { formatMoneyString } = require('@/server/util/locale-formatter')
 const { findCategory } = require('@/server/util/helpers')
 const { Operation } = require('@/server/operation')
 
@@ -138,6 +137,7 @@ class BigCommerceProductOperation extends BigCommerceOperation {
     }
 
     export(args) {
+        let self = this
         return prod => ({
             ...prod,
             shortDescription: prod.description,
@@ -146,8 +146,8 @@ class BigCommerceProductOperation extends BigCommerceOperation {
             variants: _.map(prod.variants, variant => ({
                 ...variant,
                 prices: {
-                    list: formatMoneyString(variant.price || prod.price),
-                    sale: formatMoneyString(variant.sale_price || prod.price)
+                    list: self.formatMoneyString(variant.price || prod.price),
+                    sale: self.formatMoneyString(variant.sale_price || prod.price)
                 },
                 attributes: variant.option_values.map(opt => ({
                     name: opt.option_display_name.toLowerCase(),

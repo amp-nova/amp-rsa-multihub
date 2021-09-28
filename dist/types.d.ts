@@ -96,10 +96,11 @@ export declare class GetAttributeArgs {
 export declare class PbxQueryContext {
     args: CommonArgs;
     locale: string;
+    language: string;
     country: string;
     currency: string;
-    segment?: string;
-    appUrl?: string;
+    segment: string;
+    appUrl: string;
     constructor(context: PbxQueryContext);
 }
 export declare class PbxClient {

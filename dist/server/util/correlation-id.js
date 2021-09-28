@@ -1,15 +1,4 @@
 "use strict";
-var __assign = (this && this.__assign) || function () {
-    __assign = Object.assign || function(t) {
-        for (var s, i = 1, n = arguments.length; i < n; i++) {
-            s = arguments[i];
-            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
-                t[p] = s[p];
-        }
-        return t;
-    };
-    return __assign.apply(this, arguments);
-};
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -53,22 +42,12 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var lodash_1 = __importDefault(require("lodash"));
 var whatwg_url_1 = __importDefault(require("whatwg-url"));
 var router = require('express').Router();
-var camelcase = require('camelcase');
 var nanoid = require('nanoid').nanoid;
 var hub_1 = require("@/server/hub");
 var config_1 = require("@/server/util/config");
 var logger_1 = __importDefault(require("@/server/util/logger"));
-var headersForTag = function (tag) { return function (val, key) { return key.indexOf("-" + tag + "-") > -1; }; };
-var getAmplienceConfigFromHeaders = function (headers) {
-    var mapHeaders = function (tag) { return lodash_1.default.mapKeys(lodash_1.default.pickBy(headers, headersForTag(tag)), function (val, key) { return camelcase(key.replace("x-arm-" + tag + "-", '')); }); };
-    return {
-        cmsContext: mapHeaders('cms'),
-        userContext: mapHeaders('user'),
-        appContext: __assign({ url: "http://localhost:3000" }, mapHeaders('app'))
-    };
-};
 router.use(function (req, res, next) { return __awaiter(void 0, void 0, void 0, function () {
-    var backendKey, appContext, appUrl, bareHost, graphqlOrigin, tag, _a, _b;
+    var backendKey, appUrl, bareHost, graphqlOrigin, tag, _a, _b;
     var _c;
     var _d;
     return __generator(this, function (_e) {
@@ -77,19 +56,29 @@ router.use(function (req, res, next) { return __awaiter(void 0, void 0, void 0, 
                 if (!((req.path.indexOf('graphql') > -1 && ((_d = req.body) === null || _d === void 0 ? void 0 : _d.operationName) !== 'IntrospectionQuery') || req.path.indexOf('api/') > -1)) return [3 /*break*/, 3];
                 backendKey = req.headers['x-pbx-backend-key'] || req.headers['x-arm-backend-key'];
                 if (!backendKey) return [3 /*break*/, 3];
-                appContext = getAmplienceConfigFromHeaders(req.headers).appContext;
-                appUrl = whatwg_url_1.default.parseURL(appContext.url);
+                appUrl = whatwg_url_1.default.parseURL(req.headers['x-pbx-app-url'] || "http://localhost:3000");
                 bareHost = lodash_1.default.first(appUrl.host.split('.'));
                 graphqlOrigin = whatwg_url_1.default.serializeURLOrigin(whatwg_url_1.default.parseURL(config_1.config.host));
                 tag = req.path.indexOf('graphql') > -1 ? req.body.operationName || "anonymousQuery" : req.path.split('/').pop();
                 req.correlationId = bareHost + "-" + backendKey.replace('/', '-') + "-" + tag + "-" + nanoid(4);
-                req.headers['x-arm-correlation-id'] = req.correlationId;
+                req.headers['x-pbx-correlation-id'] = req.correlationId;
                 logger_1.default.info(graphqlOrigin + "/logs/" + req.correlationId);
+                console.log(req.headers);
                 _a = req;
                 _b = hub_1.getClient;
-                _c = { backendKey: backendKey, requestId: req.correlationId };
+                _c = {
+                    backendKey: backendKey,
+                    requestId: req.correlationId
+                };
                 return [4 /*yield*/, logger_1.default.getObjectLogger(req.correlationId)];
-            case 1: return [4 /*yield*/, _b.apply(void 0, [__assign.apply(void 0, [(_c.logger = _e.sent(), _c), getAmplienceConfigFromHeaders(req.headers)])])];
+            case 1: return [4 /*yield*/, _b.apply(void 0, [(_c.logger = _e.sent(),
+                        _c.locale = req.headers['x-pbx-locale'] || 'en-US',
+                        _c.language = req.headers['x-pbx-language'] || 'en',
+                        _c.country = req.headers['x-pbx-country'] || 'US',
+                        _c.currency = req.headers['x-pbx-currency'] || 'USD',
+                        _c.appUrl = req.headers['x-pbx-app-url'],
+                        _c.segment = req.headers['x-pbx-segment'],
+                        _c)])];
             case 2:
                 _a.hub = _e.sent();
                 _e.label = 3;
