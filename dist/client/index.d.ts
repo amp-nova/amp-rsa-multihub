@@ -1,4 +1,5 @@
-import { Product, Category, QueryContext, CommerceClient } from '../types';
+import { Product, Category } from 'amp-rsa-types';
+import { QueryContext, CommerceClient } from '../types';
 export declare class PbxCommerceClient extends CommerceClient {
     url: string;
     key: string;

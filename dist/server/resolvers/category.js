@@ -50,6 +50,7 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.CategoryResolver = void 0;
 var type_graphql_1 = require("type-graphql");
+var amp_rsa_types_1 = require("amp-rsa-types");
 var types_1 = require("../../types");
 var CategoryResolver = /** @class */ (function () {
     function CategoryResolver() {
@@ -85,7 +86,7 @@ var CategoryResolver = /** @class */ (function () {
         });
     };
     __decorate([
-        type_graphql_1.Query(function (returns) { return types_1.Category; }),
+        type_graphql_1.Query(function (returns) { return amp_rsa_types_1.Category; }),
         __param(0, type_graphql_1.Args()),
         __param(1, type_graphql_1.Ctx()),
         __metadata("design:type", Function),
@@ -93,7 +94,7 @@ var CategoryResolver = /** @class */ (function () {
         __metadata("design:returntype", Promise)
     ], CategoryResolver.prototype, "category", null);
     __decorate([
-        type_graphql_1.Query(function (returns) { return [types_1.Category]; }),
+        type_graphql_1.Query(function (returns) { return [amp_rsa_types_1.Category]; }),
         __param(0, type_graphql_1.Args()),
         __param(1, type_graphql_1.Ctx()),
         __metadata("design:type", Function),
@@ -106,11 +107,11 @@ var CategoryResolver = /** @class */ (function () {
         __param(1, type_graphql_1.Args()),
         __param(2, type_graphql_1.Ctx()),
         __metadata("design:type", Function),
-        __metadata("design:paramtypes", [types_1.Category, types_1.GetCategoryProductArgs, types_1.Context]),
+        __metadata("design:paramtypes", [amp_rsa_types_1.Category, types_1.GetCategoryProductArgs, types_1.Context]),
         __metadata("design:returntype", Promise)
     ], CategoryResolver.prototype, "products", null);
     CategoryResolver = __decorate([
-        type_graphql_1.Resolver(types_1.Category)
+        type_graphql_1.Resolver(amp_rsa_types_1.Category)
     ], CategoryResolver);
     return CategoryResolver;
 }());

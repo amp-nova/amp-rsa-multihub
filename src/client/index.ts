@@ -4,7 +4,8 @@ import { createHttpLink, ApolloClient, InMemoryCache, gql } from '@apollo/client
 import { setContext } from '@apollo/client/link/context';
 
 import { categoryQuery, categoryHierarchyQuery, productQuery, productsQuery } from '../queries'
-import { Product, Category, QueryContext, CommerceClient } from '../types'
+import { Product, Category } from 'amp-rsa-types'
+import { QueryContext, CommerceClient } from '../types'
 
 export class PbxCommerceClient extends CommerceClient {
     url: string

@@ -54,6 +54,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.VariantResolver = void 0;
 var lodash_1 = __importDefault(require("lodash"));
 var type_graphql_1 = require("type-graphql");
+var amp_rsa_types_1 = require("amp-rsa-types");
 var types_1 = require("@/types");
 var VariantResolver = /** @class */ (function () {
     function VariantResolver() {
@@ -77,18 +78,18 @@ var VariantResolver = /** @class */ (function () {
         __param(0, type_graphql_1.Root()),
         __param(1, type_graphql_1.Args()),
         __metadata("design:type", Function),
-        __metadata("design:paramtypes", [types_1.Variant, types_1.GetAttributeArgs]),
+        __metadata("design:paramtypes", [amp_rsa_types_1.Variant, types_1.GetAttributeArgs]),
         __metadata("design:returntype", Promise)
     ], VariantResolver.prototype, "attribute", null);
     __decorate([
-        type_graphql_1.FieldResolver(function (returns) { return types_1.ProductImage; }),
+        type_graphql_1.FieldResolver(function (returns) { return amp_rsa_types_1.ProductImage; }),
         __param(0, type_graphql_1.Root()),
         __metadata("design:type", Function),
-        __metadata("design:paramtypes", [types_1.Variant]),
+        __metadata("design:paramtypes", [amp_rsa_types_1.Variant]),
         __metadata("design:returntype", Promise)
     ], VariantResolver.prototype, "defaultImage", null);
     VariantResolver = __decorate([
-        type_graphql_1.Resolver(types_1.Variant)
+        type_graphql_1.Resolver(amp_rsa_types_1.Variant)
     ], VariantResolver);
     return VariantResolver;
 }());

@@ -5,7 +5,8 @@ const chalk = require('chalk')
 const nconf = require('nconf')
 const axios = require('axios')
 
-import { Product, Category, CommerceClient, QueryContext } from '../types'
+import { Product, Category } from 'amp-rsa-types'
+import { CommerceClient, QueryContext } from '../types'
 import { PbxCommerceClient } from '../client'
 
 let commerceBackendKeyPrefixes = ['bigcommerce', 'hybris', 'commercetools']

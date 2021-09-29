@@ -60,254 +60,76 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.CommerceClient = exports.QueryContext = exports.GetAttributeArgs = exports.GetProductArgs = exports.GetProductsArgs = exports.GetCategoryProductArgs = exports.GetCategoryArgs = exports.Context = exports.ListArgs = exports.CommonArgs = exports.SearchResult = exports.Category = exports.Variant = exports.Attribute = exports.Product = exports.CommerceObject = exports.Identifiable = exports.CategoryResults = exports.ProductResults = exports.ResultsMeta = exports.ProductImage = exports.Prices = void 0;
+exports.CommerceClient = exports.QueryContext = exports.GetAttributeArgs = exports.GetProductArgs = exports.GetProductsArgs = exports.GetCategoryProductArgs = exports.GetCategoryArgs = exports.Context = exports.ListArgs = exports.CommonArgs = void 0;
 var type_graphql_1 = require("type-graphql");
-var Prices = /** @class */ (function () {
-    function Prices() {
-    }
-    __decorate([
-        type_graphql_1.Field({ nullable: true }),
-        __metadata("design:type", String)
-    ], Prices.prototype, "sale", void 0);
-    __decorate([
-        type_graphql_1.Field({ nullable: true }),
-        __metadata("design:type", String)
-    ], Prices.prototype, "list", void 0);
-    Prices = __decorate([
-        type_graphql_1.ObjectType()
-    ], Prices);
-    return Prices;
-}());
-exports.Prices = Prices;
-var ProductImage = /** @class */ (function () {
-    function ProductImage() {
-    }
-    __decorate([
-        type_graphql_1.Field(),
-        __metadata("design:type", String)
-    ], ProductImage.prototype, "url", void 0);
-    __decorate([
-        type_graphql_1.Field({ nullable: true }),
-        __metadata("design:type", String)
-    ], ProductImage.prototype, "large", void 0);
-    __decorate([
-        type_graphql_1.Field({ nullable: true }),
-        __metadata("design:type", String)
-    ], ProductImage.prototype, "thumb", void 0);
-    ProductImage = __decorate([
-        type_graphql_1.ObjectType()
-    ], ProductImage);
-    return ProductImage;
-}());
-exports.ProductImage = ProductImage;
-var ResultsMeta = /** @class */ (function () {
-    function ResultsMeta() {
-    }
-    __decorate([
-        type_graphql_1.Field(),
-        __metadata("design:type", Number)
-    ], ResultsMeta.prototype, "limit", void 0);
-    __decorate([
-        type_graphql_1.Field(),
-        __metadata("design:type", Number)
-    ], ResultsMeta.prototype, "offset", void 0);
-    __decorate([
-        type_graphql_1.Field(),
-        __metadata("design:type", Number)
-    ], ResultsMeta.prototype, "count", void 0);
-    __decorate([
-        type_graphql_1.Field(),
-        __metadata("design:type", Number)
-    ], ResultsMeta.prototype, "total", void 0);
-    ResultsMeta = __decorate([
-        type_graphql_1.ObjectType()
-    ], ResultsMeta);
-    return ResultsMeta;
-}());
-exports.ResultsMeta = ResultsMeta;
-var ProductResults = /** @class */ (function () {
-    function ProductResults() {
-    }
-    __decorate([
-        type_graphql_1.Field(),
-        __metadata("design:type", ResultsMeta)
-    ], ProductResults.prototype, "meta", void 0);
-    __decorate([
-        type_graphql_1.Field(function (type) { return [Product]; }),
-        __metadata("design:type", Array)
-    ], ProductResults.prototype, "results", void 0);
-    ProductResults = __decorate([
-        type_graphql_1.ObjectType()
-    ], ProductResults);
-    return ProductResults;
-}());
-exports.ProductResults = ProductResults;
-var CategoryResults = /** @class */ (function () {
-    function CategoryResults() {
-    }
-    __decorate([
-        type_graphql_1.Field(),
-        __metadata("design:type", ResultsMeta)
-    ], CategoryResults.prototype, "meta", void 0);
-    __decorate([
-        type_graphql_1.Field(function (type) { return [Category]; }),
-        __metadata("design:type", Array)
-    ], CategoryResults.prototype, "results", void 0);
-    CategoryResults = __decorate([
-        type_graphql_1.ObjectType()
-    ], CategoryResults);
-    return CategoryResults;
-}());
-exports.CategoryResults = CategoryResults;
-var Identifiable = /** @class */ (function () {
-    function Identifiable() {
-    }
-    __decorate([
-        type_graphql_1.Field(),
-        __metadata("design:type", String)
-    ], Identifiable.prototype, "id", void 0);
-    Identifiable = __decorate([
-        type_graphql_1.ObjectType()
-    ], Identifiable);
-    return Identifiable;
-}());
-exports.Identifiable = Identifiable;
-var CommerceObject = /** @class */ (function (_super) {
-    __extends(CommerceObject, _super);
-    function CommerceObject() {
-        return _super !== null && _super.apply(this, arguments) || this;
-    }
-    __decorate([
-        type_graphql_1.Field(),
-        __metadata("design:type", String)
-    ], CommerceObject.prototype, "slug", void 0);
-    __decorate([
-        type_graphql_1.Field(),
-        __metadata("design:type", String)
-    ], CommerceObject.prototype, "name", void 0);
-    __decorate([
-        type_graphql_1.Field(),
-        __metadata("design:type", String)
-    ], CommerceObject.prototype, "raw", void 0);
-    CommerceObject = __decorate([
-        type_graphql_1.ObjectType()
-    ], CommerceObject);
-    return CommerceObject;
-}(Identifiable));
-exports.CommerceObject = CommerceObject;
-var Product = /** @class */ (function (_super) {
-    __extends(Product, _super);
-    function Product() {
-        return _super !== null && _super.apply(this, arguments) || this;
-    }
-    __decorate([
-        type_graphql_1.Field({ nullable: true }),
-        __metadata("design:type", String)
-    ], Product.prototype, "shortDescription", void 0);
-    __decorate([
-        type_graphql_1.Field({ nullable: true }),
-        __metadata("design:type", String)
-    ], Product.prototype, "longDescription", void 0);
-    __decorate([
-        type_graphql_1.Field(function (type) { return [Category]; }),
-        __metadata("design:type", Array)
-    ], Product.prototype, "categories", void 0);
-    __decorate([
-        type_graphql_1.Field(function (type) { return [Variant]; }),
-        __metadata("design:type", Array)
-    ], Product.prototype, "variants", void 0);
-    __decorate([
-        type_graphql_1.Field(),
-        __metadata("design:type", String)
-    ], Product.prototype, "productType", void 0);
-    Product = __decorate([
-        type_graphql_1.ObjectType()
-    ], Product);
-    return Product;
-}(CommerceObject));
-exports.Product = Product;
-var Attribute = /** @class */ (function () {
-    function Attribute() {
-    }
-    __decorate([
-        type_graphql_1.Field(),
-        __metadata("design:type", String)
-    ], Attribute.prototype, "name", void 0);
-    __decorate([
-        type_graphql_1.Field(),
-        __metadata("design:type", String)
-    ], Attribute.prototype, "value", void 0);
-    Attribute = __decorate([
-        type_graphql_1.ObjectType()
-    ], Attribute);
-    return Attribute;
-}());
-exports.Attribute = Attribute;
-var Variant = /** @class */ (function (_super) {
-    __extends(Variant, _super);
-    function Variant() {
-        return _super !== null && _super.apply(this, arguments) || this;
-    }
-    __decorate([
-        type_graphql_1.Field(),
-        __metadata("design:type", String)
-    ], Variant.prototype, "sku", void 0);
-    __decorate([
-        type_graphql_1.Field(),
-        __metadata("design:type", Prices)
-    ], Variant.prototype, "prices", void 0);
-    __decorate([
-        type_graphql_1.Field({ nullable: true }),
-        __metadata("design:type", ProductImage)
-    ], Variant.prototype, "defaultImage", void 0);
-    __decorate([
-        type_graphql_1.Field(function (type) { return [ProductImage]; }),
-        __metadata("design:type", Array)
-    ], Variant.prototype, "images", void 0);
-    __decorate([
-        type_graphql_1.Field(function (type) { return [Attribute]; }),
-        __metadata("design:type", Array)
-    ], Variant.prototype, "attributes", void 0);
-    Variant = __decorate([
-        type_graphql_1.ObjectType()
-    ], Variant);
-    return Variant;
-}(Identifiable));
-exports.Variant = Variant;
-var Category = /** @class */ (function (_super) {
-    __extends(Category, _super);
-    function Category() {
-        return _super !== null && _super.apply(this, arguments) || this;
-    }
-    Category_1 = Category;
-    var Category_1;
-    __decorate([
-        type_graphql_1.Field(function (type) { return [Category_1]; }),
-        __metadata("design:type", Array)
-    ], Category.prototype, "children", void 0);
-    __decorate([
-        type_graphql_1.Field(function (type) { return [Product]; }),
-        __metadata("design:type", Array)
-    ], Category.prototype, "products", void 0);
-    Category = Category_1 = __decorate([
-        type_graphql_1.ObjectType()
-    ], Category);
-    return Category;
-}(CommerceObject));
-exports.Category = Category;
-var SearchResult = /** @class */ (function () {
-    function SearchResult() {
-    }
-    __decorate([
-        type_graphql_1.Field(function (type) { return [Product]; }),
-        __metadata("design:type", Array)
-    ], SearchResult.prototype, "products", void 0);
-    SearchResult = __decorate([
-        type_graphql_1.ObjectType()
-    ], SearchResult);
-    return SearchResult;
-}());
-exports.SearchResult = SearchResult;
+var amp_rsa_types_1 = require("amp-rsa-types");
+var stringField = {
+    nullable: type_graphql_1.Field(function (type) { return String; }, { nullable: true }),
+    nonNullable: type_graphql_1.Field(function (type) { return String; }, { nullable: false })
+};
+var numberField = {
+    nullable: type_graphql_1.Field(function (type) { return Number; }, { nullable: true }),
+    nonNullable: type_graphql_1.Field(function (type) { return Number; }, { nullable: false })
+};
+// Prices
+type_graphql_1.ObjectType({})(amp_rsa_types_1.Prices);
+stringField.nullable(amp_rsa_types_1.Prices.prototype, 'sale');
+stringField.nullable(amp_rsa_types_1.Prices.prototype, 'list');
+// ProductImage
+type_graphql_1.ObjectType({})(amp_rsa_types_1.ProductImage);
+stringField.nonNullable(amp_rsa_types_1.ProductImage.prototype, 'url');
+stringField.nullable(amp_rsa_types_1.ProductImage.prototype, 'large');
+stringField.nullable(amp_rsa_types_1.ProductImage.prototype, 'thumb');
+// ResultsMeta
+type_graphql_1.ObjectType({})(amp_rsa_types_1.ResultsMeta);
+numberField.nonNullable(amp_rsa_types_1.ResultsMeta.prototype, 'limit');
+numberField.nonNullable(amp_rsa_types_1.ResultsMeta.prototype, 'offset');
+numberField.nonNullable(amp_rsa_types_1.ResultsMeta.prototype, 'count');
+numberField.nonNullable(amp_rsa_types_1.ResultsMeta.prototype, 'total');
+// ProductResults
+type_graphql_1.ObjectType({})(amp_rsa_types_1.ProductResults);
+type_graphql_1.Field(function (type) { return amp_rsa_types_1.ResultsMeta; })(amp_rsa_types_1.ProductResults.prototype, 'meta');
+type_graphql_1.Field(function (type) { return [amp_rsa_types_1.Product]; })(amp_rsa_types_1.ProductResults.prototype, 'results');
+// CategoryResults
+type_graphql_1.ObjectType({})(amp_rsa_types_1.CategoryResults);
+type_graphql_1.Field(function (type) { return amp_rsa_types_1.ResultsMeta; })(amp_rsa_types_1.CategoryResults.prototype, 'meta');
+type_graphql_1.Field(function (type) { return [amp_rsa_types_1.Category]; })(amp_rsa_types_1.CategoryResults.prototype, 'results');
+// Identifiable
+type_graphql_1.ObjectType({})(amp_rsa_types_1.Identifiable);
+stringField.nonNullable(amp_rsa_types_1.Identifiable.prototype, 'id');
+// CommerceObject
+type_graphql_1.ObjectType({})(amp_rsa_types_1.CommerceObject);
+stringField.nonNullable(amp_rsa_types_1.CommerceObject.prototype, 'slug');
+stringField.nonNullable(amp_rsa_types_1.CommerceObject.prototype, 'name');
+stringField.nonNullable(amp_rsa_types_1.CommerceObject.prototype, 'raw');
+// Product
+type_graphql_1.ObjectType({})(amp_rsa_types_1.Product);
+stringField.nonNullable(amp_rsa_types_1.Product.prototype, 'productType');
+stringField.nullable(amp_rsa_types_1.Product.prototype, 'shortDescription');
+stringField.nullable(amp_rsa_types_1.Product.prototype, 'longDescription');
+type_graphql_1.Field(function (type) { return [amp_rsa_types_1.Category]; })(amp_rsa_types_1.Product.prototype, 'categories');
+type_graphql_1.Field(function (type) { return [amp_rsa_types_1.Variant]; })(amp_rsa_types_1.Product.prototype, 'variants');
+// Attribute
+type_graphql_1.ObjectType({})(amp_rsa_types_1.Attribute);
+stringField.nonNullable(amp_rsa_types_1.Attribute.prototype, 'name');
+stringField.nonNullable(amp_rsa_types_1.Attribute.prototype, 'value');
+// Variant
+type_graphql_1.ObjectType({})(amp_rsa_types_1.Variant);
+stringField.nonNullable(amp_rsa_types_1.Variant.prototype, 'sku');
+stringField.nullable(amp_rsa_types_1.Variant.prototype, 'color');
+stringField.nullable(amp_rsa_types_1.Variant.prototype, 'size');
+stringField.nullable(amp_rsa_types_1.Variant.prototype, 'articleNumberMax');
+type_graphql_1.Field(function (type) { return amp_rsa_types_1.Prices; })(amp_rsa_types_1.Variant.prototype, 'prices');
+type_graphql_1.Field(function (type) { return amp_rsa_types_1.ProductImage; }, { nullable: true })(amp_rsa_types_1.Variant.prototype, 'defaultImage');
+type_graphql_1.Field(function (type) { return [amp_rsa_types_1.ProductImage]; })(amp_rsa_types_1.Variant.prototype, 'images');
+type_graphql_1.Field(function (type) { return [amp_rsa_types_1.Attribute]; })(amp_rsa_types_1.Variant.prototype, 'attributes');
+// Category
+type_graphql_1.ObjectType({})(amp_rsa_types_1.Category);
+type_graphql_1.Field(function (type) { return [amp_rsa_types_1.Category]; })(amp_rsa_types_1.Category.prototype, 'children');
+type_graphql_1.Field(function (type) { return [amp_rsa_types_1.Product]; })(amp_rsa_types_1.Category.prototype, 'products');
+// SearchResult
+type_graphql_1.ObjectType({})(amp_rsa_types_1.SearchResult);
+type_graphql_1.Field(function (type) { return [amp_rsa_types_1.Product]; })(amp_rsa_types_1.Category.prototype, 'products');
 var CommonArgs = /** @class */ (function () {
     function CommonArgs() {
     }

@@ -1,4 +1,5 @@
-import { Variant, GetAttributeArgs } from '@/types';
+import { Variant } from 'amp-rsa-types';
+import { GetAttributeArgs } from '@/types';
 export declare class VariantResolver {
     attribute(variant: Variant, args: GetAttributeArgs): Promise<any>;
     defaultImage(variant: Variant): Promise<any>;

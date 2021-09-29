@@ -50,6 +50,7 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.ProductResolver = void 0;
 var type_graphql_1 = require("type-graphql");
+var amp_rsa_types_1 = require("amp-rsa-types");
 var types_1 = require("@/types");
 var ProductResolver = /** @class */ (function () {
     function ProductResolver() {
@@ -75,7 +76,7 @@ var ProductResolver = /** @class */ (function () {
         });
     };
     __decorate([
-        type_graphql_1.Query(function (returns) { return types_1.ProductResults; }),
+        type_graphql_1.Query(function (returns) { return amp_rsa_types_1.ProductResults; }),
         __param(0, type_graphql_1.Args()),
         __param(1, type_graphql_1.Ctx()),
         __metadata("design:type", Function),
@@ -83,7 +84,7 @@ var ProductResolver = /** @class */ (function () {
         __metadata("design:returntype", Promise)
     ], ProductResolver.prototype, "products", null);
     __decorate([
-        type_graphql_1.Query(function (returns) { return types_1.Product; }),
+        type_graphql_1.Query(function (returns) { return amp_rsa_types_1.Product; }),
         __param(0, type_graphql_1.Args()),
         __param(1, type_graphql_1.Ctx()),
         __metadata("design:type", Function),
@@ -91,7 +92,7 @@ var ProductResolver = /** @class */ (function () {
         __metadata("design:returntype", Promise)
     ], ProductResolver.prototype, "product", null);
     ProductResolver = __decorate([
-        type_graphql_1.Resolver(types_1.Product)
+        type_graphql_1.Resolver(amp_rsa_types_1.Product)
     ], ProductResolver);
     return ProductResolver;
 }());

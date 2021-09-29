@@ -1,141 +1,90 @@
 import { ArgsType, Field, ObjectType } from "type-graphql";
-import { logger } from "./server/util/logger";
 
-@ObjectType()
-export class Prices {
-    @Field({ nullable: true })
-    sale?: string
+import { 
+    Prices, ProductImage, ResultsMeta, ProductResults, CategoryResults, Identifiable, 
+    CommerceObject, Product, Attribute, Variant, Category, SearchResult 
+} from 'amp-rsa-types'
 
-    @Field({ nullable: true })
-    list?: string
+const stringField = {
+    nullable: Field(type => String, { nullable: true }),
+    nonNullable: Field(type => String, { nullable: false })
 }
 
-@ObjectType()
-export class ProductImage {
-    @Field()
-    url: string
-
-    @Field({ nullable: true })
-    large?: string
-
-    @Field({ nullable: true })
-    thumb?: string
+const numberField = {
+    nullable: Field(type => Number, { nullable: true }),
+    nonNullable: Field(type => Number, { nullable: false })
 }
 
-@ObjectType()
-export class ResultsMeta {
-    @Field()
-    limit: number
+// Prices
+ObjectType({})(Prices)
+stringField.nullable(Prices.prototype, 'sale')
+stringField.nullable(Prices.prototype, 'list')
 
-    @Field()
-    offset: number
+// ProductImage
+ObjectType({})(ProductImage)
+stringField.nonNullable(ProductImage.prototype, 'url')
+stringField.nullable(ProductImage.prototype, 'large')
+stringField.nullable(ProductImage.prototype, 'thumb')
 
-    @Field()
-    count: number
+// ResultsMeta
+ObjectType({})(ResultsMeta)
+numberField.nonNullable(ResultsMeta.prototype, 'limit')
+numberField.nonNullable(ResultsMeta.prototype, 'offset')
+numberField.nonNullable(ResultsMeta.prototype, 'count')
+numberField.nonNullable(ResultsMeta.prototype, 'total')
 
-    @Field()
-    total: number
-}
+// ProductResults
+ObjectType({})(ProductResults)
+Field(type => ResultsMeta)(ProductResults.prototype, 'meta')
+Field(type => [Product])(ProductResults.prototype, 'results')
 
-@ObjectType()
-export class ProductResults {
-    @Field()
-    meta: ResultsMeta
+// CategoryResults
+ObjectType({})(CategoryResults)
+Field(type => ResultsMeta)(CategoryResults.prototype, 'meta')
+Field(type => [Category])(CategoryResults.prototype, 'results')
 
-    @Field(type => [Product])
-    results: [Product]
-}
+// Identifiable
+ObjectType({})(Identifiable)
+stringField.nonNullable(Identifiable.prototype, 'id')
 
-@ObjectType()
-export class CategoryResults {
-    @Field()
-    meta: ResultsMeta
+// CommerceObject
+ObjectType({})(CommerceObject)
+stringField.nonNullable(CommerceObject.prototype, 'slug')
+stringField.nonNullable(CommerceObject.prototype, 'name')
+stringField.nonNullable(CommerceObject.prototype, 'raw')
 
-    @Field(type => [Category])
-    results: [Category]
-}
+// Product
+ObjectType({})(Product)
+stringField.nonNullable(Product.prototype, 'productType')
+stringField.nullable(Product.prototype, 'shortDescription')
+stringField.nullable(Product.prototype, 'longDescription')
+Field(type => [Category])(Product.prototype, 'categories')
+Field(type => [Variant])(Product.prototype, 'variants')
 
-@ObjectType()
-export class Identifiable {
-    @Field()
-    id: string
-}
+// Attribute
+ObjectType({})(Attribute)
+stringField.nonNullable(Attribute.prototype, 'name')
+stringField.nonNullable(Attribute.prototype, 'value')
 
-@ObjectType()
-export class CommerceObject extends Identifiable {
-    @Field()
-    slug: string
+// Variant
+ObjectType({})(Variant)
+stringField.nonNullable(Variant.prototype, 'sku')
+stringField.nullable(Variant.prototype, 'color')
+stringField.nullable(Variant.prototype, 'size')
+stringField.nullable(Variant.prototype, 'articleNumberMax')
+Field(type => Prices)(Variant.prototype, 'prices')
+Field(type => ProductImage, { nullable: true })(Variant.prototype, 'defaultImage')
+Field(type => [ProductImage])(Variant.prototype, 'images')
+Field(type => [Attribute])(Variant.prototype, 'attributes')
 
-    @Field()
-    name: string
+// Category
+ObjectType({})(Category)
+Field(type => [Category])(Category.prototype, 'children')
+Field(type => [Product])(Category.prototype, 'products')
 
-    @Field()
-    raw: string
-}
-
-@ObjectType()
-export class Product extends CommerceObject {
-    @Field({ nullable: true })
-    shortDescription?: string
-
-    @Field({ nullable: true })
-    longDescription?: string
-
-    @Field(type => [Category])
-    categories: Category[]
-
-    @Field(type => [Variant])
-    variants: Variant[]
-
-    @Field()
-    productType: string
-}
-
-@ObjectType()
-export class Attribute {
-    @Field()
-    name: string
-
-    @Field()
-    value: string
-}
-
-@ObjectType()
-export class Variant extends Identifiable {
-    @Field()
-    sku: string
-
-    @Field()
-    prices: Prices
-
-    @Field({ nullable: true })
-    defaultImage?: ProductImage
-
-    @Field(type => [ProductImage])
-    images: ProductImage[]
-
-    @Field(type => [Attribute])
-    attributes: Attribute[]
-
-    color?: string
-    size?: string
-    articleNumberMax?: string
-}
-
-@ObjectType()
-export class Category extends CommerceObject {
-    @Field(type => [Category])
-    children: Category[]
-
-    @Field(type => [Product])
-    products: Product[]
-}
-
-@ObjectType()
-export class SearchResult {
-    @Field(type => [Product])
-    products: Product[]
-}
+// SearchResult
+ObjectType({})(SearchResult)
+Field(type => [Product])(Category.prototype, 'products')
 
 export type GraphqlConfig = {
     graphqlUrl: string;
