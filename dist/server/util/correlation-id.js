@@ -63,7 +63,6 @@ router.use(function (req, res, next) { return __awaiter(void 0, void 0, void 0, 
                 req.correlationId = bareHost + "-" + backendKey.replace('/', '-') + "-" + tag + "-" + nanoid(4);
                 req.headers['x-pbx-correlation-id'] = req.correlationId;
                 logger_1.default.info(graphqlOrigin + "/logs/" + req.correlationId);
-                console.log(req.headers);
                 _a = req;
                 _b = hub_1.getClient;
                 _c = {

@@ -196,7 +196,6 @@ var Operation = /** @class */ (function () {
         return {};
     };
     Operation.prototype.formatMoneyString = function (money) {
-        console.log(this.backend.config.context);
         return new Intl.NumberFormat(this.backend.config.context.locale, {
             style: 'currency',
             currency: this.backend.config.context.currency

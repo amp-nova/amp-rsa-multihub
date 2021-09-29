@@ -93,7 +93,7 @@ export declare class GetProductArgs extends CommonArgs {
 export declare class GetAttributeArgs {
     name: string;
 }
-export declare class PbxQueryContext {
+export declare class QueryContext {
     args: CommonArgs;
     locale: string;
     language: string;
@@ -101,19 +101,15 @@ export declare class PbxQueryContext {
     currency: string;
     segment: string;
     appUrl: string;
-    constructor(context: PbxQueryContext);
+    constructor(args?: CommonArgs, locale?: string, language?: string, country?: string, currency?: string, segment?: string, appUrl?: string);
 }
-export declare class PbxClient {
-    url: string;
-    key: string;
-    constructor(url: any, key: any);
-    getProducts(context: PbxQueryContext): Promise<Product[]>;
-    getProduct(context: PbxQueryContext): Promise<Product>;
-    getCategories(context: PbxQueryContext): Promise<Category[]>;
-    getCategory(context: PbxQueryContext): Promise<Category>;
+export declare class CommerceClient {
+    getProducts(context: QueryContext): Promise<Product[]>;
+    getProduct(context: QueryContext): Promise<Product>;
+    getCategories(context: QueryContext): Promise<Category[]>;
+    getCategory(context: QueryContext): Promise<Category>;
 }
 declare const _default: {
-    PbxClient: typeof PbxClient;
-    PbxQueryContext: typeof PbxQueryContext;
+    QueryContext: typeof QueryContext;
 };
 export default _default;

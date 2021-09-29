@@ -219,51 +219,42 @@ export class GetAttributeArgs {
     name: string
 }
 
-export class PbxQueryContext {
-    args:       CommonArgs = {}
-    locale:     string = 'en-US'
-    language:   string = 'en'
-    country:    string = 'US'
-    currency:   string = 'USD'
-    segment:    string = ''
-    appUrl:     string = ''
+export class QueryContext {
+    args:       CommonArgs
+    locale:     string
+    language:   string
+    country:    string
+    currency:   string
+    segment:    string
+    appUrl:     string
 
-    constructor(context: PbxQueryContext) {
-        this.args = context.args
-        this.locale = context.locale || 'en'
-        this.country = context.country || 'US'
-        this.currency = context.currency || 'USD'
-        this.segment = context.segment
-        this.appUrl = context.appUrl
+    constructor(args?: CommonArgs, locale?: string, language?: string, country?: string, currency?: string, segment?: string, appUrl?: string) {
+        this.args = args || {}
+        this.locale = locale || 'en-US'
+        this.language = language || 'en'
+        this.country = country || 'US'
+        this.currency = currency || 'USD'
+        this.segment = segment || ''
+        this.appUrl = appUrl || ''
     }
 }
 
-export class PbxClient {
-    url: string
-    key: string
-
-    constructor(url, key) {
-        this.url = url
-        this.key = key
+export class CommerceClient {
+    async getProducts(context: QueryContext): Promise<Product[]> {
+        throw new Error('Subclasses of CommerceClient must implement getProducts(context: QueryContext)')
     }
 
-    async getProducts(context: PbxQueryContext): Promise<Product[]> {
-        throw new Error('Subclasses of PbxClient must implement getProducts(context: PbxQueryContext)')
+    async getProduct(context: QueryContext): Promise<Product> {
+        throw new Error('Subclasses of CommerceClient must implement getProduct(context: QueryContext)')
     }
 
-    async getProduct(context: PbxQueryContext): Promise<Product> {
-        throw new Error('Subclasses of PbxClient must implement getProduct(context: PbxQueryContext)')
+    async getCategories(context: QueryContext): Promise<Category[]> {
+        throw new Error('Subclasses of CommerceClient must implement getCategories(context: QueryContext)')
     }
 
-    async getCategories(context: PbxQueryContext): Promise<Category[]> {
-        throw new Error('Subclasses of PbxClient must implement getCategories(context: PbxQueryContext)')
-    }
-
-    async getCategory(context: PbxQueryContext): Promise<Category> {
-        throw new Error('Subclasses of PbxClient must implement getCategory(context: PbxQueryContext)')
+    async getCategory(context: QueryContext): Promise<Category> {
+        throw new Error('Subclasses of CommerceClient must implement getCategory(context: QueryContext)')
     }
 }
 
-// import { getClient } from './client'
-// export default { PbxClient, PbxQueryContext, getClient }
-export default { PbxClient, PbxQueryContext }
+export default { QueryContext }

@@ -23,8 +23,6 @@ router.use(async (req, res, next) => {
     
             logger.info(`${graphqlOrigin}/logs/${req.correlationId}`)
     
-            console.log(req.headers)
-
             req.hub = await getClient({
                 backendKey,
                 requestId:      req.correlationId,

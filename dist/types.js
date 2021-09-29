@@ -60,7 +60,7 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.PbxClient = exports.PbxQueryContext = exports.GetAttributeArgs = exports.GetProductArgs = exports.GetProductsArgs = exports.GetCategoryProductArgs = exports.GetCategoryArgs = exports.Context = exports.ListArgs = exports.CommonArgs = exports.SearchResult = exports.Category = exports.Variant = exports.Attribute = exports.Product = exports.CommerceObject = exports.Identifiable = exports.CategoryResults = exports.ProductResults = exports.ResultsMeta = exports.ProductImage = exports.Prices = void 0;
+exports.CommerceClient = exports.QueryContext = exports.GetAttributeArgs = exports.GetProductArgs = exports.GetProductsArgs = exports.GetCategoryProductArgs = exports.GetCategoryArgs = exports.Context = exports.ListArgs = exports.CommonArgs = exports.SearchResult = exports.Category = exports.Variant = exports.Attribute = exports.Product = exports.CommerceObject = exports.Identifiable = exports.CategoryResults = exports.ProductResults = exports.ResultsMeta = exports.ProductImage = exports.Prices = void 0;
 var type_graphql_1 = require("type-graphql");
 var Prices = /** @class */ (function () {
     function Prices() {
@@ -443,61 +443,51 @@ var GetAttributeArgs = /** @class */ (function () {
     return GetAttributeArgs;
 }());
 exports.GetAttributeArgs = GetAttributeArgs;
-var PbxQueryContext = /** @class */ (function () {
-    function PbxQueryContext(context) {
-        this.args = {};
-        this.locale = 'en-US';
-        this.language = 'en';
-        this.country = 'US';
-        this.currency = 'USD';
-        this.segment = '';
-        this.appUrl = '';
-        this.args = context.args;
-        this.locale = context.locale || 'en';
-        this.country = context.country || 'US';
-        this.currency = context.currency || 'USD';
-        this.segment = context.segment;
-        this.appUrl = context.appUrl;
+var QueryContext = /** @class */ (function () {
+    function QueryContext(args, locale, language, country, currency, segment, appUrl) {
+        this.args = args || {};
+        this.locale = locale || 'en-US';
+        this.language = language || 'en';
+        this.country = country || 'US';
+        this.currency = currency || 'USD';
+        this.segment = segment || '';
+        this.appUrl = appUrl || '';
     }
-    return PbxQueryContext;
+    return QueryContext;
 }());
-exports.PbxQueryContext = PbxQueryContext;
-var PbxClient = /** @class */ (function () {
-    function PbxClient(url, key) {
-        this.url = url;
-        this.key = key;
+exports.QueryContext = QueryContext;
+var CommerceClient = /** @class */ (function () {
+    function CommerceClient() {
     }
-    PbxClient.prototype.getProducts = function (context) {
+    CommerceClient.prototype.getProducts = function (context) {
         return __awaiter(this, void 0, void 0, function () {
             return __generator(this, function (_a) {
-                throw new Error('Subclasses of PbxClient must implement getProducts(context: PbxQueryContext)');
+                throw new Error('Subclasses of CommerceClient must implement getProducts(context: QueryContext)');
             });
         });
     };
-    PbxClient.prototype.getProduct = function (context) {
+    CommerceClient.prototype.getProduct = function (context) {
         return __awaiter(this, void 0, void 0, function () {
             return __generator(this, function (_a) {
-                throw new Error('Subclasses of PbxClient must implement getProduct(context: PbxQueryContext)');
+                throw new Error('Subclasses of CommerceClient must implement getProduct(context: QueryContext)');
             });
         });
     };
-    PbxClient.prototype.getCategories = function (context) {
+    CommerceClient.prototype.getCategories = function (context) {
         return __awaiter(this, void 0, void 0, function () {
             return __generator(this, function (_a) {
-                throw new Error('Subclasses of PbxClient must implement getCategories(context: PbxQueryContext)');
+                throw new Error('Subclasses of CommerceClient must implement getCategories(context: QueryContext)');
             });
         });
     };
-    PbxClient.prototype.getCategory = function (context) {
+    CommerceClient.prototype.getCategory = function (context) {
         return __awaiter(this, void 0, void 0, function () {
             return __generator(this, function (_a) {
-                throw new Error('Subclasses of PbxClient must implement getCategory(context: PbxQueryContext)');
+                throw new Error('Subclasses of CommerceClient must implement getCategory(context: QueryContext)');
             });
         });
     };
-    return PbxClient;
+    return CommerceClient;
 }());
-exports.PbxClient = PbxClient;
-// import { getClient } from './client'
-// export default { PbxClient, PbxQueryContext, getClient }
-exports.default = { PbxClient: PbxClient, PbxQueryContext: PbxQueryContext };
+exports.CommerceClient = CommerceClient;
+exports.default = { QueryContext: QueryContext };
