@@ -3,7 +3,7 @@ import logger from '@/server/util/logger';
 import resolvers from '@/server/resolvers'
 
 const { ApolloServer } = require('apollo-server-express');
-import { Field, ObjectType } from "type-graphql";
+import { ArgsType, Field, ObjectType } from "type-graphql";
 const { buildSchema } = require('type-graphql')
 const differenceInMilliseconds = require('date-fns/differenceInMilliseconds')
 
@@ -11,6 +11,8 @@ import {
     Prices, ProductImage, ResultsMeta, ProductResults, CategoryResults, Identifiable, 
     CommerceObject, Product, Attribute, Variant, Category, SearchResult 
 } from 'amp-rsa-types'
+
+import { CommonArgs, ListArgs, GetAttributeArgs, GetCategoryArgs, GetProductArgs, GetProductsArgs } from '../../types'
 
 const stringField = {
     nullable: Field(type => String, { nullable: true }),
@@ -92,6 +94,34 @@ Field(type => [Product])(Category.prototype, 'products')
 // SearchResult
 ObjectType({})(SearchResult)
 Field(type => [Product])(Category.prototype, 'products')
+
+// CommonArgs
+ArgsType()(CommonArgs)
+
+// ListArgs
+ArgsType()(ListArgs)
+numberField.nullable(ListArgs.prototype, 'limit')
+numberField.nullable(ListArgs.prototype, 'offset')
+
+// GetCategoryArgs
+ArgsType()(GetCategoryArgs)
+stringField.nullable(GetCategoryArgs.prototype, 'id')
+stringField.nullable(GetCategoryArgs.prototype, 'slug')
+
+// GetProductsArgs
+ArgsType()(GetProductsArgs)
+stringField.nullable(GetProductsArgs.prototype, 'keyword')
+stringField.nullable(GetProductsArgs.prototype, 'productIds')
+
+// GetProductArgs
+ArgsType()(GetProductArgs)
+stringField.nullable(GetProductArgs.prototype, 'id')
+stringField.nullable(GetProductArgs.prototype, 'sku')
+stringField.nullable(GetProductArgs.prototype, 'slug')
+
+// GetAttributeArgs
+ArgsType()(GetAttributeArgs)
+stringField.nullable(GetAttributeArgs.prototype, 'name')
 
 export async function startGraphqlService(app) {
     const server = new ApolloServer({
