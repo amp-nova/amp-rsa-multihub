@@ -1,6 +1,7 @@
 import _ from 'lodash'
 import fetch from 'cross-fetch'
-import { createHttpLink, ApolloClient, InMemoryCache, gql } from '@apollo/client/core';
+import { createHttpLink, ApolloClient, InMemoryCache, from } from '@apollo/client/core';
+import { onError } from "@apollo/client/link/error";
 import { setContext } from '@apollo/client/link/context';
 
 import { categoryQuery, categoryHierarchyQuery, productQuery, productsQuery } from '../queries'
@@ -24,23 +25,31 @@ export class PbxCommerceClient extends CommerceClient {
         const authLink = setContext((_, { headers }) => ({
             headers: {
                 ...headers,
-                'x-pbx-backend-key':    self.key,
-                'x-pbx-locale':         context.locale,
-                'x-pbx-language':       context.language,
-                'x-pbx-country':        context.country,
-                'x-pbx-currency':       context.currency,
-                'x-pbx-app-url':        context.appUrl,
-                'x-pbx-segment':        context.segment
+                'x-pbx-backend-key': self.key,
+                'x-pbx-locale': context.locale,
+                'x-pbx-language': context.language,
+                'x-pbx-country': context.country,
+                'x-pbx-currency': context.currency,
+                'x-pbx-app-url': context.appUrl,
+                'x-pbx-segment': context.segment
             }
         }))
 
+        const errorLink = onError(({ graphQLErrors, networkError }) => {
+            if (graphQLErrors)
+                graphQLErrors.forEach(({ message, locations, path }) => console.error(`[ gql ]: Message: ${message}, Location: ${locations}, Path: ${path}`));
+            if (networkError) console.error(`[ net ]: ${networkError}`);
+        });
+
         let client = new ApolloClient({
-            link: authLink.concat(httpLink),
+            link: from([errorLink, authLink.concat(httpLink)]),
             cache: new InMemoryCache()
         });
 
         return {
-            query: (query: any) => client.query({ query, variables: context.args })
+            query: (query: any) => {
+                return client.query({ query, variables: context.args })
+            }
         }
     };
 

@@ -86,7 +86,7 @@ var CommerceToolsBackend = /** @class */ (function (_super) {
                         filter = args.id && (function (c) { return c.id === args.id; }) ||
                             args.slug && (function (c) { return c.slug === args.slug; }) ||
                             (function (c) { return c.ancestors.length === 0; });
-                        return [4 /*yield*/, this.categoryOperation.get(args)];
+                        return [4 /*yield*/, this.categoryOperation.get({})];
                     case 1:
                         categories = (_a.sent()).getResults();
                         populateChildren = function (category) {
@@ -95,6 +95,19 @@ var CommerceToolsBackend = /** @class */ (function (_super) {
                             return category;
                         };
                         return [2 /*return*/, lodash_1.default.map(lodash_1.default.filter(categories, filter), populateChildren)];
+                }
+            });
+        });
+    };
+    CommerceToolsBackend.prototype.getCategory = function (args) {
+        return __awaiter(this, void 0, void 0, function () {
+            var _a, _b;
+            return __generator(this, function (_c) {
+                switch (_c.label) {
+                    case 0:
+                        _b = (_a = lodash_1.default).find;
+                        return [4 /*yield*/, this.getCategoryHierarchy(args)];
+                    case 1: return [2 /*return*/, _b.apply(_a, [_c.sent(), function (c) { return c.id === args.id || c.slug === args.slug; }])];
                 }
             });
         });

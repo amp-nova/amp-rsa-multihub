@@ -68,6 +68,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.PbxCommerceClient = void 0;
 var cross_fetch_1 = __importDefault(require("cross-fetch"));
 var core_1 = require("@apollo/client/core");
+var error_1 = require("@apollo/client/link/error");
 var context_1 = require("@apollo/client/link/context");
 var queries_1 = require("../queries");
 var types_1 = require("../types");
@@ -84,12 +85,24 @@ var PbxCommerceClient = /** @class */ (function (_super) {
                     headers: __assign(__assign({}, headers), { 'x-pbx-backend-key': self.key, 'x-pbx-locale': context.locale, 'x-pbx-language': context.language, 'x-pbx-country': context.country, 'x-pbx-currency': context.currency, 'x-pbx-app-url': context.appUrl, 'x-pbx-segment': context.segment })
                 });
             });
+            var errorLink = error_1.onError(function (_a) {
+                var graphQLErrors = _a.graphQLErrors, networkError = _a.networkError;
+                if (graphQLErrors)
+                    graphQLErrors.forEach(function (_a) {
+                        var message = _a.message, locations = _a.locations, path = _a.path;
+                        return console.error("[ gql ]: Message: " + message + ", Location: " + locations + ", Path: " + path);
+                    });
+                if (networkError)
+                    console.error("[ net ]: " + networkError);
+            });
             var client = new core_1.ApolloClient({
-                link: authLink.concat(httpLink),
+                link: core_1.from([errorLink, authLink.concat(httpLink)]),
                 cache: new core_1.InMemoryCache()
             });
             return {
-                query: function (query) { return client.query({ query: query, variables: context.args }); }
+                query: function (query) {
+                    return client.query({ query: query, variables: context.args });
+                }
             };
         };
         _this.getProduct = function (context) {

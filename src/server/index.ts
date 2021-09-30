@@ -5,13 +5,13 @@ const bodyParser = require('body-parser')
 const cors = require('cors')
 
 import { logger } from '@/server/util/logger'
-import logService from '@/server/services/log-service'
-import translationService from '@/server/services/translation-service'
-import { startGraphqlService } from '@/server/services/graphql-service'
+import logService from './services/log-service'
+import translationService from './services/translation-service'
+import { startGraphqlService } from './services/graphql-service'
 const stringify = require('json-stringify-safe')
 
-import { config } from "@/server/util/config";
-import routes from '@/server/routes'
+import { config } from "./util/config";
+import routes from './routes'
 
 let startServer = async () => {
   logger.info(`🚀 server [ v${process.env.npm_package_version}/${config.serviceName} mode: ${config.mode} ] is starting...`);
@@ -21,7 +21,7 @@ let startServer = async () => {
     app.use(bodyParser.json())
     app.use(routes)
     
-    app.use(require('@/server/util/correlation-id'))
+    app.use(require('./util/correlation-id'))
     
     app.use(translationService)
     app.use(logService)

@@ -86,7 +86,7 @@ var CategoryResolver = /** @class */ (function () {
         });
     };
     __decorate([
-        type_graphql_1.Query(function (returns) { return amp_rsa_types_1.Category; }),
+        type_graphql_1.Query(function (x) { return amp_rsa_types_1.Category; }),
         __param(0, type_graphql_1.Args()),
         __param(1, type_graphql_1.Ctx()),
         __metadata("design:type", Function),
@@ -94,7 +94,7 @@ var CategoryResolver = /** @class */ (function () {
         __metadata("design:returntype", Promise)
     ], CategoryResolver.prototype, "category", null);
     __decorate([
-        type_graphql_1.Query(function (returns) { return [amp_rsa_types_1.Category]; }),
+        type_graphql_1.Query(function (x) { return [amp_rsa_types_1.Category]; }),
         __param(0, type_graphql_1.Args()),
         __param(1, type_graphql_1.Ctx()),
         __metadata("design:type", Function),
@@ -102,7 +102,7 @@ var CategoryResolver = /** @class */ (function () {
         __metadata("design:returntype", Promise)
     ], CategoryResolver.prototype, "categoryHierarchy", null);
     __decorate([
-        type_graphql_1.FieldResolver(),
+        type_graphql_1.FieldResolver(function (x) { return [amp_rsa_types_1.Product]; }, { nullable: true }),
         __param(0, type_graphql_1.Root()),
         __param(1, type_graphql_1.Args()),
         __param(2, type_graphql_1.Ctx()),

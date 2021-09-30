@@ -16,7 +16,7 @@ class CommerceToolsBackend extends CommerceBackend {
             args.slug && (c => c.slug === args.slug) ||
             (c => c.ancestors.length === 0)
 
-        let categories = (await this.categoryOperation.get(args)).getResults()
+        let categories = (await this.categoryOperation.get({})).getResults()
         let populateChildren = category => {
             category.children = _.filter(categories, c => c.parent && c.parent.id === category.id)
             _.each(category.children, populateChildren)
@@ -24,6 +24,10 @@ class CommerceToolsBackend extends CommerceBackend {
         }
 
         return _.map(_.filter(categories, filter), populateChildren)
+    }
+
+    async getCategory(args) {
+        return _.find(await this.getCategoryHierarchy(args), c => c.id === args.id || c.slug === args.slug)
     }
 
     async getProductsForCategory(parent, args) {

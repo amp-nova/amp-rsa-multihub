@@ -69,10 +69,10 @@ export const productQuery = gql`
 `
 
 export const categoryQuery = gql`
-    query categoryQuery($id: String, $slug: String, $segment: String) {
+    query categoryQuery($id: String, $slug: String) {
         category(id: $id, slug: $slug) {
             ${commonFields}
-            products(segment: $segment) {
+            products {
                 ${productFields}
             }
         }

@@ -44,12 +44,12 @@ var express = require('express');
 var bodyParser = require('body-parser');
 var cors = require('cors');
 var logger_1 = require("@/server/util/logger");
-var log_service_1 = __importDefault(require("@/server/services/log-service"));
-var translation_service_1 = __importDefault(require("@/server/services/translation-service"));
-var graphql_service_1 = require("@/server/services/graphql-service");
+var log_service_1 = __importDefault(require("./services/log-service"));
+var translation_service_1 = __importDefault(require("./services/translation-service"));
+var graphql_service_1 = require("./services/graphql-service");
 var stringify = require('json-stringify-safe');
-var config_1 = require("@/server/util/config");
-var routes_1 = __importDefault(require("@/server/routes"));
+var config_1 = require("./util/config");
+var routes_1 = __importDefault(require("./routes"));
 var startServer = function () { return __awaiter(void 0, void 0, void 0, function () {
     var app, error_1;
     return __generator(this, function (_a) {
@@ -63,7 +63,7 @@ var startServer = function () { return __awaiter(void 0, void 0, void 0, functio
                 app.use(cors({ origin: true }));
                 app.use(bodyParser.json());
                 app.use(routes_1.default);
-                app.use(require('@/server/util/correlation-id'));
+                app.use(require('./util/correlation-id'));
                 app.use(translation_service_1.default);
                 app.use(log_service_1.default);
                 // configure graphql
