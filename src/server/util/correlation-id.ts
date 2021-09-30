@@ -10,7 +10,7 @@ import { default as logger } from '@/server/util/logger'
 
 router.use(async (req, res, next) => {
     if ((req.path.indexOf('graphql') > -1 && req.body?.operationName !== 'IntrospectionQuery') || req.path.indexOf('api/') > -1) {
-        const backendKey = req.headers['x-pbx-backend-key'] || req.headers['x-arm-backend-key']
+        const backendKey = req.headers['x-pbx-backend-key'] || req.headers['x-arm-backend-key'] || req.headers['x-commerce-backend-key']
 
         if (backendKey) {
             const appUrl = url.parseURL(req.headers['x-pbx-app-url'] || `http://localhost:3000`)
