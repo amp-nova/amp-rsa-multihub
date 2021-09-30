@@ -3,8 +3,95 @@ import logger from '@/server/util/logger';
 import resolvers from '@/server/resolvers'
 
 const { ApolloServer } = require('apollo-server-express');
+import { Field, ObjectType } from "type-graphql";
 const { buildSchema } = require('type-graphql')
 const differenceInMilliseconds = require('date-fns/differenceInMilliseconds')
+
+import { 
+    Prices, ProductImage, ResultsMeta, ProductResults, CategoryResults, Identifiable, 
+    CommerceObject, Product, Attribute, Variant, Category, SearchResult 
+} from 'amp-rsa-types'
+
+const stringField = {
+    nullable: Field(type => String, { nullable: true }),
+    nonNullable: Field(type => String, { nullable: false })
+}
+
+const numberField = {
+    nullable: Field(type => Number, { nullable: true }),
+    nonNullable: Field(type => Number, { nullable: false })
+}
+
+// Prices
+ObjectType({})(Prices)
+stringField.nullable(Prices.prototype, 'sale')
+stringField.nullable(Prices.prototype, 'list')
+
+// ProductImage
+ObjectType({})(ProductImage)
+stringField.nonNullable(ProductImage.prototype, 'url')
+stringField.nullable(ProductImage.prototype, 'large')
+stringField.nullable(ProductImage.prototype, 'thumb')
+
+// ResultsMeta
+ObjectType({})(ResultsMeta)
+numberField.nonNullable(ResultsMeta.prototype, 'limit')
+numberField.nonNullable(ResultsMeta.prototype, 'offset')
+numberField.nonNullable(ResultsMeta.prototype, 'count')
+numberField.nonNullable(ResultsMeta.prototype, 'total')
+
+// ProductResults
+ObjectType({})(ProductResults)
+Field(type => ResultsMeta)(ProductResults.prototype, 'meta')
+Field(type => [Product])(ProductResults.prototype, 'results')
+
+// CategoryResults
+ObjectType({})(CategoryResults)
+Field(type => ResultsMeta)(CategoryResults.prototype, 'meta')
+Field(type => [Category])(CategoryResults.prototype, 'results')
+
+// Identifiable
+ObjectType({})(Identifiable)
+stringField.nonNullable(Identifiable.prototype, 'id')
+
+// CommerceObject
+ObjectType({})(CommerceObject)
+stringField.nonNullable(CommerceObject.prototype, 'slug')
+stringField.nonNullable(CommerceObject.prototype, 'name')
+stringField.nonNullable(CommerceObject.prototype, 'raw')
+
+// Product
+ObjectType({})(Product)
+stringField.nonNullable(Product.prototype, 'productType')
+stringField.nullable(Product.prototype, 'shortDescription')
+stringField.nullable(Product.prototype, 'longDescription')
+Field(type => [Category])(Product.prototype, 'categories')
+Field(type => [Variant])(Product.prototype, 'variants')
+
+// Attribute
+ObjectType({})(Attribute)
+stringField.nonNullable(Attribute.prototype, 'name')
+stringField.nonNullable(Attribute.prototype, 'value')
+
+// Variant
+ObjectType({})(Variant)
+stringField.nonNullable(Variant.prototype, 'sku')
+stringField.nullable(Variant.prototype, 'color')
+stringField.nullable(Variant.prototype, 'size')
+stringField.nullable(Variant.prototype, 'articleNumberMax')
+Field(type => Prices)(Variant.prototype, 'prices')
+Field(type => ProductImage, { nullable: true })(Variant.prototype, 'defaultImage')
+Field(type => [ProductImage])(Variant.prototype, 'images')
+Field(type => [Attribute])(Variant.prototype, 'attributes')
+
+// Category
+ObjectType({})(Category)
+Field(type => [Category])(Category.prototype, 'children')
+Field(type => [Product])(Category.prototype, 'products')
+
+// SearchResult
+ObjectType({})(SearchResult)
+Field(type => [Product])(Category.prototype, 'products')
 
 export async function startGraphqlService(app) {
     const server = new ApolloServer({
