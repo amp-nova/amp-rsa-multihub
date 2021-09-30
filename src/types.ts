@@ -1,4 +1,3 @@
-import { ArgsType, Field } from "type-graphql";
 import { Product, Category } from "amp-rsa-types";
 
 export type GraphqlConfig = {
