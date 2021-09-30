@@ -21,6 +21,7 @@ Resources:
             Action:
               - secretsmanager:*
               - translate:*
+              - comprehend:DetectDominantLanguage
             Resource: "*"
 
 Outputs:

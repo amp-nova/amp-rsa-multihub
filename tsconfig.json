@@ -8,11 +8,14 @@
     "outDir": "dist",
     "allowJs": false,
     "esModuleInterop": true,
-    "target": "es2019",
+    "target": "es5",
     "module": "commonjs",
     "resolveJsonModule": true,
     "lib": ["es2019", "esnext.asynciterable"],
-    "preserveSymlinks": true
+    "preserveSymlinks": true,
+    "paths": {
+      "@/*": ["./*"]
+    }
   },
   "include": [
     "src/**/*",

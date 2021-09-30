@@ -13,3 +13,5 @@ logs
 Dockerfile.old
 
 cdk/node_modules
+
+dist
