@@ -13,6 +13,7 @@ import {
 } from 'amp-rsa-types'
 
 import { CommonArgs, ListArgs, GetAttributeArgs, GetCategoryArgs, GetProductArgs, GetProductsArgs } from '../../types'
+import { GetCategoryProductArgs } from '@/index';
 
 const stringField = {
     nullable: Field(type => String, { nullable: true }),
@@ -97,6 +98,9 @@ Field(type => [Product])(Category.prototype, 'products')
 
 // CommonArgs
 ArgsType()(CommonArgs)
+
+// GetCategoryProductArgs
+ArgsType()(GetCategoryProductArgs)
 
 // ListArgs
 ArgsType()(ListArgs)
