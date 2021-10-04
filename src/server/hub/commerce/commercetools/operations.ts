@@ -147,6 +147,7 @@ class CommerceToolsProductOperation extends CommerceToolsOperation {
             priceCurrency: this.backend.config.context.currency,
             [`text.${this.backend.config.context.language}`]: args.keyword,
             filter:
+                args.filter ||
                 args.productIds && [`id:${_.map(args.productIds.split(','), x => `"${x}"`).join(',')}`],
             where:
                 args.id && [`id="${args.id}"`] ||
