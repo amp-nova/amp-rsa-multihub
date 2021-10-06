@@ -1,5 +1,5 @@
 {
-  "name": "pbx",
+  "name": "@amp-nova/pbx",
   "types": "dist/index.d.ts",
   "main": "dist/index.js",
   "browser": {
