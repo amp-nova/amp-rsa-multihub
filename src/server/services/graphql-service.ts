@@ -12,8 +12,7 @@ import {
     CommerceObject, Product, Attribute, Variant, Category, SearchResult 
 } from 'amp-rsa-types'
 
-import { CommonArgs, ListArgs, GetAttributeArgs, GetCategoryArgs, GetProductArgs, GetProductsArgs } from '../../types'
-import { GetCategoryProductArgs } from '@/index';
+import { CommonArgs, ListArgs, GetAttributeArgs, GetCategoryArgs, GetProductArgs, GetProductsArgs, GetCategoryProductArgs } from '../../types'
 
 const stringField = {
     nullable: Field(type => String, { nullable: true }),
@@ -99,13 +98,13 @@ Field(type => [Product])(Category.prototype, 'products')
 // CommonArgs
 ArgsType()(CommonArgs)
 
-// GetCategoryProductArgs
-ArgsType()(GetCategoryProductArgs)
-
 // ListArgs
 ArgsType()(ListArgs)
 numberField.nullable(ListArgs.prototype, 'limit')
 numberField.nullable(ListArgs.prototype, 'offset')
+
+// GetCategoryProductArgs
+ArgsType()(GetCategoryProductArgs)
 
 // GetCategoryArgs
 ArgsType()(GetCategoryArgs)
