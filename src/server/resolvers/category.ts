@@ -1,6 +1,6 @@
 import _ from 'lodash'
 import { Args, Ctx, Query, Resolver, FieldResolver, Root } from 'type-graphql'
-import { Category, Product } from 'amp-rsa-types'
+import { Category, Product } from '@amp-nova/amp-rsa-types'
 import { GetCategoryArgs, GetCategoryProductArgs, Context } from '../../types'
 
 @Resolver(Category)
