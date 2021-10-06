@@ -19,10 +19,10 @@ let startServer = async () => {
     const app = express()
     app.use(cors({ origin: true }));
     app.use(bodyParser.json())
-    app.use(routes)
     
     app.use(require('./util/correlation-id'))
     
+    app.use(routes)
     app.use(translationService)
     app.use(logService)
     

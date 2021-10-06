@@ -94,7 +94,9 @@ class CommerceToolsCategoryOperation extends CommerceToolsOperation {
         let self = this
         return function (category) {
             return {
-                ...category,
+                id: category.id,
+                parent: category.parent,
+                ancestors: category.ancestors,
                 name: self.localize(category.name),
                 slug: self.localize(category.slug)
             }
@@ -140,20 +142,51 @@ class CommerceToolsProductOperation extends CommerceToolsOperation {
     }
 
     async get(args) {
-        return await super.get({
-            ...args,
-            expand: ['categories[*]'],
-            priceCountry: this.backend.config.context.country,
-            priceCurrency: this.backend.config.context.currency,
-            [`text.${this.backend.config.context.language}`]: args.keyword,
-            filter:
-                args.filter ||
-                args.productIds && [`id:${_.map(args.productIds.split(','), x => `"${x}"`).join(',')}`],
-            where:
-                args.id && [`id="${args.id}"`] ||
-                args.slug && [`slug(${this.backend.config.context.language}="${args.slug}") or slug(en="${args.slug}")`] ||
-                args.sku && [`variants(sku="${args.sku}")`]
-        })
+        if (args.all) {
+            let getCategories = async (limit: number, offset: number) => {
+                return await super.get({
+                    ...args,
+                    limit,
+                    offset,
+                    expand: ['categories[*]'],
+                })
+            }
+
+            let results = []
+            let total = -1
+
+            while (total === -1 || results.length < total) {
+                let response = await getCategories(100, results.length)
+                results = results.concat(response.results)
+                total = response.meta.total
+
+                console.log(`[ ct ] retrieved products: ${results.length}/${total}`)
+            }
+
+            return {
+                meta: {
+                    total: results.length,
+                    count: results.length
+                },
+                results
+            }
+        }
+        else {
+            return await super.get({
+                ...args,
+                expand: ['categories[*]'],
+                priceCountry: this.backend.config.context.country,
+                priceCurrency: this.backend.config.context.currency,
+                [`text.${this.backend.config.context.language}`]: args.keyword,
+                filter:
+                    args.filter ||
+                    args.productIds && [`id:${_.map(args.productIds.split(','), x => `"${x}"`).join(',')}`],
+                where:
+                    args.id && [`id="${args.id}"`] ||
+                    args.slug && [`slug(${this.backend.config.context.language}="${args.slug}") or slug(en="${args.slug}")`] ||
+                    args.sku && [`variants(sku="${args.sku}")`]
+            })
+        }
     }
 
     async post(args) {
@@ -168,13 +201,12 @@ class CommerceToolsProductOperation extends CommerceToolsOperation {
         let self = this
         return function(product) {
             return {
-                ...product,
+                id: product.id,
                 name: this.localize(product.name),
                 slug: this.localize(product.slug),
                 longDescription: product.metaDescription && this.localize(product.metaDescription),
                 variants: _.map(_.concat(product.variants, [product.masterVariant]), variant => {
                     return {
-                        ...variant,
                         sku: variant.sku || product.key,
                         prices: {
                             list: self.formatMoneyString(_.get(variant.scopedPrice || _.first(variant.prices), 'value.centAmount') / 100),
@@ -187,7 +219,9 @@ class CommerceToolsProductOperation extends CommerceToolsOperation {
                 categories: _.map(product.categories, function(cat) {
                     let category = cat.obj || cat
                     return {
-                        ...category,
+                        id: category.id,
+                        parent: category.parent,
+                        ancestors: category.ancestors,
                         name: self.localize(category.name),
                         slug: self.localize(category.slug)
                     }

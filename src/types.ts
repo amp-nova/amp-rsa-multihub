@@ -14,7 +14,7 @@ export class ListArgs extends CommonArgs {
 }
 
 export class Context {
-    backendKey: string
+    backendKey?: string
     commercehub: any
 }
 

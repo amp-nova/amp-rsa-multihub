@@ -83,6 +83,8 @@ export class Operation {
             })
             // end logging the response object
 
+            // console.log(response.data)
+
             let x: any = await this.translateResponse(response.data, _.bind(this.export(args), this))
             x.getResults = () => x.results
 
@@ -93,6 +95,7 @@ export class Operation {
                 }
     
                 if (args.id || args.slug || args.method === 'post') {
+                    // console.log(_.first(x.results))
                     return _.first(x.results)
                 }
                 else {

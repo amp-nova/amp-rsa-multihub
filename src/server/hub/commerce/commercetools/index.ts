@@ -17,6 +17,9 @@ class CommerceToolsBackend extends CommerceBackend {
             (c => c.ancestors.length === 0)
 
         let categories = (await this.categoryOperation.get({})).getResults()
+
+        // console.log(categories)
+
         let populateChildren = category => {
             category.children = _.filter(categories, c => c.parent && c.parent.id === category.id)
             _.each(category.children, populateChildren)

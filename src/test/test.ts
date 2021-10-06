@@ -7,7 +7,7 @@ const axios = require('axios')
 
 import { Product, Category } from 'amp-rsa-types'
 import { CommerceClient, QueryContext } from '../types'
-import { PbxCommerceClient } from '../client'
+import { PbxCommerceClient } from '../client/pbx-commerce-client'
 
 let commerceBackendKeyPrefixes = ['bigcommerce', 'hybris', 'commercetools']
 let backendKeys = []
