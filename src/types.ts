@@ -1,4 +1,4 @@
-import { Product, Category } from "amp-rsa-types";
+import { Product, Category } from "@amp-nova/amp-rsa-types";
 
 export type GraphqlConfig = {
     graphqlUrl: string;

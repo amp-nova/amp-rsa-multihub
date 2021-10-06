@@ -1,6 +1,6 @@
 import _ from 'lodash';
 import { Args, Resolver, FieldResolver, Root } from 'type-graphql'
-import { Variant, ProductImage } from 'amp-rsa-types'
+import { Variant, ProductImage } from '@amp-nova/amp-rsa-types'
 import { GetAttributeArgs } from '@/types'
 
 @Resolver(Variant)

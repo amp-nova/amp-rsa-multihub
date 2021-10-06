@@ -10,7 +10,7 @@ const differenceInMilliseconds = require('date-fns/differenceInMilliseconds')
 import { 
     Prices, ProductImage, ResultsMeta, ProductResults, CategoryResults, Identifiable, 
     CommerceObject, Product, Attribute, Variant, Category, SearchResult 
-} from 'amp-rsa-types'
+} from '@amp-nova/amp-rsa-types'
 
 import { CommonArgs, ListArgs, GetAttributeArgs, GetCategoryArgs, GetProductArgs, GetProductsArgs, GetCategoryProductArgs } from '../../types'
 

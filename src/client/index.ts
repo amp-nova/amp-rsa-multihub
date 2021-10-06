@@ -5,7 +5,7 @@ import { onError } from "@apollo/client/link/error";
 import { setContext } from '@apollo/client/link/context';
 
 import { categoryQuery, categoryHierarchyQuery, productQuery, productsQuery } from '../queries'
-import { Product, Category } from 'amp-rsa-types'
+import { Product, Category } from '@amp-nova/amp-rsa-types'
 import { QueryContext, CommerceClient } from '../types'
 
 export class PbxCommerceClient extends CommerceClient {
