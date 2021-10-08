@@ -172,6 +172,8 @@ class CommerceToolsProductOperation extends CommerceToolsOperation {
             }
         }
         else {
+            console.log(JSON.stringify(args))
+
             return await super.get({
                 ...args,
                 expand: ['categories[*]'],

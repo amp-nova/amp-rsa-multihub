@@ -7,14 +7,7 @@ const { SecretsManager } = require("@aws-sdk/client-secrets-manager");
 let secretManager = new SecretsManager()
 
 // health check end point
-router.get('/check', (req, res, next) => {
-    res.status(200).send({ status: 'ok' })
-})
-
-// placeholder
-router.get('/import', (req, res, next) => {
-    return res.status(200).send({ status: 'ok' })
-})
+router.get('/check', (req, res, next) => res.status(200).send({ status: 'ok' }))
 
 // get the list of keys to test
 router.get('/keys', async (req, res) => res.status(200).send(_.map((await secretManager.listSecrets({})).SecretList, 'Name')))
