@@ -12,8 +12,12 @@ export class PbxCommerceClient extends CommerceClient {
     url: string
     key: string
 
-    constructor(url: string, key: string) {
+    constructor({ url, key }) {
         super()
+
+        if (_.isEmpty(url) || _.isEmpty(key)) {
+            throw new Error(`pbx client requires a url and key`)
+        }
         this.url = url
         this.key = key
     }

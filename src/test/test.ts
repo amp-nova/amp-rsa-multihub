@@ -7,7 +7,7 @@ const axios = require('axios')
 
 import { Product, Category } from '@amp-nova/amp-rsa-types'
 import { CommerceClient, QueryContext } from '../types'
-import { PbxCommerceClient } from '../client/pbx-commerce-client'
+import { PbxCommerceClient } from '../client'
 
 let commerceBackendKeyPrefixes = ['bigcommerce', 'hybris', 'commercetools']
 let backendKeys = []
@@ -52,7 +52,7 @@ let run = async () => {
         _.each(backendKeys, bk => console.log(`\t${chalk.yellow(bk)}`))
         console.log(chalk.gray(`\n\nPlease wait...`))
         let results = await Promise.all(backendKeys.map(async backendKey => {
-            let client: CommerceClient = new PbxCommerceClient(graphqlUrl, backendKey)
+            let client: CommerceClient = new PbxCommerceClient({ url: graphqlUrl, key: backendKey })
 
             let [type, key] = backendKey.split('/')
             let mapped = {}
