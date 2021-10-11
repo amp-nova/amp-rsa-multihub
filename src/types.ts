@@ -54,14 +54,14 @@ export class QueryContext {
     segment:    string
     appUrl:     string
 
-    constructor(args?: any, locale?: string, language?: string, country?: string, currency?: string, segment?: string, appUrl?: string) {
-        this.args = args || {}
-        this.locale = locale || 'en-US'
-        this.language = language || 'en'
-        this.country = country || 'US'
-        this.currency = currency || 'USD'
-        this.segment = segment || ''
-        this.appUrl = appUrl || ''
+    constructor(obj?: any) {
+        this.args =     obj?.args || {}
+        this.locale =   obj?.locale || 'en-US'
+        this.language = obj?.language || 'en'
+        this.country =  obj?.country || 'US'
+        this.currency = obj?.currency || 'USD'
+        this.segment =  obj?.segment || ''
+        this.appUrl =   obj?.appUrl || ''
     }
 }
 

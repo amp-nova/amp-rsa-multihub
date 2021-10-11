@@ -68,12 +68,12 @@ let run = async () => {
             if (_.indexOf(commerceBackendKeyPrefixes, type) > -1) {
                 results.backendKey = backendKey
 
-                let products: Product[] = await client.getProducts(new QueryContext({}))
+                let products: Product[] = await client.getProducts(new QueryContext())
                 results.products = products
 
                 let product: Product = _.sample(products)
 
-                let topLevelCategories = await client.getCategories(new QueryContext({}))
+                let topLevelCategories = await client.getCategories(new QueryContext())
                 flattenCategories(topLevelCategories)
 
                 let secondLevelCategories = _.flatten(_.map(topLevelCategories, 'children'))
@@ -86,9 +86,9 @@ let run = async () => {
                 }
 
                 let category: Category = _.sample(Object.values(mapped))
-                results.categoryById = await client.getCategory(new QueryContext({ id: category.id }))
-                results.productById = await client.getProduct(new QueryContext({ id: product.id }))
-                results.categoryBySlug = await client.getCategory(new QueryContext({ slug: category.slug }))
+                results.categoryById = await client.getCategory(new QueryContext({ args: { id: category.id } }))
+                results.productById = await client.getProduct(new QueryContext({ args: { id: product.id } }))
+                results.categoryBySlug = await client.getCategory(new QueryContext({ args: { slug: category.slug } }))
             }
             return results
         }))
