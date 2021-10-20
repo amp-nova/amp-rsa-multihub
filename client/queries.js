@@ -1,0 +1,16 @@
+"use strict";
+var __makeTemplateObject = (this && this.__makeTemplateObject) || function (cooked, raw) {
+    if (Object.defineProperty) { Object.defineProperty(cooked, "raw", { value: raw }); } else { cooked.raw = raw; }
+    return cooked;
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.categoryQuery = exports.productQuery = exports.productsQuery = exports.categoryHierarchyQuery = void 0;
+var gql = require('@apollo/client/core').gql;
+var commonFields = "\n    id\n    name\n    slug\n";
+var meta = "\n    meta {\n        total\n        limit\n        count\n        offset\n    }\n";
+var productFields = "\n    " + commonFields + "\n    longDescription\n    categories {\n        " + commonFields + "\n    }\n    variants {\n        sku\n        articleNumberMax: attribute(name: \"articleNumberMax\")\n        prices {\n            list\n            sale\n        }\n        images {\n            url\n            large\n            thumb\n        }\n    }\n";
+exports.categoryHierarchyQuery = gql(templateObject_1 || (templateObject_1 = __makeTemplateObject(["    \n    query categoryHierarchyQuery {\n        categoryHierarchy {\n            ", "\n            children {\n                ", "\n                children {\n                    ", "\n                }\n            }\n        }\n    }\n"], ["    \n    query categoryHierarchyQuery {\n        categoryHierarchy {\n            ", "\n            children {\n                ", "\n                children {\n                    ", "\n                }\n            }\n        }\n    }\n"])), commonFields, commonFields, commonFields);
+exports.productsQuery = gql(templateObject_2 || (templateObject_2 = __makeTemplateObject(["\n    query productsQuery($keyword: String, $productIds: String) {\n        products(keyword: $keyword, productIds: $productIds) {\n            results {\n                ", "\n            }\n        }\n    }\n"], ["\n    query productsQuery($keyword: String, $productIds: String) {\n        products(keyword: $keyword, productIds: $productIds) {\n            results {\n                ", "\n            }\n        }\n    }\n"])), productFields);
+exports.productQuery = gql(templateObject_3 || (templateObject_3 = __makeTemplateObject(["\n    query productQuery($id: String, $slug: String, $sku: String) {\n        product(id: $id, slug: $slug, sku: $sku) {\n            ", "\n        }\n    }\n"], ["\n    query productQuery($id: String, $slug: String, $sku: String) {\n        product(id: $id, slug: $slug, sku: $sku) {\n            ", "\n        }\n    }\n"])), productFields);
+exports.categoryQuery = gql(templateObject_4 || (templateObject_4 = __makeTemplateObject(["\n    query categoryQuery($id: String, $slug: String) {\n        category(id: $id, slug: $slug) {\n            ", "\n            products {\n                ", "\n            }\n        }\n    }\n"], ["\n    query categoryQuery($id: String, $slug: String) {\n        category(id: $id, slug: $slug) {\n            ", "\n            products {\n                ", "\n            }\n        }\n    }\n"])), commonFields, productFields);
+var templateObject_1, templateObject_2, templateObject_3, templateObject_4;

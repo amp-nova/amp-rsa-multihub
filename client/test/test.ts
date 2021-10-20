@@ -6,8 +6,8 @@ const nconf = require('nconf')
 const axios = require('axios')
 
 import { Product, Category } from '@amp-nova/amp-rsa-types'
-import { CommerceClient, QueryContext } from '../types'
-import { PbxCommerceClient } from '../client'
+import { CommerceClient, QueryContext } from '../../src/types'
+import { PbxCommerceClient } from '..'
 
 let commerceCodecKeyPrefixes = ['bigcommerce', 'hybris', 'commercetools', 'amp']
 let backendKeys = []

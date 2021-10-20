@@ -4,9 +4,9 @@ import { createHttpLink, ApolloClient, InMemoryCache, from } from '@apollo/clien
 import { onError } from "@apollo/client/link/error";
 import { setContext } from '@apollo/client/link/context';
 
-import { categoryQuery, categoryHierarchyQuery, productQuery, productsQuery } from '../queries'
+import { categoryQuery, categoryHierarchyQuery, productQuery, productsQuery } from './queries'
 import { Product, Category } from '@amp-nova/amp-rsa-types'
-import { QueryContext, CommerceClient } from '../types'
+import { QueryContext, CommerceClient } from '../src/types'
 
 export class PbxCommerceClient implements CommerceClient {
     url: string
