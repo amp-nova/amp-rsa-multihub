@@ -85,11 +85,11 @@ export class Operation {
                 requestParams.headers['authorization'] = requestParams.headers['authorization'].substring(0, requestParams.headers['authorization'].length - 8) + `********`
             }
 
-            this.backend.config.context.logger.logCodecCall({ 
-                id: backendRequestId,
-                request: requestParams,
-                response: response.data
-            })
+            // this.backend.config.context.logger.logCodecCall({ 
+            //     id: backendRequestId,
+            //     request: requestParams,
+            //     response: response.data
+            // })
             // end logging the response object
 
             // console.log(response.data)

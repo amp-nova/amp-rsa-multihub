@@ -23,6 +23,7 @@ if (typeof window === 'undefined') {
 }
 
 export const registerCodec = codec => {
+  console.log(`register: ${JSON.stringify(codec)}`)
   codecs.push(codec)
 }
 
@@ -38,7 +39,11 @@ export const getCodec = async context => {
     let cred = JSON.parse(secret.SecretString)
     if (cred) {
       let [type, key] = context.codecKey.split('/')
-      let codecType = _.find(codecs, c => c.canAcceptCredentials(cred))
+      let codecType = _.find(codecs, c => {
+        console.log(`codec: ${c}`)
+        console.log(`cred: ${JSON.stringify(cred)}`)
+        return c.canAcceptCredentials(cred)
+      })
       if (codecType) {
         return new codecType.Codec({ cred, context, type, key })
       }
