@@ -13,13 +13,13 @@ router.get('/check', (req, res, next) => res.status(200).send({ status: 'ok' }))
 router.get('/keys', async (req, res) => res.status(200).send(_.map((await secretManager.listSecrets({})).SecretList, 'Name')))
 
 // route /api/product to graphql resolvers
-import { ProductResolver } from './resolvers/product'
+import { ProductResolver } from '../../src/server/resolvers/product'
 let productResolver = new ProductResolver()
 router.get('/api/product', async(req, res) => res.status(200).send(await productResolver.product(req.query, req)))
 router.get('/api/products', async(req, res) => res.status(200).send(await productResolver.products(req.query, req)))
 
 // route /api/category to graphql resolvers
-import { CategoryResolver } from './resolvers/category'
+import { CategoryResolver } from '../../src/server/resolvers/category'
 let categoryResolver = new CategoryResolver()
 router.get('/api/category', async(req, res) => res.status(200).send(await categoryResolver.category(req.query, req)))
 router.get('/api/categories', async(req, res) => {

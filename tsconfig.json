@@ -22,19 +22,8 @@
     "config/**/*"
   ],
   "exclude": [
-    ".git",
-    ".app-cache",
-    ".npm",
-    ".npm-tmp",
-    ".next",
-    "dist",
-    "dist*",
     "node_modules",
-    "**/dist/*",
-    "**/node_modules/*",
     "**/all_*.json",
-    "*.log",
-    "**/*.log",
-    "out"
+    "src2"
   ]
 }

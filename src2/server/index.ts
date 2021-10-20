@@ -4,13 +4,13 @@ const express = require('express')
 const bodyParser = require('body-parser')
 const cors = require('cors')
 
-import { logger } from './util/logger'
-import logService from './services/log-service'
-import translationService from './services/translation-service'
-import { startGraphqlService } from './services/graphql-service'
+import { logger } from '../../src/server/util/logger'
+import logService from '../../src/server/services/log-service'
+import translationService from '../../src/server/services/translation-service'
+import { startGraphqlService } from '../../src/server/services/graphql-service'
 const stringify = require('json-stringify-safe')
 
-import { config } from "./util/config";
+import { config } from "../../src/server/util/config";
 import routes from './routes'
 
 let startServer = async () => {

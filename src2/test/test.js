@@ -42,7 +42,7 @@ var chalk = require('chalk');
 var nconf = require('nconf');
 var axios = require('axios');
 var types_1 = require("../../src/types");
-var __1 = require("..");
+var __1 = require("../client");
 var commerceCodecKeyPrefixes = ['bigcommerce', 'hybris', 'commercetools', 'amp'];
 var backendKeys = [];
 // command line arguments
