@@ -32,7 +32,6 @@
   },
   "dependencies": {
     "@amp-nova/amp-rsa-types": "^1.0.3",
-    "@apollo/client": "^3.4.16",
     "@aws-sdk/client-secrets-manager": "^3.13.1",
     "@aws-sdk/client-translate": "^3.28.0",
     "@types/express": "^4.17.13",
