@@ -43,11 +43,11 @@ export const getCodec = async context => {
         return new codecType.Codec({ cred, context, type, key })
       }
       else {
-        throw `No codec was able to accept the credentials presented`
+        console.error(`No codec was able to accept the credentials presented`)
       }
     }
     else {
-      throw `No pbx codec matches key [ ${context.codecKey} ]. Please make sure you have set the 'x-pbx-codec-key' header.`
+      console.error(`No pbx codec matches key [ ${context.codecKey} ]. Please make sure you have set the 'x-pbx-codec-key' header.`)
     }
   } catch (error) {
     throw `Error retrieving secret: ${error}`
