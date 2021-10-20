@@ -6,18 +6,20 @@ const axios = require('axios')
 const currency = require('currency.js')
 const stringify = require('json-stringify-safe')
 
-const { Operation } = require('@/server/operation')
+import { Operation } from "../../operation";
 
 const mapImage = image => image && ({ url: image.url })
 
 class CommerceToolsOperation extends Operation {
+    accessToken: string
+
     constructor(backend) {
         super(backend)
         this.accessToken = null
     }
 
     getBaseURL() {
-        return `${this.backend.config.cred.api_url}/${this.backend.config.cred.project}`
+        return `${this.backend.config.cred.api_url}/${this.backend.config.cred.project}/`
     }
 
     getRequest(args) {
@@ -85,7 +87,7 @@ class CommerceToolsOperation extends Operation {
 }
 
 // category operation
-class CommerceToolsCategoryOperation extends CommerceToolsOperation {
+export class CommerceToolsCategoryOperation extends CommerceToolsOperation {
     constructor(config) {
         super(config)
     }
@@ -120,7 +122,7 @@ class CommerceToolsCategoryOperation extends CommerceToolsOperation {
 // end category operations
 
 // cart discount operation
-class CommerceToolsCartDiscountOperation extends CommerceToolsOperation {
+export class CommerceToolsCartDiscountOperation extends CommerceToolsOperation {
     constructor(config) {
         super(config)
     }
@@ -132,7 +134,7 @@ class CommerceToolsCartDiscountOperation extends CommerceToolsOperation {
 // end cart discount operations
 
 // product operation
-class CommerceToolsProductOperation extends CommerceToolsOperation {
+export class CommerceToolsProductOperation extends CommerceToolsOperation {
     constructor(config) {
         super(config)
     }
@@ -233,7 +235,7 @@ class CommerceToolsProductOperation extends CommerceToolsOperation {
         }
     }
 
-    async postProcessor(args) {
+    postProcessor(args) {
         let self = this
         return async function(products) {
             let segment = self.backend.config.context.segment
@@ -270,9 +272,4 @@ class CommerceToolsProductOperation extends CommerceToolsOperation {
             }
         }
     }
-}
-
-module.exports = {
-    productOperation: backend => new CommerceToolsProductOperation(backend),
-    categoryOperation: backend => new CommerceToolsCategoryOperation(backend),
 }

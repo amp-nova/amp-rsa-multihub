@@ -1,14 +1,14 @@
 import _ from 'lodash'
 
-const { CommerceBackend } = require('../index')
-const { productOperation, categoryOperation } = require('./operations')
-const { findCategory } = require('@/server/util/helpers')
+import { CommerceCodec } from '../codec'
+import { HybrisProductOperation, HybrisCategoryOperation } from './operations'
+import { findCategory } from '../../util/helpers'
 
-class HybrisBackend extends CommerceBackend {
+export class HybrisCodec extends CommerceCodec {
     constructor(config) {
         super(config)
-        this.productOperation = productOperation(this)
-        this.categoryOperation = categoryOperation(this)
+        this.productOperation = new HybrisProductOperation(this)
+        this.categoryOperation = new HybrisCategoryOperation(this)
     }
 
     async getCategory(args) {
@@ -27,4 +27,7 @@ class HybrisBackend extends CommerceBackend {
     }
 }
 
-module.exports = HybrisBackend
+export const Codec = HybrisCodec
+export const canAcceptCredentials = creds => {
+    return false
+}

@@ -2,12 +2,12 @@ import URI from 'urijs'
 import _ from 'lodash'
 import atob from 'atob'
 
-const { Operation } = require('@/server/operation')
+import { Operation } from '../../operation'
 const slugify = require('slugify')
 
 const stripHTML = text => text.replace(/(<([^>]+)>)/gi, "")
 
-class HybrisOperation extends Operation {
+export class HybrisOperation extends Operation {
     constructor(config) {
         super(config)
     }
@@ -21,7 +21,7 @@ class HybrisOperation extends Operation {
     }
 
     getBaseURL() {
-        return `${this.backend.config.cred.server}/occ/v2/${this.backend.config.cred.baseSiteId}`
+        return `${this.backend.config.cred.server}/occ/v2/${this.backend.config.cred.baseSiteId}/`
     }
 
     getOauthURL() {
@@ -49,7 +49,7 @@ class HybrisOperation extends Operation {
 }
 
 // category operation
-class HybrisCategoryOperation extends HybrisOperation {
+export class HybrisCategoryOperation extends HybrisOperation {
     constructor(config) {
         super(config)
     }
@@ -98,7 +98,7 @@ const imageContainer = (cred) => {
 }
 
 // product operation
-class HybrisProductOperation extends HybrisOperation {
+export class HybrisProductOperation extends HybrisOperation {
     constructor(config) {
         super(config)
     }
@@ -193,8 +193,3 @@ class HybrisProductOperation extends HybrisOperation {
     }
 }
 // end product operations
-
-module.exports = {
-    productOperation: config => new HybrisProductOperation(config),
-    categoryOperation: config => new HybrisCategoryOperation(config),
-}

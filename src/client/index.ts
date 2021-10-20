@@ -8,15 +8,13 @@ import { categoryQuery, categoryHierarchyQuery, productQuery, productsQuery } fr
 import { Product, Category } from '@amp-nova/amp-rsa-types'
 import { QueryContext, CommerceClient } from '../types'
 
-export class PbxCommerceClient extends CommerceClient {
+export class PbxCommerceClient implements CommerceClient {
     url: string
     key: string
 
     constructor({ url, key }) {
-        super()
-
         if (_.isEmpty(url) || _.isEmpty(key)) {
-            throw new Error(`pbx client requires a url and key`)
+            throw `pbx client requires a url and key`
         }
         this.url = url
         this.key = key

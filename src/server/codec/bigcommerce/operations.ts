@@ -1,8 +1,8 @@
 import _ from 'lodash'
 const URI = require('urijs')
 
-const { findCategory } = require('@/server/util/helpers')
-const { Operation } = require('@/server/operation')
+import { findCategory } from '../../util/helpers'
+import { Operation } from '../../operation'
 
 const mapImage = image => ({ url: image.url_standard })
 const slugify = require('slugify')
@@ -13,7 +13,8 @@ class BigCommerceOperation extends Operation {
     }
 
     getBaseURL() {
-        return `${this.backend.config.cred.apiUrl}/stores/${this.backend.config.cred.storeHash}/v3/catalog`
+        return `${this.backend.config.cred.apiUrl}/stores/${this.backend.config.cred.storeHash}/v3/catalog/
+        `
     }
 
     getRequest(args) {
@@ -67,7 +68,7 @@ class BigCommerceOperation extends Operation {
 }
 
 // category operation
-class BigCommerceCategoryOperation extends BigCommerceOperation {
+export class BigCommerceCategoryOperation extends BigCommerceOperation {
     constructor(config) {
         super(config)
     }
@@ -112,7 +113,7 @@ class BigCommerceCategoryOperation extends BigCommerceOperation {
 // end category operations
 
 // product operation
-class BigCommerceProductOperation extends BigCommerceOperation {
+export class BigCommerceProductOperation extends BigCommerceOperation {
     constructor(config) {
         super(config)
     }
@@ -193,8 +194,3 @@ class BigCommerceProductOperation extends BigCommerceOperation {
     }
 }
 // end product operations
-
-module.exports = {
-    productOperation: backend => new BigCommerceProductOperation(backend),
-    categoryOperation: backend => new BigCommerceCategoryOperation(backend),
-}

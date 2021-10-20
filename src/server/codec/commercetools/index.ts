@@ -1,13 +1,13 @@
 // 3rd party libs
 import _ from 'lodash'
-const { CommerceBackend } = require('../index')
-const { productOperation, categoryOperation } = require('./operations')
+import { CommerceCodec } from '../codec'
+import { CommerceToolsCategoryOperation, CommerceToolsProductOperation } from './operations'
 
-class CommerceToolsBackend extends CommerceBackend {
+export class CommerceToolsCodec extends CommerceCodec {
     constructor(config) {
         super(config)
-        this.productOperation = productOperation(this)
-        this.categoryOperation = categoryOperation(this)
+        this.productOperation = new CommerceToolsProductOperation(this)
+        this.categoryOperation = new CommerceToolsCategoryOperation(this)
     }
 
     async getCategoryHierarchy(args) {
@@ -41,4 +41,7 @@ class CommerceToolsBackend extends CommerceBackend {
     }
 }
 
-module.exports = CommerceToolsBackend
+export const Codec = CommerceToolsCodec
+export const canAcceptCredentials = creds => {
+    return false
+}

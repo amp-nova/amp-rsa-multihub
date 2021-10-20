@@ -1,4 +1,4 @@
-import { logger } from '@/server/util/logger'
+import { logger } from '../logger'
 import axios from 'axios'
 import _ from 'lodash'
 
@@ -9,7 +9,7 @@ let timer = (url, seconds = 10) => setTimeout(() => {
     delete cache[url] 
 }, seconds * 1000)
 
-module.exports = seconds => async (request) => {
+export const rollingCache = seconds => async (request) => {
     switch (request.method) {
         case 'get':
             if (cache[request.url]) {

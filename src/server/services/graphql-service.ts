@@ -1,6 +1,6 @@
 import _ from 'lodash'
-import logger from '@/server/util/logger';
-import resolvers from '@/server/resolvers'
+import logger from '../util/logger';
+import resolvers from '../resolvers'
 
 // do the typescript decorations
 import './graphql-type-decorations'
@@ -14,7 +14,7 @@ export async function startGraphqlService(app) {
         schema: await buildSchema({ resolvers }),
         playground: true,
         introspection: true,
-        context: async ({ req }) => ({ commercehub: req.hub })
+        context: async ({ req }) => req
     });
 
     server.applyMiddleware({ app })

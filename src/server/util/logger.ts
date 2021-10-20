@@ -66,7 +66,7 @@ const persistLogObject = (requestId, object) => {
 logger.getObjectLogger = async requestId => {
   let obj = await getLogByRequestId(requestId)
   return {
-    logBackendCall: object => {
+    logCodecCall: object => {
       obj.backend.push(object)
       persistLogObject(requestId, obj)
     },

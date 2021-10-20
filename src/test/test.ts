@@ -9,7 +9,7 @@ import { Product, Category } from '@amp-nova/amp-rsa-types'
 import { CommerceClient, QueryContext } from '../types'
 import { PbxCommerceClient } from '../client'
 
-let commerceBackendKeyPrefixes = ['bigcommerce', 'hybris', 'commercetools']
+let commerceCodecKeyPrefixes = ['bigcommerce', 'hybris', 'commercetools', 'amp']
 let backendKeys = []
 
 // command line arguments
@@ -43,10 +43,10 @@ let run = async () => {
         // backendKeys = [_.find(backendKeys, k => k.indexOf('hybris') > -1)]
 
         if (key) {
-            backendKeys = [_.find(backendKeys, k => key === k)]
+            backendKeys = [key]
         }
 
-        backendKeys = _.filter(backendKeys, bk => _.indexOf(commerceBackendKeyPrefixes, bk.split('/')[0]) > -1)
+        backendKeys = _.filter(backendKeys, bk => _.indexOf(commerceCodecKeyPrefixes, bk.split('/')[0]) > -1)
 
         console.log(`Testing backend keys`)
         _.each(backendKeys, bk => console.log(`\t${chalk.yellow(bk)}`))
@@ -65,10 +65,13 @@ let run = async () => {
 
             let results: TestResults = {}
 
-            if (_.indexOf(commerceBackendKeyPrefixes, type) > -1) {
+            if (_.indexOf(commerceCodecKeyPrefixes, type) > -1) {
                 results.backendKey = backendKey
 
                 let products: Product[] = await client.getProducts(new QueryContext())
+
+                console.log(products)
+
                 results.products = products
 
                 let product: Product = _.sample(products)

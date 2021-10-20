@@ -1,15 +1,15 @@
 // 3rd party libs
 import _ from 'lodash'
 
-const { productOperation, categoryOperation } = require('./operations')
-const { findCategory } = require('@/server/util/helpers')
-const { CommerceBackend } = require('../index')
+import { BigCommerceProductOperation, BigCommerceCategoryOperation } from './operations'
+import { findCategory } from '../../util/helpers'
+import { CommerceCodec } from '../codec'
 
-class BigCommerceBackend extends CommerceBackend {
+export class BigCommerceCodec extends CommerceCodec {
     constructor(config) {
         super(config)
-        this.productOperation = productOperation(this)
-        this.categoryOperation = categoryOperation(this)
+        this.productOperation = new BigCommerceProductOperation(this)
+        this.categoryOperation = new BigCommerceCategoryOperation(this)
     }
 
     // override
@@ -27,10 +27,14 @@ class BigCommerceBackend extends CommerceBackend {
         return (await this.getProducts({ "categories:in": parent.id })).getResults()
     }
 
+    // need to fix this
     async getImagesForVariant(parent) {
         let imageSetNumber = _.get(_.find(parent.attributes, att => att.name.toLowerCase() === 'articlenumbermax'), 'value').padStart(6, '0')
         return [{ url: `https://i8.amplience.net/s/willow/${imageSetNumber}` }]
     }
 }
 
-module.exports = BigCommerceBackend
+export const Codec = BigCommerceCodec
+export const canAcceptCredentials = creds => {
+    return false
+}

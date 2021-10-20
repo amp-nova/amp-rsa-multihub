@@ -1,7 +1,11 @@
 const _ = require('lodash')
 const https = require('https')
-const request = require('./util/http/short-term-rolling-cache')(30)
+// const request = require('./util/http/short-term-rolling-cache')(30)
 // const request = require('../../util/http/no-cache')
+
+import { rollingCache } from "./util/http/short-term-rolling-cache"
+const request = rollingCache(30)
+
 const { nanoid } = require('nanoid')
 
 export class Operation {
@@ -36,11 +40,11 @@ export class Operation {
     }
 
     getURL(args) {
-        return `${this.getBaseURL()}/${this.getRequestPath(args)}`
+        return `${this.getBaseURL()}${this.getRequestPath(args)}`
     }
 
     getBaseURL() {
-        throw new Error("getBaseURL must be defined in an operation subclass")
+        throw "getBaseURL must be defined in an operation subclass"
     }
 
     getRequestPath(args) {
@@ -64,6 +68,11 @@ export class Operation {
             const httpsAgent = new https.Agent({ rejectUnauthorized: false });
             let requestParams = { url, method: args.method, headers: await this.getHeaders(), data: args.body }
 
+            // if (args.body) {
+            //     console.log(`data`)
+            //     console.log(JSON.stringify(args.body))
+            // }
+
             let backendRequestId = `${this.backend.getSource()}.${nanoid(10)}`
             // logger.info(`[ ${chalk.yellow(this.backend.config.context.requestId)} ][ ${args.method.padStart(6, ' ')} ] ${url}`)
 
@@ -76,7 +85,7 @@ export class Operation {
                 requestParams.headers['authorization'] = requestParams.headers['authorization'].substring(0, requestParams.headers['authorization'].length - 8) + `********`
             }
 
-            this.backend.config.context.logger.logBackendCall({ 
+            this.backend.config.context.logger.logCodecCall({ 
                 id: backendRequestId,
                 request: requestParams,
                 response: response.data
@@ -94,7 +103,7 @@ export class Operation {
                     x.results = await px(x.results)
                 }
     
-                if (args.id || args.slug || args.method === 'post') {
+                if (args.id || args.slug) {
                     // console.log(_.first(x.results))
                     return _.first(x.results)
                 }
@@ -116,7 +125,7 @@ export class Operation {
     }
 
     translateResponse(data: any, arg1: any) {
-        throw new Error("Method not implemented.")
+        throw "Method not implemented."
     }
 
     getHeaders() {

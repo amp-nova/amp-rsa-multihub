@@ -1,4 +1,6 @@
+import { ContentItem } from "dc-management-sdk-js";
 import { Product, Category } from "@amp-nova/amp-rsa-types";
+import { Codec } from "./server/codec/codec";
 
 export type GraphqlConfig = {
     graphqlUrl: string;
@@ -15,7 +17,7 @@ export class ListArgs extends CommonArgs {
 
 export class Context {
     backendKey?: string
-    commercehub: any
+    codec: Codec
 }
 
 export class GetCategoryArgs extends CommonArgs {
@@ -65,22 +67,34 @@ export class QueryContext {
     }
 }
 
-export class CommerceClient {
-    async getProducts(context: QueryContext): Promise<Product[]> {
-        throw new Error('Subclasses of CommerceClient must implement getProducts(context: QueryContext)')
-    }
+// export class CommerceClient {
+//     async getProducts(context: QueryContext): Promise<Product[]> {
+//         throw 'Subclasses of CommerceClient must implement getProducts(context: QueryContext)'
+//     }
 
-    async getProduct(context: QueryContext): Promise<Product> {
-        throw new Error('Subclasses of CommerceClient must implement getProduct(context: QueryContext)')
-    }
+//     async getProduct(context: QueryContext): Promise<Product> {
+//         throw 'Subclasses of CommerceClient must implement getProduct(context: QueryContext)'
+//     }
 
-    async getCategories(context: QueryContext): Promise<Category[]> {
-        throw new Error('Subclasses of CommerceClient must implement getCategories(context: QueryContext)')
-    }
+//     async getCategories(context: QueryContext): Promise<Category[]> {
+//         throw 'Subclasses of CommerceClient must implement getCategories(context: QueryContext)'
+//     }
 
-    async getCategory(context: QueryContext): Promise<Category> {
-        throw new Error('Subclasses of CommerceClient must implement getCategory(context: QueryContext)')
-    }
+//     async getCategory(context: QueryContext): Promise<Category> {
+//         throw 'Subclasses of CommerceClient must implement getCategory(context: QueryContext)'
+//     }
+// }
+
+export interface CommerceClient {
+    getProducts(context: QueryContext): Promise<Product[]>
+    getProduct(context: QueryContext): Promise<Product>
+    getCategories(context: QueryContext): Promise<Category[]>
+    getCategory(context: QueryContext): Promise<Category>
+}
+
+export interface CMSClient {
+    getContentItem(id): Promise<ContentItem>
+    translateContentItem(payload: ContentItem)
 }
 
 export default { QueryContext }
