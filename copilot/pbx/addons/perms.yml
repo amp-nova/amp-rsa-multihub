@@ -11,7 +11,7 @@ Parameters:
     Description: The name of the service, job, or workflow being deployed.
 
 Resources:
-  PbxPolicy:
+  AriaPolicy:
     Type: AWS::IAM::ManagedPolicy
     Properties:
       PolicyDocument:
@@ -25,6 +25,6 @@ Resources:
             Resource: "*"
 
 Outputs:
-  PbxPolicyArn:
+  AriaPolicyArn:
     Description: "The ARN of the ManagedPolicy to attach to the task role."
-    Value: !Ref PbxPolicy
+    Value: !Ref AriaPolicy
