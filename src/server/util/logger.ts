@@ -86,7 +86,7 @@ if (typeof window === 'undefined') {
   logger.getAppLogs = () => appLogs
 }
 
-export class PbxLogger {
+export class AriaLogger {
   info(text) { }
   debug(text) { }
   error(text) { }
@@ -95,4 +95,4 @@ export class PbxLogger {
   getAppLogs() { }
 }
 
-export default logger as PbxLogger
+export default logger as AriaLogger

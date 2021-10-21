@@ -8,13 +8,13 @@ import { categoryQuery, categoryHierarchyQuery, productQuery, productsQuery } fr
 import { Product, Category } from '@amp-nova/amp-rsa-types'
 import { QueryContext, CommerceClient } from '../types'
 
-export class PbxCommerceClient implements CommerceClient {
+export class AriaCommerceClient implements CommerceClient {
     url: string
     key: string
 
     constructor({ url, key }) {
         if (_.isEmpty(url) || _.isEmpty(key)) {
-            throw `pbx client requires a url and key`
+            throw `aria client requires a url and key`
         }
         this.url = url
         this.key = key
@@ -27,13 +27,13 @@ export class PbxCommerceClient implements CommerceClient {
         const authLink = setContext((_, { headers }) => ({
             headers: {
                 ...headers,
-                'x-pbx-backend-key': self.key,
-                'x-pbx-locale': context.locale,
-                'x-pbx-language': context.language,
-                'x-pbx-country': context.country,
-                'x-pbx-currency': context.currency,
-                'x-pbx-app-url': context.appUrl,
-                'x-pbx-segment': context.segment
+                'x-aria-backend-key': self.key,
+                'x-aria-locale': context.locale,
+                'x-aria-language': context.language,
+                'x-aria-country': context.country,
+                'x-aria-currency': context.currency,
+                'x-aria-app-url': context.appUrl,
+                'x-aria-segment': context.segment
             }
         }))
 
@@ -80,4 +80,4 @@ export class PbxCommerceClient implements CommerceClient {
     }
 }
 
-export default PbxCommerceClient
+export default AriaCommerceClient

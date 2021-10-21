@@ -28,10 +28,10 @@ export const registerCodec = codec => {
 }
 
 export const getCodec = async context => {
-  console.log(`[ pbx ] codecs registered: ${codecs.length}`)
+  console.log(`[ aria ] codecs registered: ${codecs.length}`)
 
   if (_.isEmpty(context.codecKey)) {
-    throw `x-pbx-codec-key not set`
+    throw `x-aria-codec-key not set`
   }
 
   try {
@@ -52,7 +52,7 @@ export const getCodec = async context => {
       }
     }
     else {
-      console.error(`No pbx codec matches key [ ${context.codecKey} ]. Please make sure you have set the 'x-pbx-codec-key' header.`)
+      console.error(`No aria codec matches key [ ${context.codecKey} ]. Please make sure you have set the 'x-aria-codec-key' header.`)
     }
   } catch (error) {
     throw `Error retrieving secret: ${error}`
