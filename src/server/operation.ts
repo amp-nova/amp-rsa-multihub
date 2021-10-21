@@ -132,10 +132,10 @@ export class Operation {
         return {}
     }
 
-    formatMoneyString(money) {
-        return new Intl.NumberFormat(this.backend.config.context.locale, {
+    formatMoneyString(money, args) {
+        return new Intl.NumberFormat(args.locale, {
             style: 'currency',
-            currency: this.backend.config.context.currency
+            currency: args.currency
         }).format(money);
     }
 }

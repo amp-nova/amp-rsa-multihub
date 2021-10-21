@@ -1,8 +1,8 @@
 import _ from 'lodash'
 
-import { CommerceCodec } from '../codec'
+import { CommerceCodec } from '../../../src/server/codec/codec'
 import { HybrisProductOperation, HybrisCategoryOperation } from './operations'
-import { findCategory } from '../../util/helpers'
+import { findCategory } from '../../../src/server/util/helpers'
 
 export class HybrisCodec extends CommerceCodec {
     constructor(config) {
