@@ -59,7 +59,7 @@
     "whatwg-url": "^11.0.0",
     "winston": "^3.3.3"
   },
-  "version": "0.0.87",
+  "version": "0.0.88",
   "devDependencies": {
     "@types/node": "^16.7.2",
     "json-stringify-safe": "^5.0.1",
