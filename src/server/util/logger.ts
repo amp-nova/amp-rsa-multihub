@@ -78,6 +78,11 @@ logger.getObjectLogger = async requestId => {
   }
 }
 
+logger.readLogFile = async i => {}
+logger.writeLogFile = async (i, o) => {}
+logger.readRequestObject = async i => {}
+logger.getAppLogs = () => {}
+
 if (typeof window === 'undefined') {
   const fs = require('fs-extra')
   logger.readLogFile = async requestId => fs.existsSync(logger.getLogPath(requestId)) && await fs.readJson(logger.getLogPath(requestId), { encoding: 'utf8' })
