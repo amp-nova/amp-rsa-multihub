@@ -3,7 +3,7 @@ const https = require('https')
 // const request = require('./util/http/short-term-rolling-cache')(30)
 // const request = require('../../util/http/no-cache')
 
-import { QueryContext } from "@/types"
+import { QueryContext } from "../types"
 import { rollingCache } from "./util/http/short-term-rolling-cache"
 const request = rollingCache(30)
 
