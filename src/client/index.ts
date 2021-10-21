@@ -6,7 +6,7 @@ import { setContext } from '@apollo/client/link/context';
 
 import { categoryQuery, categoryHierarchyQuery, productQuery, productsQuery } from './queries'
 import { Product, Category } from '@amp-nova/amp-rsa-types'
-import { QueryContext, CommerceClient } from '../src/types'
+import { QueryContext, CommerceClient } from '../types'
 
 export class PbxCommerceClient implements CommerceClient {
     url: string
