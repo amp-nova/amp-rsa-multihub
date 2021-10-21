@@ -1,11 +1,9 @@
-import { logger } from '../logger'
 import axios from 'axios'
 import _ from 'lodash'
 
 let cache = {}
 
 let timer = (url, seconds = 10) => setTimeout(() => {
-    logger.debug(`decached [${url}]`)
     delete cache[url] 
 }, seconds * 1000)
 
