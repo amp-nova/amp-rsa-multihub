@@ -55,6 +55,7 @@ export class QueryContext {
     currency:   string
     segment:    string
     appUrl:     string
+    method:     string = 'get'
 
     constructor(obj?: any) {
         this.args =     obj?.args || {}

@@ -3,6 +3,7 @@ const https = require('https')
 // const request = require('./util/http/short-term-rolling-cache')(30)
 // const request = require('../../util/http/no-cache')
 
+import { QueryContext } from "@/types"
 import { rollingCache } from "./util/http/short-term-rolling-cache"
 const request = rollingCache(30)
 
@@ -19,54 +20,54 @@ export class Operation {
         return native
     }
 
-    export(args) {
+    export(context: QueryContext) {
         return native => native
     }
 
-    async get(args) {
-        return await this.doRequest({ method: 'get', ...args })
+    async get(context: QueryContext) {
+        return await this.doRequest({ method: 'get', ...context })
     }
 
-    async post(args) {
-        return await this.doRequest({ method: 'post', ...args })
+    async post(context: QueryContext) {
+        return await this.doRequest({ method: 'post', ...context })
     }
 
-    async put(args) {
-        return await this.doRequest({ method: 'put', ...args })
+    async put(context: QueryContext) {
+        return await this.doRequest({ method: 'put', ...context })
     }
 
-    async delete(args) {
-        return await this.doRequest({ method: 'delete', ...args })
+    async delete(context: QueryContext) {
+        return await this.doRequest({ method: 'delete', ...context })
     }
 
-    getURL(args) {
-        return `${this.getBaseURL()}${this.getRequestPath(args)}`
+    getURL(context: QueryContext) {
+        return `${this.getBaseURL()}${this.getRequestPath(context)}`
     }
 
     getBaseURL() {
         throw "getBaseURL must be defined in an operation subclass"
     }
 
-    getRequestPath(args) {
+    getRequestPath(context: QueryContext) {
         return ""
     }
 
-    getRequest(args) {
-        let url = this.getURL(args)
+    getRequest(context: QueryContext) {
+        let url = this.getURL(context)
         return url.toString()
     }
 
-    postProcessor(args) {
+    postProcessor(context: QueryContext) {
         return native => native
     }
 
-    async doRequest(args) {
+    async doRequest(context: QueryContext) {
         // get the URL from the backend
-        let url = this.getRequest(args)
+        let url = this.getRequest(context)
 
         try {
             const httpsAgent = new https.Agent({ rejectUnauthorized: false });
-            let requestParams = { url, method: args.method, headers: await this.getHeaders(), data: args.body }
+            let requestParams = { url, method: context.method, headers: await this.getHeaders(), data: context.args.body }
 
             // if (args.body) {
             //     console.log(`data`)
@@ -94,16 +95,16 @@ export class Operation {
 
             // console.log(response.data)
 
-            let x: any = await this.translateResponse(response.data, _.bind(this.export(args), this))
+            let x: any = await this.translateResponse(response.data, _.bind(this.export(context), this))
             x.getResults = () => x.results
 
             if (x) {
-                let px = await this.postProcessor(args)
+                let px = await this.postProcessor(context)
                 if (px) {
                     x.results = await px(x.results)
                 }
     
-                if (args.id || args.slug) {
+                if (context.args.id || context.args.slug) {
                     // console.log(_.first(x.results))
                     return _.first(x.results)
                 }
@@ -111,8 +112,8 @@ export class Operation {
                     return x
                 }
             }
-            else if (args.method === 'delete') {
-                return args.id
+            else if (context.args.method === 'delete') {
+                return context.args.id
             }
 
             // use the backend to translate the result set
