@@ -77,6 +77,9 @@ export class Operation {
             let backendRequestId = `${this.backend.getSource()}.${nanoid(10)}`
             // logger.info(`[ ${chalk.yellow(this.backend.config.context.requestId)} ][ ${args.method.padStart(6, ' ')} ] ${url}`)
 
+
+            console.log(`[ GET ] ${requestParams.url}`)
+
             // next, execute the request with headers gotten from the backend
             let response = await request({ ...requestParams, httpsAgent })
 
