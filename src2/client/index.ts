@@ -5,7 +5,7 @@ import { onError } from "@apollo/client/link/error";
 import { setContext } from '@apollo/client/link/context';
 
 import { categoryQuery, categoryHierarchyQuery, productQuery, productsQuery } from './queries'
-import { QueryContext, CommerceClient, Product, Category } from '../types'
+import { QueryContext, CommerceClient, Product, Category } from '../../src/types'
 
 export class AriaCommerceClient implements CommerceClient {
     url: string
