@@ -23,7 +23,6 @@
   ],
   "exclude": [
     "node_modules",
-    "**/all_*.json",
-    "src2"
+    "**/all_*.json"
   ]
 }
