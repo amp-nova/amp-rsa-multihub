@@ -11,23 +11,37 @@ export class CodecType {
 }
 
 export class CodecManager {
-    codecTypes: CodecType[] = []
+    codecTypes: {}
+
+    constructor() {
+        this.codecTypes = {}
+        console.log(`new CodecManager()`)
+    }
 
     registerCodecType(codecType: CodecType) {
-        let existing: CodecType = _.find(this.codecTypes, type => codecType.key === type.key)
+        let existing: CodecType = this.codecTypes[codecType.key]
         if (!existing) {
             console.log(`[ aria ] registering codec with key [ ${codecType.key} ]`)
-            this.codecTypes.push(codecType)
+            this.codecTypes[codecType.key] = codecType
+            console.log(`[ aria ] codecs: ${Object.keys(this.codecTypes)}`)
         }
     }
     
-    async getCodec(codecKey: string) {
-        let credentials: any = await lookupStrategy(codecKey)
-        if (!credentials) {
-            throw `[ aria ] no credentials found for codec key [ ${codecKey} ]`
+    async getCodec(codecKey: string | any) {
+        let credentials: any = null
+
+        if (typeof codecKey === 'string') {
+            credentials = await lookupStrategy(codecKey)
+            if (!credentials) {
+                throw `[ aria ] no credentials found for codec key [ ${codecKey} ]`
+            }    
+        }
+        else if (typeof codecKey === 'object') {
+            credentials = codecKey
+            codecKey = 'foo'
         }
     
-        let codecType: CodecType = _.find(this.codecTypes, (c: CodecType) => c.validate({ codecKey, credentials }))
+        let codecType: CodecType = _.find(Object.values(this.codecTypes), (c: CodecType) => c.validate({ codecKey, credentials }))
         if (!codecType) {
             throw `[ aria ] no codecs found matching key [ ${codecKey} ]`
         }
