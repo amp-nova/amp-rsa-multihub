@@ -16,6 +16,10 @@
     "test": "ts-node src/test/test.ts",
     "prepare": "npm run build"
   },
+  "exports": {
+    ".": "./dist/index.js",
+    "./Codecs": "./dist/codecs/index.js"
+  },
   "nodemonConfig": {
     "ignore": [
       "logs",
@@ -31,7 +35,7 @@
     "ext": "ts, js"
   },
   "dependencies": {
-    "@amp-nova/aria-types": "^1.0.4",
+    "@amp-nova/aria-types": "^1.0.5",
     "@aws-sdk/client-secrets-manager": "^3.13.1",
     "@aws-sdk/client-translate": "^3.28.0",
     "atob": "^2.1.2",

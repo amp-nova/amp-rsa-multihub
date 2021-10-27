@@ -1,19 +1,15 @@
-const _ = require('lodash')
-const https = require('https')
-// const request = require('./util/http/short-term-rolling-cache')(30)
-// const request = require('../../util/http/no-cache')
+import _ from 'lodash'
+import https from 'https'
 
-import { QueryContext } from "../types"
-import { rollingCache } from "./util/http/short-term-rolling-cache"
-const request = rollingCache(30)
-
-const { nanoid } = require('nanoid')
+import { QueryContext } from "./types"
+import { CodecConfiguration } from './codec/codec'
+const request = require('axios')
 
 export class Operation {
-    backend: any
+    config: CodecConfiguration
 
-    constructor(backend) {
-        this.backend = backend
+    constructor(config: CodecConfiguration) {
+        this.config = config
     }
 
     import(native) {
@@ -74,7 +70,7 @@ export class Operation {
             //     console.log(JSON.stringify(args.body))
             // }
 
-            let backendRequestId = `${this.backend.getSource()}.${nanoid(10)}`
+            // let backendRequestId = `${this.config.getSource()}.${nanoid(10)}`
             // logger.info(`[ ${chalk.yellow(this.backend.config.context.requestId)} ][ ${args.method.padStart(6, ' ')} ] ${url}`)
 
 
@@ -143,5 +139,3 @@ export class Operation {
         }).format(money);
     }
 }
-
-module.exports = { Operation }

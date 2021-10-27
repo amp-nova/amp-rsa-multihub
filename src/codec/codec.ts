@@ -1,23 +1,16 @@
 import { ContentItem } from 'dc-management-sdk-js'
-import { CMSClient } from "../../types"
+import { CommerceClient, CMSClient } from "../types"
+import { Operation } from '../operation'
 
 export class Codec {
-    config: any
+    config: CodecConfiguration
 
-    constructor(config) {
+    constructor(config: CodecConfiguration) {
         this.config = config
-    }
-
-    getSource() {
-        return `${this.config.type}/${this.config.key}`
     }
 }
 
 export class CMSCodec extends Codec implements CMSClient {
-    constructor(config) {
-        super(config)
-    }
-
     async getContentItem(id): Promise<ContentItem> {
         return null
     }
@@ -27,14 +20,20 @@ export class CMSCodec extends Codec implements CMSClient {
     }
 }
 
-import { Operation } from '../operation'
-import { CommerceClient } from '../../types'
-
 let defaultArgs = {
     currency: 'USD',
     locale: 'en-US',
     language: 'en',
     country: 'US'
+}
+
+export class CodecConfiguration {
+    codecKey: string
+    credentials: any
+
+    getSource() {
+        return this.codecKey
+    }
 }
 
 export class CommerceCodec extends Codec implements CommerceClient {
@@ -43,8 +42,8 @@ export class CommerceCodec extends Codec implements CommerceClient {
 
     constructor(config) {
         super(config)
-        this.productOperation = new Operation(this)
-        this.categoryOperation = new Operation(this)
+        this.productOperation = new Operation(config)
+        this.categoryOperation = new Operation(config)
     }
 
     // implements CommerceClient

@@ -20,7 +20,7 @@
   "include": [
     "src/**/*",
     "config/**/*"
-, "src2/server/hybris", "src2/client"  ],
+  ],
   "exclude": [
     "node_modules",
     "**/all_*.json",

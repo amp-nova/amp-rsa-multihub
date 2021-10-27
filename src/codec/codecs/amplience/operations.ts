@@ -1,13 +1,13 @@
 import _ from 'lodash'
 import URI from 'urijs'
 
-import { Operation } from '../../operation'
+import { Operation } from '../../../operation'
 
 class AmplienceCommerceOperation extends Operation {
     defaultQuery: any = {}
 
-    constructor(backend) {
-        super(backend)
+    constructor(config) {
+        super(config)
         this.defaultQuery = {
             depth: 'all',
             format: 'inlined'
@@ -15,7 +15,7 @@ class AmplienceCommerceOperation extends Operation {
     }
 
     getBaseURL() {
-        return `https://${this.backend.config.key}.cdn.content.amplience.net/content`
+        return `https://${this.config.credentials.hubName}.cdn.content.amplience.net/content`
     }
 
     getRequest(args) {
