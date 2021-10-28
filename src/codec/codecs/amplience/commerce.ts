@@ -1,53 +1,68 @@
+import { QueryContext } from '../../../types'
 import _ from 'lodash'
 import { CommerceCodec, CodecConfiguration } from '../../codec'
 import { CodecType, codecManager } from '../../codec-manager'
 import { AmplienceCommerceProductOperation, AmplienceCommerceCategoryOperation, AmplienceFetchOperation } from './operations'
 
-const getFetchBody = array => ({ body: { requests: _.map(_.take(array, 12), key => ({ key })) } })
+const getFetchBody = array => ({ requests: _.map(_.take(array, 12), key => ({ key })) })
 const mapContent = results => _.map(results.results, 'content')
 
 export class AmplienceCommerceCodec extends CommerceCodec {
+    fetchOperation: AmplienceFetchOperation
+
     constructor(config) {
         super(config)
-        this.productOperation = new AmplienceCommerceProductOperation(this)
-        this.categoryOperation = new AmplienceCommerceCategoryOperation(this)
+        this.productOperation = new AmplienceCommerceProductOperation(config)
+        this.categoryOperation = new AmplienceCommerceCategoryOperation(config)
+        this.fetchOperation = new AmplienceFetchOperation(config)
     }
 
-    async populateCategory(args) {
-        let operation = new AmplienceFetchOperation(this)
-        let category = await new AmplienceCommerceCategoryOperation(this).get(args)
-
+    async populateCategory(context: QueryContext) {
+        let category = await this.categoryOperation.get(context)
         if (category.children.length > 0) {
-            category.children = mapContent(await operation.get(getFetchBody(category.children)))
+            category.children = mapContent(await this.fetchOperation.get({ ...context, args: { body: getFetchBody(category.children) } }))
+        }
+        if (category.products.length > 0) {
+            category.products = mapContent(await this.fetchOperation.get({ ...context, args: { body: getFetchBody(category.products) } }))
+            category.products = _.map(category.products, this.productOperation.export(context))
         }
         await Promise.all(category.children.map(async cat => {
             if (cat.children.length > 0) {
-                cat.children = mapContent(await operation.get(getFetchBody(cat.children)))
+                cat.children = mapContent(await this.fetchOperation.get({ ...context, args: { body: getFetchBody(cat.children) } }))
+            }
+            if (cat.products.length > 0) {
+                cat.products = mapContent(await this.fetchOperation.get({ ...context, args: { body: getFetchBody(cat.products) } }))
+                cat.products = _.map(cat.products, this.productOperation.export(context))
             }
         }))
 
         return category
     }
 
-    async getCategoryHierarchy(args) {
+    async getCategoryHierarchy(context: QueryContext) {
         let categoryKeys = ['women', 'men', 'accessories', 'sale']
-        return await Promise.all(categoryKeys.map(key => this.populateCategory({ slug: key })))
+        return await Promise.all(categoryKeys.map(key => this.populateCategory({ ...context, args: { slug: key } })))
     }
 
-    async getCategory(args) {
-        return await this.populateCategory(args)
+    async getCategories(context: QueryContext) {
+        return await this.getCategoryHierarchy(context)
     }
 
-    async getProductsForCategory(category, args) {
-        if (category.products.length > 0) {
-            return mapContent(await new AmplienceFetchOperation(this).get(getFetchBody(category.products)))
-        }
-        return []
+    async getCategory(context: QueryContext) {
+        return await this.populateCategory(context)
     }
+
+    // async getProductsForCategory(category, args) {
+    //     if (category.products.length > 0) {
+    //         return mapContent(await this.fetchOperation.get({ args: { body: getFetchBody(category.products) } }))
+    //     }
+    //     return []
+    // }
 }
 
 const type: CodecType = {
-    key: 'amplienceCommerce',
+    vendor: 'amplience',
+    codecType: 'commerce',
 
     validate: (config: any) => {
         return config && config.credentials && config.credentials.hubName

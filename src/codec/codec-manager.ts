@@ -1,85 +1,79 @@
 import _ from 'lodash'
 import { Codec } from './codec'
+import fs from 'fs-extra'
+import { CMSCodec, CommerceCodec } from '..';
 
 const { SecretsManager } = require("@aws-sdk/client-secrets-manager");
 let secretManager = new SecretsManager()
 
 export class CodecType {
-    key: string
+    vendor: string
+    codecType: string
     validate: (config: any) => boolean
     create: (config: any) => Codec
 }
 
 export class CodecManager {
-    codecTypes: {}
-
-    constructor() {
-        this.codecTypes = {}
-        console.log(`new CodecManager()`)
-    }
+    codecTypes: {} = {}
+    credentialLookupStrategy: (key: string) => any = __ => {}
 
     registerCodecType(codecType: CodecType) {
-        let existing: CodecType = this.codecTypes[codecType.key]
+        let key: string = `${codecType.vendor}-${codecType.codecType}`
+        let existing: CodecType = this.codecTypes[key]
         if (!existing) {
-            console.log(`[ aria ] registering codec with key [ ${codecType.key} ]`)
-            this.codecTypes[codecType.key] = codecType
-            console.log(`[ aria ] codecs: ${Object.keys(this.codecTypes)}`)
+            console.log(`[ aria ] register codec [ ${key} ]`)
+            this.codecTypes[key] = codecType
         }
     }
     
-    async getCodec(codecKey: string | any) {
-        let credentials: any = null
+    async getCommerceCodec(codecKey: string | any): Promise<CommerceCodec> {
+        return await this.getCodec(codecKey, "commerce") as CommerceCodec
+    }
+
+    async getCMSCodec(codecKey: string | any): Promise<CMSCodec> {
+        return await this.getCodec(codecKey, "cms") as CMSCodec
+    }
+
+    async getCodec(codecKey: string | any, codecType: string): Promise<Codec> {
+        let credentials: any = codecKey
 
         if (typeof codecKey === 'string') {
-            credentials = await lookupStrategy(codecKey)
+            credentials = await this.credentialLookupStrategy(codecKey)
             if (!credentials) {
                 throw `[ aria ] no credentials found for codec key [ ${codecKey} ]`
             }    
         }
         else if (typeof codecKey === 'object') {
-            credentials = codecKey
-            codecKey = 'foo'
+            codecKey = 'none'
         }
     
-        let codecType: CodecType = _.find(Object.values(this.codecTypes), (c: CodecType) => c.validate({ codecKey, credentials }))
-        if (!codecType) {
+        let [vendor, key] = codecKey.split('/')
+        let codecTypes: CodecType[] = _.filter(Object.values(this.codecTypes), (c: CodecType) => codecType === c.codecType && (codecKey === 'none' || c.vendor === vendor) && c.validate({ codecKey, credentials }))
+        if (_.isEmpty(codecTypes)) {
             throw `[ aria ] no codecs found matching key [ ${codecKey} ]`
         }
-    
-        return codecType.create({ codecKey, credentials })
+        else if (codecTypes.length > 1) {
+            throw `[ aria ] multiple codecs found for key [ ${codecKey} ], must specify vendor in request`
+        }
+
+        return codecTypes[0].create({ codecKey, credentials })
     }    
 }
 
-export const s3LookupStrategy = async (codecKey: string): Promise<any> => {
+export const awsSecretManagerLookupStrategy = async (codecKey: string): Promise<any> => {
     try {
         let secret = await secretManager.getSecretValue({ SecretId: codecKey })
-        let cred = JSON.parse(secret.SecretString)
-        return cred
+        return JSON.parse(secret.SecretString)
     } catch (error) {
-        throw `Error retrieving secret: ${error}`
+        throw `[ aria ] s3LookupStrategy: error retrieving secret: ${error}`
     }
 }
 
-export const jsonFileLookupStrategy = async (codecKey: string): Promise<any> => {
-    if (codecKey === 'commercetools/anyafinn') {
-        return {
-            client_id: 'obUOGoEtePZjlB84IWEv-9IE',
-            client_secret: 'Xj_A2Rwbkjg1PhlsHM0z-wxRTh5emfHk',
-            oauth_url: 'https://auth.europe-west1.gcp.commercetools.com',
-            api_url: 'https://api.europe-west1.gcp.commercetools.com',
-            project: 'anyafinn',
-            scope: 'manage_project:anyafinn'
-        }
-    }
-    else if (codecKey === 'files') {
-        return {
-            products: 'data/all_products.json',
-            categories: 'data/all_categories.json'
-        }
-    }
+export const jsonFileLookupStrategy = (fileName: string) => async (codecKey: string): Promise<any> => {
+    console.log(`[ aria ] json file: ${fileName} codec key: ${codecKey}`)
+    let credentials = fs.readJSONSync(fileName)
+    return _.find(credentials, cred => cred.key === codecKey)
 }
-
-const lookupStrategy = jsonFileLookupStrategy
 
 // create the codec manager and register types we know about
 export const codecManager = new CodecManager()

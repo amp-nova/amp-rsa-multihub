@@ -49,11 +49,9 @@ const doTranslateContentItem = async (contentItem: ContentItem, locale: string, 
 
 export class AmplienceCMSCodec extends CMSCodec {
     dc: DynamicContent
-    hubName: string
 
-    constructor(config) {
+    constructor(config: CodecConfiguration) {
         super(config)
-        this.hubName = _.last(this.config.codecKey.split('/'))
         this.dc = new DynamicContent({ client_id: this.config.credentials.client_id, client_secret: this.config.credentials.client_secret })
     }
 
@@ -62,7 +60,7 @@ export class AmplienceCMSCodec extends CMSCodec {
     }
 
     async getTranslationConfig() {
-        let response = await fetch(`https://${this.hubName}.cdn.content.amplience.net/content/key/config/translation?depth=all&format=inlined`)
+        let response = await fetch(`https://${this.config.key}.cdn.content.amplience.net/content/key/config/translation?depth=all&format=inlined`)
         return (await response.json()).content as AmplienceTranslationConfig
     }
 
@@ -80,7 +78,8 @@ export class AmplienceCMSCodec extends CMSCodec {
 }
 
 const type: CodecType = {
-    key: 'amplienceCMS',
+    vendor: 'amplience',
+    codecType: 'cms',
 
     validate: (config: any) => {
         return config && config.credentials &&

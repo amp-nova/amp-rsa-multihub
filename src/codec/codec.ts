@@ -1,8 +1,9 @@
+import _ from 'lodash'
 import { ContentItem } from 'dc-management-sdk-js'
 import { CommerceClient, CMSClient } from "../types"
 import { Operation } from '../operation'
 
-export class Codec {
+export abstract class Codec {
     config: CodecConfiguration
 
     constructor(config: CodecConfiguration) {
@@ -10,14 +11,9 @@ export class Codec {
     }
 }
 
-export class CMSCodec extends Codec implements CMSClient {
-    async getContentItem(id): Promise<ContentItem> {
-        return null
-    }
-
-    async translateContentItem(payload: ContentItem) {
-        return null
-    }
+export abstract class CMSCodec extends Codec implements CMSClient {
+    abstract getContentItem(id): Promise<ContentItem>
+    abstract translateContentItem(payload: ContentItem)
 }
 
 let defaultArgs = {
@@ -27,24 +23,39 @@ let defaultArgs = {
     country: 'US'
 }
 
-export class CodecConfiguration {
+/**
+ * CodecConfiguration is a representation of a configuration for one instance of a codec. It contains a codecKey
+ * (in the format <code>vendor/key</code>) and a set of credentials
+ *
+ * @public
+ */
+ export class CodecConfiguration {
     codecKey: string
     credentials: any
 
-    getSource() {
-        return this.codecKey
+    get vendor() {
+        return _.first(this.codecKey.split('/'))
+    }
+
+    get key() {
+        return _.last(this.codecKey.split('/'))
     }
 }
 
-export class CommerceCodec extends Codec implements CommerceClient {
+/**
+ * CommerceCodec is the base class for codecs implementing the CommerceClient interface.
+ *
+ * @public
+ */
+ export abstract class CommerceCodec extends Codec implements CommerceClient {
     productOperation: Operation
     categoryOperation: Operation
 
-    constructor(config) {
-        super(config)
-        this.productOperation = new Operation(config)
-        this.categoryOperation = new Operation(config)
-    }
+    // constructor(config) {
+    //     super(config)
+    //     this.productOperation = new Operation(config)
+    //     this.categoryOperation = new Operation(config)
+    // }
 
     // implements CommerceClient
     async getCategory(args) {

@@ -1,3 +1,5 @@
+import { Attribute } from '@amp-nova/aria-types'
+import { QueryContext } from '../../../types'
 import _ from 'lodash'
 import URI from 'urijs'
 
@@ -18,8 +20,8 @@ class AmplienceCommerceOperation extends Operation {
         return `https://${this.config.credentials.hubName}.cdn.content.amplience.net/content`
     }
 
-    getRequest(args) {
-        let uri = new URI(this.getURL(args))
+    getRequest(context: QueryContext) {
+        let uri = new URI(this.getURL(context))
         uri.addQuery(this.defaultQuery)
         return uri.toString()
     }
@@ -41,18 +43,18 @@ class AmplienceCommerceOperation extends Operation {
     }
 }
 
-export class AmplienceFetchOperation extends AmplienceCommerceOperation {
+ export class AmplienceFetchOperation extends AmplienceCommerceOperation {
     constructor(config) {
         super(config)
         this.defaultQuery = {}
     }
 
-    getRequestPath(args) {
+    getRequestPath(context: QueryContext) {
         return `/fetch`
     }
 
-    async get(args) {
-        return await super.post(args)
+    async get(context: QueryContext) {
+        return await super.post(context)
     }
 }
 
@@ -62,12 +64,12 @@ export class AmplienceCommerceCategoryOperation extends AmplienceCommerceOperati
         super(config)
     }
 
-    export(args) {
+    export(context: QueryContext) {
         return x => ({ ...x })
     }
 
-    getRequestPath(args) {
-        return args.slug && `/key/category-${args.slug}` || args.id && `/id/${args.id}`
+    getRequestPath(context: QueryContext) {
+        return context.args.slug && `/key/category-${context.args.slug}` || context.args.id && `/id/${context.args.id}`
     }
 }
 // end category operations
@@ -78,34 +80,38 @@ export class AmplienceCommerceProductOperation extends AmplienceCommerceOperatio
         super(config)
     }
 
-    export(args) {
-        return product => ({
-            ...product,
-            variants: _.map(product.variants, variant => ({
-                ...variant,
-                prices: {
-                    list: variant.listPrice,
-                    sale: variant.salePrice
-                }
-            }))
-        })
+    export(context: QueryContext) {
+        return product => {
+            return ({
+                ...product,
+                imageSetId: product.variants[0]?.attributes['articleNumberMax'] || null,
+                variants: _.map(product.variants, variant => ({
+                    ...variant,
+                    images: _.map(variant.images, i => ({ url: i })),
+                    prices: {
+                        list: variant.listPrice,
+                        sale: variant.salePrice
+                    }
+                }))
+            })
+        }
     }
 
-    async get(args) {
-        if (args.productIds) {
-            return { results: await Promise.all(_.map(args.productIds.split(','), p => p.replace('product-', '')).map(async slug => await this.get({ slug }))) }
+    async get(context: QueryContext) {
+        if (context.args.productIds) {
+            return { results: await Promise.all(_.map(context.args.productIds.split(','), p => p.replace('product-', '')).map(async slug => await this.get({ ...context, args: { slug } }))) }
         }
-        else if (args.keyword) {
+        else if (context.args.keyword) {
             // algolia?
             return []
         }
         else {
-            return await super.get(args)
+            return await super.get(context)
         }
     }
 
-    getRequestPath(args) {
-        return args.slug && `/key/product-${args.slug}`
-            || args.id && `/id/${args.id}`
+    getRequestPath(context: QueryContext) {
+        return context.args.slug && `/key/product-${context.args.slug}`
+            || context.args.id && `/id/${context.args.id}`
     }
 }

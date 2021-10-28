@@ -5,7 +5,12 @@ import { QueryContext } from "./types"
 import { CodecConfiguration } from './codec/codec'
 const request = require('axios')
 
-export class Operation {
+/**
+ * The base class for all operations.
+ *
+ * @public
+ */
+ export class Operation {
     config: CodecConfiguration
 
     constructor(config: CodecConfiguration) {
@@ -21,19 +26,19 @@ export class Operation {
     }
 
     async get(context: QueryContext) {
-        return await this.doRequest({ method: 'get', ...context })
+        return await this.doRequest({ ...context, method: 'get' })
     }
 
     async post(context: QueryContext) {
-        return await this.doRequest({ method: 'post', ...context })
+        return await this.doRequest({ ...context, method: 'post' })
     }
 
     async put(context: QueryContext) {
-        return await this.doRequest({ method: 'put', ...context })
+        return await this.doRequest({ ...context, method: 'put' })
     }
 
     async delete(context: QueryContext) {
-        return await this.doRequest({ method: 'delete', ...context })
+        return await this.doRequest({ ...context, method: 'delete' })
     }
 
     getURL(context: QueryContext) {
@@ -61,6 +66,8 @@ export class Operation {
         // get the URL from the backend
         let url = this.getRequest(context)
 
+        context.args = context.args || {}
+
         try {
             const httpsAgent = new https.Agent({ rejectUnauthorized: false });
             let requestParams = { url, method: context.method, headers: await this.getHeaders(), data: context.args.body }
@@ -74,7 +81,7 @@ export class Operation {
             // logger.info(`[ ${chalk.yellow(this.backend.config.context.requestId)} ][ ${args.method.padStart(6, ' ')} ] ${url}`)
 
 
-            console.log(`[ GET ] ${requestParams.url}`)
+            console.log(`[ ${context.method.toUpperCase()} ] ${requestParams.url}`)
 
             // next, execute the request with headers gotten from the backend
             let response = await request({ ...requestParams, httpsAgent })
