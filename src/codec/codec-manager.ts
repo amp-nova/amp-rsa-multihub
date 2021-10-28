@@ -1,6 +1,5 @@
 import _ from 'lodash'
 import { Codec } from './codec'
-import fs from 'fs-extra'
 import { CMSCodec, CommerceCodec } from '..';
 
 const { SecretsManager } = require("@aws-sdk/client-secrets-manager");
@@ -67,12 +66,6 @@ export const awsSecretManagerLookupStrategy = async (codecKey: string): Promise<
     } catch (error) {
         throw `[ aria ] s3LookupStrategy: error retrieving secret: ${error}`
     }
-}
-
-export const jsonFileLookupStrategy = (fileName: string) => async (codecKey: string): Promise<any> => {
-    console.log(`[ aria ] json file: ${fileName} codec key: ${codecKey}`)
-    let credentials = fs.readJSONSync(fileName)
-    return _.find(credentials, cred => cred.key === codecKey)
 }
 
 // create the codec manager and register types we know about
