@@ -99,7 +99,7 @@ export class AmplienceCommerceProductOperation extends AmplienceCommerceOperatio
 
     async get(context: QueryContext) {
         if (context.args.productIds) {
-            return { results: await Promise.all(_.map(context.args.productIds.split(','), p => p.replace('product-', '')).map(async slug => await this.get({ ...context, args: { slug } }))) }
+            return { results: await Promise.all(_.map(context.args.productIds.split(','), p => p.replace('product-', '')).map(async slug => await this.get(new QueryContext({ ...context, args: { slug } })))) }
         }
         else if (context.args.keyword) {
             // algolia?

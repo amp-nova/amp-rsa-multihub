@@ -20,18 +20,22 @@ export class AmplienceCommerceCodec extends CommerceCodec {
     async populateCategory(context: QueryContext) {
         let category = await this.categoryOperation.get(context)
         if (category.children.length > 0) {
-            category.children = mapContent(await this.fetchOperation.get({ ...context, args: { body: getFetchBody(category.children) } }))
+            context.args = { body: getFetchBody(category.children) }
+            category.children = mapContent(await this.fetchOperation.get(context))
         }
         if (category.products.length > 0) {
-            category.products = mapContent(await this.fetchOperation.get({ ...context, args: { body: getFetchBody(category.products) } }))
+            context.args = { body: getFetchBody(category.products) }
+            category.products = mapContent(await this.fetchOperation.get(context))
             category.products = _.map(category.products, this.productOperation.export(context))
         }
         await Promise.all(category.children.map(async cat => {
             if (cat.children.length > 0) {
-                cat.children = mapContent(await this.fetchOperation.get({ ...context, args: { body: getFetchBody(cat.children) } }))
+                context.args = { body: getFetchBody(cat.children) }
+                cat.children = mapContent(await this.fetchOperation.get(context))
             }
             if (cat.products.length > 0) {
-                cat.products = mapContent(await this.fetchOperation.get({ ...context, args: { body: getFetchBody(cat.products) } }))
+                context.args = { body: getFetchBody(cat.products) }
+                cat.products = mapContent(await this.fetchOperation.get(context))
                 cat.products = _.map(cat.products, this.productOperation.export(context))
             }
         }))
@@ -41,7 +45,7 @@ export class AmplienceCommerceCodec extends CommerceCodec {
 
     async getCategoryHierarchy(context: QueryContext) {
         let categoryKeys = ['women', 'men', 'accessories', 'sale']
-        return await Promise.all(categoryKeys.map(key => this.populateCategory({ ...context, args: { slug: key } })))
+        return await Promise.all(categoryKeys.map(key => this.populateCategory(new QueryContext({ ...context, args: { slug: key } }))))
     }
 
     async getCategories(context: QueryContext) {

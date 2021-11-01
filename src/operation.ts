@@ -26,19 +26,19 @@ const request = require('axios')
     }
 
     async get(context: QueryContext) {
-        return await this.doRequest({ ...context, method: 'get' })
+        return await this.doRequest(new QueryContext({ ...context, method: 'get' }))
     }
 
     async post(context: QueryContext) {
-        return await this.doRequest({ ...context, method: 'post' })
+        return await this.doRequest(new QueryContext({ ...context, method: 'post' }))
     }
 
     async put(context: QueryContext) {
-        return await this.doRequest({ ...context, method: 'put' })
+        return await this.doRequest(new QueryContext({ ...context, method: 'put' }))
     }
 
     async delete(context: QueryContext) {
-        return await this.doRequest({ ...context, method: 'delete' })
+        return await this.doRequest(new QueryContext({ ...context, method: 'delete' }))
     }
 
     getURL(context: QueryContext) {
