@@ -36,7 +36,6 @@
     "ext": "ts, js"
   },
   "dependencies": {
-    "@amp-nova/aria-types": "^1.0.5",
     "@aws-sdk/client-secrets-manager": "^3.13.1",
     "@aws-sdk/client-translate": "^3.28.0",
     "atob": "^2.1.2",

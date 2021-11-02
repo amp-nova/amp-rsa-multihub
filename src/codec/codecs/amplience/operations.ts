@@ -1,4 +1,3 @@
-import { Attribute } from '@amp-nova/aria-types'
 import { QueryContext } from '../../../types'
 import _ from 'lodash'
 import URI from 'urijs'
