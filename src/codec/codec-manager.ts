@@ -55,15 +55,15 @@ export class CodecManager {
         }
     
         let [vendor, key] = codecKey.split('/')
-        let codecTypes: CodecType[] = _.filter(Object.values(this.codecTypes), (c: CodecType) => codecType === c.codecType && (codecKey === 'none' || c.vendor === vendor) && c.validate({ codecKey, credentials }))
-        if (_.isEmpty(codecTypes)) {
+        let codecs: CodecType[] = _.filter(Object.values(this.codecTypes), (c: CodecType) => codecType === c.codecType && (codecKey === 'none' || c.vendor === vendor) && c.validate({ codecKey, credentials }))
+        if (_.isEmpty(codecs)) {
             throw `[ aria ] no codecs found matching [ ${ codecKey === 'none' ? JSON.stringify(credentials) : codecKey } ]`
         }
-        else if (codecTypes.length > 1) {
+        else if (codecs.length > 1) {
             throw `[ aria ] multiple codecs found for key [ ${codecKey} ], must specify vendor in request`
         }
 
-        return codecTypes[0].create({ codecKey, credentials })
+        return codecs[0].create({ codecKey, credentials })
     }    
 }
 
