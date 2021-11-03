@@ -53,6 +53,7 @@ class AmplienceCommerceOperation extends Operation {
     }
 
     async get(context: QueryContext) {
+        console.log(`AmplienceFetchOperation ho`)
         return await super.post(context)
     }
 }
