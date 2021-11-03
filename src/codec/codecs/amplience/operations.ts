@@ -53,7 +53,7 @@ class AmplienceCommerceOperation extends Operation {
     }
 
     async get(context: QueryContext) {
-        console.log(`AmplienceFetchOperation ho`)
+        console.log(`[ amp ] fetch ${JSON.stringify(context)}`)
         return await super.post(context)
     }
 }

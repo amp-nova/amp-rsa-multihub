@@ -217,4 +217,8 @@ export interface ConfigClient {
     getConfig(): Promise<any>
 }
 
+export interface CredentialsClient {
+    getCredentials(key: string): Promise<any>
+}
+
 export default { QueryContext }

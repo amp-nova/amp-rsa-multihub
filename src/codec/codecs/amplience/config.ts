@@ -10,60 +10,63 @@ export class AmplienceConfigCodec extends ConfigCodec {
         let response = await fetch(`https://${this.config.credentials.hubName}.cdn.content.amplience.net/content/key/environment-${this.config.credentials.environment}?depth=all&format=inlined`)
 
         let obj = (await response.json()).content
-        return {
+        let configobj = {
             algolia: {
-                apiKey: obj['algolia:apiKey'],
-                appId: obj['algolia:appId'],
-                tacit_apiKey: obj['algolia:tacit_apiKey'],
-                tacit_appId: obj['algolia:tacit_appId'],
+                apiKey: _.get(obj, 'algolia:apiKey'),
+                appId: _.get(obj, 'algolia:appId'),
+                tacit_apiKey: _.get(obj, 'algolia:tacit_apiKey'),
+                tacit_appId: _.get(obj, 'algolia:tacit_appId'),
                 indexes: {
                     blog: {
-                        prod: obj['algolia:indexes:blog:prod'],
-                        staging: obj['algolia:indexes:blog:staging']
+                        prod: _.get(obj, 'algolia:indexes:blog:prod'),
+                        staging: _.get(obj, 'algolia:indexes:blog:staging')
                     },
                     ruleBased: {
-                        prod: obj['algolia:indexes:ruleBased:prod'],
-                        staging: obj['algolia:indexes:ruleBased:staging']
+                        prod: _.get(obj, 'algolia:indexes:ruleBased:prod'),
+                        staging: _.get(obj, 'algolia:indexes:ruleBased:staging')
                     },
                     productListSearch: {
-                        prod: obj['algolia:indexes:productListSearch:prod'],
-                        staging: obj['algolia:indexes:productListSearch:staging']
+                        prod: _.get(obj, 'algolia:indexes:productListSearch:prod'),
+                        staging: _.get(obj, 'algolia:indexes:productListSearch:staging')
                     }
                 }
             },
             analytics: {
                 ga: {
-                    trackingId: obj['analytics:ga:trackingId'],
-                    enabled: obj['analytics:ga:enabled'],
+                    trackingId: _.get(obj, 'analytics:ga:trackingId'),
+                    enabled: _.get(obj, 'analytics:ga:enabled'),
                 }
             },
             app: {
-                publishStage: obj['app:publishStage'],
-                url: obj['app:url']
+                publishStage: _.get(obj, 'app:publishStage'),
+                url: _.get(obj, 'app:url')
             },
             commerce: {
-                codecKey: obj['commerce:codecKey']                
+                codecKey: _.get(obj, 'commerce:codecKey')                
             },
             cms: {
-                contentApi: obj['cms:contentApi'],
-                stagingApi: obj['cms:stagingApi'],
-                defaultPreviewMode: obj['cms:defaultPreviewMode'],
-                hubName: obj['cms:hubName'],
-                productImageHubName: obj['cms:productImageHubName'],
-                imageBasePath: obj['cms:imageBasePath'],
-                contentBaseUri: obj['cms:contentBaseUri'],
-                socketIoServer: obj['cms:socketIoServer']
+                contentApi: _.get(obj, 'cms:contentApi'),
+                stagingApi: _.get(obj, 'cms:stagingApi'),
+                defaultPreviewMode: _.get(obj, 'cms:defaultPreviewMode'),
+                hubName: _.get(obj, 'cms:hubName'),
+                productImageHubName: _.get(obj, 'cms:productImageHubName'),
+                imageBasePath: _.get(obj, 'cms:imageBasePath'),
+                contentBaseUri: _.get(obj, 'cms:contentBaseUri'),
+                socketIoServer: _.get(obj, 'cms:socketIoServer')
             },
             dynamicyield: {
-                apiKey: obj['dynamicyield:apiKey']
+                apiKey: _.get(obj, 'dynamicyield:apiKey')
             },
             googlemaps: {
-                apiKey: obj['googlemaps:apiKey']
+                apiKey: _.get(obj, 'googlemaps:apiKey')
             },
             personify: {
-                personifyApi: obj['personify:personifyApi']
+                personifyApi: _.get(obj, 'personify:personifyApi')
             },
-        } as AMPRSAConfiguration
+        }
+
+        let config = JSON.parse(JSON.stringify(configobj))
+        return config
     }
 }
 
