@@ -97,20 +97,22 @@ export class AmplienceCommerceProductOperation extends AmplienceCommerceOperatio
     }
 
     async get(context: QueryContext) {
-        if (context.args.productIds) {
-            return { results: await Promise.all(_.map(context.args.productIds.split(','), p => p.replace('product-', '')).map(async slug => await this.get(new QueryContext({ ...context, args: { slug } })))) }
+        console.log(`get ${JSON.stringify(context)}`)
+        if (context.args?.productIds) {
+            return { results: await Promise.all(_.map(context.args?.productIds.split(','), p => p.replace('product-', '')).map(async slug => await this.get(new QueryContext({ ...context, args: { slug } })))) }
         }
-        else if (context.args.keyword) {
+        else if (context.args?.keyword) {
             // algolia?
             return []
         }
         else {
+            console.log(`foo`)
             return await super.get(context)
         }
     }
 
     getRequestPath(context: QueryContext) {
-        return context.args.slug && `/key/product-${context.args.slug}`
-            || context.args.id && `/id/${context.args.id}`
+        return context.args?.slug && `/key/product-${context.args?.slug}`
+            || context.args?.id && `/id/${context.args?.id}`
     }
 }

@@ -1,6 +1,6 @@
 import _ from 'lodash'
 import { Codec } from './codec'
-import { CMSCodec, CommerceCodec } from '..';
+import { CMSCodec, CommerceCodec, ConfigCodec } from '..';
 
 const { SecretsManager } = require("@aws-sdk/client-secrets-manager");
 let secretManager = new SecretsManager()
@@ -31,6 +31,10 @@ export class CodecManager {
 
     async getCMSCodec(codecKey: string | any): Promise<CMSCodec> {
         return await this.getCodec(codecKey, "cms") as CMSCodec
+    }
+
+    async getConfigCodec(codecKey: string | any): Promise<ConfigCodec> {
+        return await this.getCodec(codecKey, "config") as ConfigCodec
     }
 
     async getCodec(codecKey: string | any, codecType: string): Promise<Codec> {

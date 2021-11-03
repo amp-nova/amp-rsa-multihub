@@ -9,7 +9,7 @@
   "browserX": "dist/client/index.js",
   "scripts": {
     "devx": "nodemon src/server/index.ts --watch src --watch package.json --ext ts,js --ignore logs --app_mode dev -r tsconfig-paths/register",
-    "dev": "nodemon",
+    "dev": "nodemon src/server/index.ts",
     "clean": "rimraf dist",
     "build": "npm run clean && tsc",
     "startPm2": "./node_modules/.bin/pm2 start src/index.ts --name multihub -- --app_mode production",
@@ -38,14 +38,19 @@
   "dependencies": {
     "@aws-sdk/client-secrets-manager": "^3.13.1",
     "@aws-sdk/client-translate": "^3.28.0",
+    "apollo-server-core": "^3.4.0",
+    "apollo-server-express": "^3.4.0",
     "atob": "^2.1.2",
     "axios": "^0.24.0",
+    "body-parser": "^1.19.0",
     "class-validator": "^0.13.1",
+    "cors": "^2.8.5",
     "cross-fetch": "^3.1.4",
     "currency.js": "^2.0.4",
     "date-fns": "^2.23.0",
     "dc-management-sdk-js": "^1.13.0",
-    "graphql": "^15.5.1",
+    "express": "^4.17.1",
+    "graphql": "^15.7.2",
     "jsonpath": "^1.1.1",
     "lodash": "^4.17.21",
     "nanoid": "^3.1.25",
@@ -62,10 +67,14 @@
     "whatwg-url": "^11.0.0",
     "winston": "^3.3.3"
   },
+  "resolutions": {
+    "graphql": "^15.7.2"
+  },
   "version": "0.0.106",
   "devDependencies": {
     "@types/node": "^16.7.2",
     "json-stringify-safe": "^5.0.1",
+    "nodemon": "^2.0.14",
     "tsconfig-paths": "^3.11.0"
   }
 }

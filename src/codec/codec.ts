@@ -2,6 +2,7 @@ import _ from 'lodash'
 import { ContentItem } from 'dc-management-sdk-js'
 import { CommerceClient, CMSClient } from "../types"
 import { Operation } from '../operation'
+import { ConfigClient } from '..'
 
 export abstract class Codec {
     config: CodecConfiguration
@@ -9,6 +10,10 @@ export abstract class Codec {
     constructor(config: CodecConfiguration) {
         this.config = config
     }
+}
+
+export abstract class ConfigCodec extends Codec implements ConfigClient {
+    abstract getConfig(): Promise<any>
 }
 
 export abstract class CMSCodec extends Codec implements CMSClient {

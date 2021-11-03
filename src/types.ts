@@ -2,6 +2,7 @@ import _ from 'lodash'
 import { ContentItem } from "dc-management-sdk-js";
 import fetch from 'cross-fetch'
 import URI from 'urijs'
+import { CommerceCodec } from './codec/codec'
 
 export class Prices {
     sale?: string
@@ -89,10 +90,10 @@ export class ListArgs extends CommonArgs {
     offset?: number
 }
 
-// export class Context {
-//     backendKey?: string
-//     codec: Codec
-// }
+export class Context {
+    backendKey?: string
+    commerceCodec: CommerceCodec
+}
 
 export class GetCategoryArgs extends CommonArgs {
     id?: string
@@ -170,6 +171,17 @@ export function createQueryContext(req) {
     })
 }
 
+export class AMPRSAConfiguration {
+    algolia?: any
+    analytics?: any
+    app?: any
+    cms?: any
+    commerce?: any
+    dynamicyield?: any
+    googlemaps?: any
+    personify?: any
+}
+
 export function fetchFromQueryContext(url: string) {
     return async (context: QueryContext) => {
         return await context.fetch(url)
@@ -199,6 +211,10 @@ export interface CommerceClient {
 export interface CMSClient {
     getContentItem(id): Promise<ContentItem>
     translateContentItem(payload: ContentItem)
+}
+
+export interface ConfigClient {
+    getConfig(): Promise<any>
 }
 
 export default { QueryContext }
