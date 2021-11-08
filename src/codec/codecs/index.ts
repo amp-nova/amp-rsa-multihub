@@ -1,4 +1,14 @@
 import "./amplience/commerce";
 import "./amplience/cms";
 import "./amplience/config";
-import "./amplience/credentials";
+
+import { CMSCodec } from "../../codec/codec";
+import { ContentItem } from "dc-management-sdk-js";
+
+export class AmplienceCMSCodec extends CMSCodec {
+    async getContentItem(args: any): Promise<ContentItem> {
+        let path = args.id && `id/${args.id}` || args.key && `key/${args.key}`
+        let response = await fetch(`https://${this.config.credentials.hubName}.cdn.content.amplience.net/content/${path}?depth=all&format=inlined`)
+        return (await response.json()).content
+    }
+}

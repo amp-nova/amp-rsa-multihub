@@ -1,8 +1,6 @@
 import _ from 'lodash'
-import { ContentItem } from "dc-management-sdk-js";
 import fetch from 'cross-fetch'
 import URI from 'urijs'
-import { CommerceCodec } from './codec/codec'
 
 export class Prices {
     sale?: string
@@ -92,7 +90,6 @@ export class ListArgs extends CommonArgs {
 
 export class Context {
     backendKey?: string
-    commerceCodec: CommerceCodec
 }
 
 export class GetCategoryArgs extends CommonArgs {
@@ -183,42 +180,7 @@ export class AMPRSAConfiguration {
 }
 
 export function fetchFromQueryContext(url: string) {
-    return async (context: QueryContext) => {
-        return await context.fetch(url)
-    }
-    // let uri = new URI(url)
-    // uri.addQuery(context.args)
-    // console.log(`[ aria ] fetch ${uri.toString()}`)
-    // return (await (await fetch(uri.toString(), {
-    //     headers: {
-    //         'x-aria-locale':    context.locale,
-    //         'x-aria-language':  context.language,
-    //         'x-aria-country':   context.country,
-    //         'x-aria-currency':  context.currency,
-    //         'x-aria-segment':   context.segment,
-    //         'x-aria-app-url':   context.appUrl
-    //     }
-    // })).json())
-}
-
-export interface CommerceClient {
-    getProducts(context: QueryContext): Promise<Product[]>
-    getProduct(context: QueryContext): Promise<Product>
-    getCategories(context: QueryContext): Promise<Category[]>
-    getCategory(context: QueryContext): Promise<Category>
-}
-
-export interface CMSClient {
-    getContentItem(id): Promise<ContentItem>
-    translateContentItem(payload: ContentItem)
-}
-
-export interface ConfigClient {
-    getConfig(): Promise<any>
-}
-
-export interface CredentialsClient {
-    getCredentials(key: string): Promise<any>
+    return async (context: QueryContext) => await context.fetch(url)
 }
 
 export default { QueryContext }

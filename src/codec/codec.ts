@@ -1,8 +1,6 @@
 import _ from 'lodash'
 import { ContentItem } from 'dc-management-sdk-js'
-import { CommerceClient, CMSClient } from "../types"
 import { Operation } from '../operation'
-import { ConfigClient, CredentialsClient } from '..'
 
 export abstract class Codec {
     config: CodecConfiguration
@@ -12,17 +10,12 @@ export abstract class Codec {
     }
 }
 
-export abstract class ConfigCodec extends Codec implements ConfigClient {
+export abstract class ConfigCodec extends Codec {
     abstract getConfig(): Promise<any>
 }
 
-export abstract class CredentialsCodec extends Codec implements CredentialsClient {
-    abstract getCredentials(key: string): Promise<any>
-}
-
-export abstract class CMSCodec extends Codec implements CMSClient {
-    abstract getContentItem(id): Promise<ContentItem>
-    abstract translateContentItem(payload: ContentItem)
+export abstract class CMSCodec extends Codec {
+    abstract getContentItem(args): Promise<ContentItem>
 }
 
 let defaultArgs = {
@@ -56,17 +49,10 @@ let defaultArgs = {
  *
  * @public
  */
- export abstract class CommerceCodec extends Codec implements CommerceClient {
+ export abstract class CommerceCodec extends Codec {
     productOperation: Operation
     categoryOperation: Operation
 
-    // constructor(config) {
-    //     super(config)
-    //     this.productOperation = new Operation(config)
-    //     this.categoryOperation = new Operation(config)
-    // }
-
-    // implements CommerceClient
     async getCategory(args) {
         return await this.categoryOperation.get({ ...defaultArgs, ...args })
     }
@@ -82,7 +68,6 @@ let defaultArgs = {
     async getProducts(args) {
         return await this.productOperation.get({ ...defaultArgs, ...args })
     }
-    // end implements CommerceClient
 
     async getProductsForCategory(category, args) {
         throw `getProductsForCategory must be implemented`        

@@ -47,7 +47,7 @@ const doTranslateContentItem = async (contentItem: ContentItem, locale: string, 
     return contentItem.related.update(contentItem);
 }
 
-export class AmplienceCMSCodec extends CMSCodec {
+export class AmplienceDCCMSCodec extends CMSCodec {
     dc: DynamicContent
 
     constructor(config: CodecConfiguration) {
@@ -88,7 +88,7 @@ const type: CodecType = {
     },
 
     create: (config: CodecConfiguration) => {
-        return new AmplienceCMSCodec(config)
+        return new AmplienceDCCMSCodec(config)
     }
 }
 export default type
