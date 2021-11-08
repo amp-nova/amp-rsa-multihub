@@ -4,6 +4,7 @@ import { CodecType, codecManager } from '../../codec-manager'
 
 import { DynamicContent, ContentItem } from 'dc-management-sdk-js'
 import { default as translate } from './translation-client'
+import { AmplienceDCCodecConfiguration } from './operations'
 
 const fetch = require('cross-fetch')
 const jsonpath = require('jsonpath')
@@ -52,7 +53,8 @@ export class AmplienceDCCMSCodec extends CMSCodec {
 
     constructor(config: CodecConfiguration) {
         super(config)
-        this.dc = new DynamicContent({ client_id: this.config.credentials.client_id, client_secret: this.config.credentials.client_secret })
+        let c: AmplienceDCCodecConfiguration = (this.config as AmplienceDCCodecConfiguration)
+        this.dc = new DynamicContent({ client_id: c.client_id, client_secret: c.client_secret })
     }
 
     async getContentItem(payload): Promise<ContentItem> {
@@ -82,9 +84,9 @@ const type: CodecType = {
     codecType: 'cms',
 
     validate: (config: any) => {
-        return config && config.credentials &&
-            config.credentials.client_id &&
-            config.credentials.client_secret
+        return config && 
+            config.client_id &&
+            config.client_secret
     },
 
     create: (config: CodecConfiguration) => {

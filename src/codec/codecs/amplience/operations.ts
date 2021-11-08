@@ -3,6 +3,17 @@ import _ from 'lodash'
 import URI from 'urijs'
 
 import { Operation } from '../../../operation'
+import { CodecConfiguration } from '../../codec'
+
+export class AmplienceCodecConfiguration extends CodecConfiguration {
+    hubName: string
+    environment: string
+}
+
+export class AmplienceDCCodecConfiguration extends CodecConfiguration {
+    client_id: string
+    client_secret: string
+}
 
 class AmplienceCommerceOperation extends Operation {
     defaultQuery: any = {}
@@ -16,7 +27,7 @@ class AmplienceCommerceOperation extends Operation {
     }
 
     getBaseURL() {
-        return `https://${this.config.credentials.hubName}.cdn.content.amplience.net/content`
+        return `https://${(this.config as AmplienceCodecConfiguration).hubName}.cdn.content.amplience.net/content`
     }
 
     getRequest(context: QueryContext) {
@@ -98,7 +109,6 @@ export class AmplienceCommerceProductOperation extends AmplienceCommerceOperatio
     }
 
     async get(context: QueryContext) {
-        console.log(`get ${JSON.stringify(context)}`)
         if (context.args?.productIds) {
             return { results: await Promise.all(_.map(context.args?.productIds.split(','), p => p.replace('product-', '')).map(async slug => await this.get(new QueryContext({ ...context, args: { slug } })))) }
         }
@@ -107,7 +117,6 @@ export class AmplienceCommerceProductOperation extends AmplienceCommerceOperatio
             return []
         }
         else {
-            console.log(`foo`)
             return await super.get(context)
         }
     }

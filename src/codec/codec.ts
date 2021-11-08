@@ -33,7 +33,6 @@ let defaultArgs = {
  */
  export class CodecConfiguration {
     codecKey: string
-    credentials: any
 
     get vendor() {
         return _.first(this.codecKey.split('/'))

@@ -69,7 +69,7 @@ const type: CodecType = {
     codecType: 'commerce',
 
     validate: (config: any) => {
-        return config && config.credentials && config.credentials.hubName
+        return config && config.hubName
     },
 
     create: (config: CodecConfiguration) => {

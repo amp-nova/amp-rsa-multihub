@@ -13,6 +13,14 @@ const request = require('axios')
  export class Operation {
     config: CodecConfiguration
 
+    // function identity<T>(arg: T): T {
+    //     return arg;
+    //   }
+
+    getConfig<T extends CodecConfiguration>(): T {
+        return this.config as T
+    }
+
     constructor(config: CodecConfiguration) {
         this.config = config
     }
