@@ -70,7 +70,7 @@
   "resolutions": {
     "graphql": "^15.7.2"
   },
-  "version": "0.0.116",
+  "version": "0.0.117",
   "devDependencies": {
     "@types/node": "^16.7.2",
     "json-stringify-safe": "^5.0.1",
