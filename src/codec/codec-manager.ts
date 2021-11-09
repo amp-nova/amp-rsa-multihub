@@ -15,12 +15,17 @@ export class CodecType {
 export class CodecManager {
     codecTypes: {} = {}
     credentialLookupStrategy: (key: string) => any = __ => {}
+    startTime: number
+
+    constructor() {
+        this.startTime = new Date().getUTCMilliseconds()
+    }
 
     registerCodecType(codecType: CodecType) {
         let key: string = `${codecType.vendor}-${codecType.codecType}`
         let existing: CodecType = this.codecTypes[key]
         if (!existing) {
-            console.log(`[ aria ] register codec [ ${key} ]`)
+            console.log(`[ aria ] [ ${this.startTime} ] register codec [ ${key} ]`)
             this.codecTypes[key] = codecType
         }
     }
@@ -49,11 +54,16 @@ export class CodecManager {
         else if (typeof codecKey === 'object') {
             codecKey = 'none'
         }
-    
+
         let [vendor, key] = codecKey.split('/')
-        let codecs: CodecType[] = _.filter(Object.values(this.codecTypes), (c: CodecType) => codecType === c.codecType && (codecKey === 'none' || c.vendor === vendor) && c.validate(credentials))
+        console.log(`[ aria ] registered codecs: ${_.map(Object.values(this.codecTypes), ct => `${ct.vendor}-${ct.codecType}`)}`)
+        let codecs: CodecType[] = _.filter(Object.values(this.codecTypes), (c: CodecType) => {
+            return (codecType === c.codecType) && c.validate(credentials)
+        })
         if (_.isEmpty(codecs)) {
-            throw `[ aria ] no codecs found matching [ ${ codecKey === 'none' ? JSON.stringify(credentials) : codecKey } ]`
+            console.log(`\n\ngetCodec`)
+            console.log(credentials)
+                throw `[ aria ] no codecs found matching [ ${ codecKey === 'none' ? JSON.stringify(credentials) : codecKey } ]`
         }
         else if (codecs.length > 1) {
             throw `[ aria ] multiple codecs found for key [ ${codecKey} ], must specify vendor in request`
