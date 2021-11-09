@@ -80,7 +80,11 @@ export const awsSecretManagerLookupStrategy = async (codecKey: string): Promise<
     }
 }
 
+if (!global.codecManager) {
+    global.codecManager = new CodecManager()
+}
+
 // create the codec manager and register types we know about
-export const codecManager = new CodecManager()
+export const codecManager = global.codecManager
 
 import './codecs'
