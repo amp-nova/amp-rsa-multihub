@@ -111,8 +111,6 @@ const request = require('axios')
             // })
             // end logging the response object
 
-            // console.log(response.data)
-
             let x: any = await this.translateResponse(response.data, _.bind(this.export(context), this))
             x.getResults = () => x.results
 
@@ -121,9 +119,8 @@ const request = require('axios')
                 if (px) {
                     x.results = await px(x.results)
                 }
-    
-                if (context.args.id || context.args.slug) {
-                    // console.log(_.first(x.results))
+
+                if (context.args.id || context.args.slug || requestParams.url.indexOf('where=slug') > -1 || requestParams.url.indexOf('/key=') > -1) {
                     return _.first(x.results)
                 }
                 else {

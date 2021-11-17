@@ -34,7 +34,11 @@ export class Identifiable {
     id: string
 }
 
-export class CommerceObject extends Identifiable {
+export class Keyed extends Identifiable {
+    key: string
+}
+
+export class CommerceObject extends Keyed {
     slug: string
     name: string
 }
@@ -53,7 +57,7 @@ export class Attribute {
     value: string
 }
 
-export class Variant extends Identifiable {
+export class Variant extends Keyed {
     sku: string
     prices: Prices
     defaultImage?: ProductImage

@@ -55,13 +55,6 @@ export class AmplienceCommerceCodec extends CommerceCodec {
     async getCategory(context: QueryContext) {
         return await this.populateCategory(context)
     }
-
-    // async getProductsForCategory(category, args) {
-    //     if (category.products.length > 0) {
-    //         return mapContent(await this.fetchOperation.get({ args: { body: getFetchBody(category.products) } }))
-    //     }
-    //     return []
-    // }
 }
 
 const type: CodecType = {
