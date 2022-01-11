@@ -17,7 +17,7 @@ export class AmplienceCMSCodec extends CMSCodec {
 
 export class AmplienceConfigCodec extends AmplienceCMSCodec {
     async getConfig(): Promise<AMPRSAConfiguration> {
-        let obj: any = await this.getContentItem({ key: `aria-env-${(this.config as AmplienceCodecConfiguration).environment}` })
+        let obj: any = await this.getContentItem({ key: `aria/env/${(this.config as AmplienceCodecConfiguration).environment}` })
 
         if (!obj) {
             let x = `${(this.config as AmplienceCodecConfiguration).hubName}:${(this.config as AmplienceCodecConfiguration).environment}`
