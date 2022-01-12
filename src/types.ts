@@ -147,7 +147,8 @@ export class QueryContext {
         let uri = new URI(url)
         uri.addQuery(this.args)
         console.log(`[ aria ] fetch ${uri.toString()}`)
-        return (await (await fetch(uri.toString(), {
+        let start = new Date().valueOf()
+        let results = (await (await fetch(uri.toString(), {
             headers: {
                 'x-aria-locale':    this.locale,
                 'x-aria-language':  this.language,
@@ -157,6 +158,9 @@ export class QueryContext {
                 'x-aria-app-url':   this.appUrl
             }
         })).json())
+
+        console.log(`[ aria ] fetch [ ${url} ]: ${new Date().valueOf() - start} ms`)
+        return results
     }
 }
 
@@ -183,8 +187,16 @@ export class AMPRSAConfiguration {
     personify?: any
 }
 
-export function fetchFromQueryContext(url: string) {
-    return async (context: QueryContext) => await context.fetch(url)
+export class ConfigLocator {
+    hub: string
+    environment: string
+    constructor(configLocatorString: string) {
+        [this.hub, this.environment] = configLocatorString.split(':')
+    }
+}
+
+export async function fetchFromQueryContext(url: string, context: QueryContext) {
+    return await context.fetch(url)
 }
 
 export default { QueryContext }

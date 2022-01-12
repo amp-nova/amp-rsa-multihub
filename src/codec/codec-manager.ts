@@ -55,8 +55,6 @@ export class CodecManager {
             codecKey = 'none'
         }
 
-        let [vendor, key] = codecKey.split('/')
-
         // console.log(`[ aria ] registered codecs: ${_.map(Object.values(this.codecTypes), ct => `${ct.vendor}-${ct.codecType}`)}`)
         let codecs: CodecType[] = _.filter(Object.values(this.codecTypes), (c: CodecType) => {
             return (codecType === c.codecType) && c.validate(credentials)
@@ -67,7 +65,9 @@ export class CodecManager {
         else if (codecs.length > 1) {
             throw `[ aria ] multiple codecs found for key [ ${codecKey} ], must specify vendor in request`
         }
-        return codecs[0].create(credentials)
+        let codec = codecs[0].create(credentials)
+        await codec.start()
+        return codec
     }    
 }
 

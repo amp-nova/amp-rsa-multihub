@@ -1,12 +1,20 @@
 import _ from 'lodash'
 import { ContentItem } from 'dc-management-sdk-js'
 import { Operation } from '../operation'
+import { nanoid } from 'nanoid'
 
 export abstract class Codec {
     config: CodecConfiguration
-
+    codecId: string = nanoid(8)
+    
     constructor(config: CodecConfiguration) {
         this.config = config
+    }
+
+    async start() {}
+
+    get key() {
+        return this.config.codecKey
     }
 }
 
@@ -33,6 +41,10 @@ let defaultArgs = {
  */
  export class CodecConfiguration {
     codecKey: string
+
+    constructor(key: string) {
+        this.codecKey = key
+    }
 
     get vendor() {
         return _.first(this.codecKey.split('/'))

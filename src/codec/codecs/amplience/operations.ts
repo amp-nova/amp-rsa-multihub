@@ -6,7 +6,7 @@ import { Operation } from '../../../operation'
 import { CodecConfiguration } from '../../codec'
 
 export class AmplienceCodecConfiguration extends CodecConfiguration {
-    hubName: string
+    hub: string
     environment: string
 }
 
@@ -27,7 +27,7 @@ class AmplienceCommerceOperation extends Operation {
     }
 
     getBaseURL() {
-        return `https://${(this.config as AmplienceCodecConfiguration).hubName}.cdn.content.amplience.net/content`
+        return `https://${(this.config as AmplienceCodecConfiguration).hub}.cdn.content.amplience.net/content`
     }
 
     getRequest(context: QueryContext) {
