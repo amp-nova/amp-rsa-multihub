@@ -9,7 +9,7 @@ import { AmplienceCodecConfiguration } from "./amplience/operations";
 export class AmplienceCMSCodec extends CMSCodec {
     async getContentItem(args: any): Promise<ContentItem> {
         let path = args.id && `id/${args.id}` || args.key && `key/${args.key}`
-        let response = await fetch(`https://${(this.config as AmplienceCodecConfiguration).hubName}.cdn.content.amplience.net/content/${path}?depth=all&format=inlined`)
+        let response = await fetch(`https://${(this.config as AmplienceCodecConfiguration).hub}.cdn.content.amplience.net/content/${path}?depth=all&format=inlined`)
         return (await response.json()).content
     }
 }

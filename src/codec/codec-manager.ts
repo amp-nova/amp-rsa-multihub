@@ -1,4 +1,4 @@
-import _ from 'lodash'
+import _, { Dictionary } from 'lodash'
 import { Codec } from './codec'
 import { CMSCodec, CommerceCodec, ConfigCodec } from '..';
 
