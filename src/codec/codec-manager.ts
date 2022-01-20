@@ -67,13 +67,13 @@ export class CodecManager {
             throw `[ aria ] multiple codecs found for key [ ${codecKey} ], must specify vendor in request`
         }
 
-        if (credentials._meta?.deliveryId && this.cachedCodecs[credentials._meta?.deliveryId]) {
-            return this.cachedCodecs[credentials._meta?.deliveryId]
+        if (credentials?._meta?.deliveryId && this.cachedCodecs[credentials?._meta?.deliveryId]) {
+            return this.cachedCodecs[credentials?._meta?.deliveryId]
         }
 
         let codec = codecs[0].create(credentials)
         await codec.start()
-        this.cachedCodecs[credentials._meta?.deliveryId] = codec
+        this.cachedCodecs[credentials?._meta?.deliveryId] = codec
         return codec
     }    
 }
