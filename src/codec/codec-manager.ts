@@ -16,6 +16,7 @@ export class CodecManager {
     codecTypes: {} = {}
     credentialLookupStrategy: (key: string) => any = __ => {}
     startTime: number
+    cachedCodecs: Dictionary<Codec> = {}
 
     constructor() {
         this.startTime = new Date().getUTCMilliseconds()
@@ -54,7 +55,7 @@ export class CodecManager {
         else if (typeof codecKey === 'object') {
             codecKey = 'none'
         }
-
+ 
         // console.log(`[ aria ] registered codecs: ${_.map(Object.values(this.codecTypes), ct => `${ct.vendor}-${ct.codecType}`)}`)
         let codecs: CodecType[] = _.filter(Object.values(this.codecTypes), (c: CodecType) => {
             return (codecType === c.codecType) && c.validate(credentials)
@@ -65,8 +66,14 @@ export class CodecManager {
         else if (codecs.length > 1) {
             throw `[ aria ] multiple codecs found for key [ ${codecKey} ], must specify vendor in request`
         }
+
+        if (credentials._meta?.deliveryId && this.cachedCodecs[credentials._meta?.deliveryId]) {
+            return this.cachedCodecs[credentials._meta?.deliveryId]
+        }
+
         let codec = codecs[0].create(credentials)
         await codec.start()
+        this.cachedCodecs[credentials._meta?.deliveryId] = codec
         return codec
     }    
 }

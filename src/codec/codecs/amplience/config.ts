@@ -10,7 +10,8 @@ const fetch = require('cross-fetch')
 export class AmplienceCMSCodec extends CMSCodec {
     async getContentItem(args: any): Promise<ContentItem> {
         let path = args.id && `id/${args.id}` || args.key && `key/${args.key}`
-        let response = await fetch(`https://${(this.config as AmplienceCodecConfiguration).hub}.cdn.content.amplience.net/content/${path}?depth=all&format=inlined`)
+        let url = `https://${(this.config as AmplienceCodecConfiguration).hub}.cdn.content.amplience.net/content/${path}?depth=all&format=inlined`
+        let response = await fetch(url)
         return (await response.json()).content
     }
 }
@@ -24,7 +25,7 @@ export class AmplienceConfigCodec extends AmplienceCMSCodec {
             throw `[ aria ] Couldn't find config with key '${x}'`
         }
 
-        obj.commerce = await this.getContentItem({ id: obj.commerce.id })
+        obj.commerce = obj.commerce && await this.getContentItem({ id: obj.commerce.id })
         obj.cms.hubs = _.keyBy(obj.cms.hubs, 'key')
         obj.algolia.credentials = _.keyBy(obj.algolia.credentials, 'key')
         obj.algolia.indexes = _.keyBy(obj.algolia.indexes, 'key')
