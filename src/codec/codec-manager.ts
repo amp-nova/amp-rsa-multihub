@@ -2,9 +2,6 @@ import _, { Dictionary } from 'lodash'
 import { Codec } from './codec'
 import { CMSCodec, CommerceCodec, ConfigCodec } from '..';
 
-const { SecretsManager } = require("@aws-sdk/client-secrets-manager");
-let secretManager = new SecretsManager()
-
 export class CodecType {
     vendor: string
     codecType: string
@@ -76,15 +73,6 @@ export class CodecManager {
         this.cachedCodecs[credentials?._meta?.deliveryId] = codec
         return codec
     }    
-}
-
-export const awsSecretManagerLookupStrategy = async (codecKey: string): Promise<any> => {
-    try {
-        let secret = await secretManager.getSecretValue({ SecretId: codecKey })
-        return JSON.parse(secret.SecretString)
-    } catch (error) {
-        throw `[ aria ] s3LookupStrategy: error retrieving secret: ${error}`
-    }
 }
 
 if (!global.codecManager) {
