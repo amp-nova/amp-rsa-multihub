@@ -23,7 +23,6 @@ export class CodecManager {
         let key: string = `${codecType.vendor}-${codecType.codecType}`
         let existing: CodecType = this.codecTypes[key]
         if (!existing) {
-            console.log(`[ aria ] [ ${this.startTime} ] register codec [ ${key} ]`)
             this.codecTypes[key] = codecType
         }
     }
