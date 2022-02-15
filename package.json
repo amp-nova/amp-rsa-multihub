@@ -29,7 +29,7 @@
   "resolutions": {
     "graphql": "^15.7.2"
   },
-  "version": "0.0.128",
+  "version": "0.0.129",
   "devDependencies": {
     "@types/node": "^17.0.14"
   }
