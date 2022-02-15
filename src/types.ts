@@ -60,6 +60,8 @@ export class Attribute {
 export class Variant extends Keyed {
     sku: string
     prices: Prices
+    listPrice: string
+    salePrice: string
     defaultImage?: ProductImage
     images: ProductImage[]
     attributes: Attribute[]
@@ -141,6 +143,10 @@ export class QueryContext {
         this.currency = obj?.currency || 'USD'
         this.segment =  obj?.segment || ''
         this.appUrl =   obj?.appUrl || ''
+    }
+
+    getLocale(): string {
+        return this.locale || `${this.language}-${this.country}`
     }
 
     async fetch(url: string) {
