@@ -184,13 +184,10 @@ export function createQueryContext(req) {
 
 export class AMPRSAConfiguration {
     algolia?: any
-    analytics?: any
-    app?: any
+    url?: string
     cms?: any
     commerce?: any
-    dynamicyield?: any
     googlemaps?: any
-    personify?: any
 }
 
 export class ConfigLocator {
