@@ -1,8 +1,8 @@
 import _ from 'lodash'
 const URI = require('urijs')
 
-const { findCategory } = require('@/server/util/helpers')
-const { Operation } = require('@/server/operation')
+const { findCategory } = require('../../../util/helpers')
+const { Operation } = require('../../../operation')
 
 const mapImage = image => ({ url: image.url_standard })
 const slugify = require('slugify')

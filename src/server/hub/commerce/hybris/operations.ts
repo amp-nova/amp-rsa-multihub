@@ -2,7 +2,7 @@ import URI from 'urijs'
 import _ from 'lodash'
 import atob from 'atob'
 
-const { Operation } = require('@/server/operation')
+const { Operation } = require('../../../operation')
 const slugify = require('slugify')
 
 const stripHTML = text => text.replace(/(<([^>]+)>)/gi, "")

@@ -6,7 +6,7 @@ const axios = require('axios')
 const currency = require('currency.js')
 const stringify = require('json-stringify-safe')
 
-const { Operation } = require('@/server/operation')
+const { Operation } = require('../../../operation')
 
 const mapImage = image => image && ({ url: image.url })
 

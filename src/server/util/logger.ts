@@ -78,13 +78,11 @@ logger.getObjectLogger = async requestId => {
   }
 }
 
-if (typeof window === 'undefined') {
-  const fs = require('fs-extra')
-  logger.readLogFile = async requestId => fs.existsSync(logger.getLogPath(requestId)) && await fs.readJson(logger.getLogPath(requestId), { encoding: 'utf8' })
-  logger.writeLogFile = async (requestId, obj) => await fs.writeJson(logger.getLogPath(requestId), obj)
-  logger.readRequestObject = async requestId => cachedLogs[requestId] || await logger.readLogFile(requestId)
-  logger.getAppLogs = () => appLogs
-}
+const fs = require('fs-extra')
+logger.readLogFile = async requestId => fs.existsSync(logger.getLogPath(requestId)) && await fs.readJson(logger.getLogPath(requestId), { encoding: 'utf8' })
+logger.writeLogFile = async (requestId, obj) => await fs.writeJson(logger.getLogPath(requestId), obj)
+logger.readRequestObject = async requestId => cachedLogs[requestId] || await logger.readLogFile(requestId)
+logger.getAppLogs = () => appLogs
 
 export class PbxLogger {
   info(text) { }

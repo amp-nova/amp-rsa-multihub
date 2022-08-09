@@ -4,7 +4,7 @@ const express = require('express')
 const bodyParser = require('body-parser')
 const cors = require('cors')
 
-import { logger } from '@/server/util/logger'
+import { logger } from './util/logger'
 import logService from './services/log-service'
 import translationService from './services/translation-service'
 import { startGraphqlService } from './services/graphql-service'

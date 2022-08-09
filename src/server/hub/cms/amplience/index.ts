@@ -1,7 +1,7 @@
 import { CMSBackend } from '..'
 import { DynamicContent, ContentItem } from 'dc-management-sdk-js'
 import { default as translate } from './translation-client'
-import { default as logger } from '@/server/util/logger'
+import { default as logger } from '../../../util/logger'
 
 const axios = require('axios')
 const fetch = require('node-fetch')

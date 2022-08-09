@@ -3,10 +3,10 @@ import url from 'whatwg-url'
 const router = require('express').Router()
 const { nanoid } = require('nanoid')
 
-import { getClient } from '@/server/hub'
+import { getClient } from '../hub'
 
-import { config } from "@/server/util/config";
-import { default as logger } from '@/server/util/logger'
+import { config } from "../util/config";
+import { default as logger } from '../util/logger'
 
 router.use(async (req, res, next) => {
     if ((req.path.indexOf('graphql') > -1 && req.body?.operationName !== 'IntrospectionQuery') || req.path.indexOf('api/') > -1) {

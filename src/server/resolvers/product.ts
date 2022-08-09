@@ -1,7 +1,7 @@
 import _ from 'lodash'
 import { Args, Ctx, Query, Resolver } from 'type-graphql'
 import { Product, ProductResults } from '@amp-nova/amp-rsa-types'
-import { GetProductArgs, GetProductsArgs, Context } from '@/types'
+import { GetProductArgs, GetProductsArgs, Context } from '../../types'
 
 @Resolver(Product)
 export class ProductResolver {
