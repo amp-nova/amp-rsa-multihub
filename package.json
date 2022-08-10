@@ -11,7 +11,7 @@
     "dev": "nodemon",
     "clean": "rimraf dist",
     "build": "npm run clean && tsc",
-    "startPm2": "./node_modules/.bin/pm2 start src/index.ts --name multihub -- --app_mode production",
+    "startPm2": "pm2 start src/index.ts -- --app_mode production",
     "start": "node -r ts-node/register/transpile-only -r tsconfig-paths/register src/server/index.ts --app_mode production",
     "test": "ts-node src/test/test.ts",
     "prepare": "npm run build"

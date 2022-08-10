@@ -13,8 +13,10 @@ const stringify = require('json-stringify-safe')
 import { config } from "./util/config";
 import routes from './routes'
 
+const serverTag = `🚀 server [ ${config.serviceName}/${config.mode} ]`
+
 let startServer = async () => {
-  logger.info(`🚀 server [ v${process.env.npm_package_version}/${config.serviceName} mode: ${config.mode} ] is starting...`);
+  logger.info(`${serverTag} is starting...`);
   try {
     const app = express()
     app.use(cors({ origin: true }));
@@ -30,7 +32,7 @@ let startServer = async () => {
     await startGraphqlService(app)
 
     await app.listen({ port: config.port })
-    logger.info(`🚀 server [ v${process.env.npm_package_version}/${config.serviceName} mode: ${config.mode} ] is ready at ${config.host}`);
+    logger.info(`${serverTag} is ready at ${config.host}`);
     return { app };
   } catch (error) {
     logger.error(error.stack)
